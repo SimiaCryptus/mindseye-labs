@@ -59,6 +59,8 @@ abstract class FindPCAFeatures extends FindFeatureSpace {
     }).toArray();
   }
 
+  protected abstract Stream<Tensor[]> getFeatures();
+
   /**
    * Find feature space tensor [ ].
    *
@@ -86,8 +88,8 @@ abstract class FindPCAFeatures extends FindFeatureSpace {
   @Nonnull
   @Override
   public FindFeatureSpace invoke() {
-    averages = findBandBias();
-    vectors = findFeatureSpace(log, () -> getFeatures().map(tensor -> {
+    double[] averages = findBandBias();
+    Tensor[] vectors = findFeatureSpace(log, () -> getFeatures().map(tensor -> {
       return new Tensor[]{tensor[0], tensor[1].mapCoords((c) -> tensor[1].get(c) - averages[c.getCoords()[2]])};
     }), inputBands);
     return this;
