@@ -85,11 +85,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.simiacryptus</groupId>
-            <artifactId>java-analysis</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>compile</scope>
