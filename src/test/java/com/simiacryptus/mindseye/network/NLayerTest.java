@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.network;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
 import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.TestUtil;
 import com.simiacryptus.mindseye.test.unit.SerializationTest;
@@ -192,7 +193,12 @@ public abstract class NLayerTest {
     @Nonnull final Layer component = layer.copy();
     final Tensor[] randomize = randomize(inputDims);
     new SerializationTest().test(log, component, randomize);
-    return new TrainingTester().test(log, component, randomize);
+    return new TrainingTester(){
+      @Override
+      protected Layer lossLayer() {
+        return new MeanSqLossLayer();
+      }
+    }.test(log, component, randomize);
   }
 
 }

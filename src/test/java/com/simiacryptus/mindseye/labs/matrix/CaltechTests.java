@@ -71,7 +71,7 @@ public class CaltechTests {
 
       network.wrap(new ImgBandBiasLayer(40)).freeRef();
       network.wrap(new FullyConnectedLayer(new int[]{4, 4, 40}, new int[]{features}).set(weights)).freeRef();
-      network.wrap(new SoftmaxActivationLayer()).freeRef();
+      network.wrap(new SoftmaxLayer()).freeRef();
 
       return network;
     });

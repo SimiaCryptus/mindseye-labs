@@ -83,6 +83,7 @@ public class SparseAutoencoderTrainer extends SupervisedNetwork {
 
   @Override
   public DAGNode getHead() {
+    sumFitnessLayer.addRef();
     return sumFitnessLayer;
   }
 }

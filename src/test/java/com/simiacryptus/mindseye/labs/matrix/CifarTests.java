@@ -24,7 +24,7 @@ import com.simiacryptus.mindseye.layers.cudnn.conv.ConvolutionLayer;
 import com.simiacryptus.mindseye.layers.java.BiasLayer;
 import com.simiacryptus.mindseye.layers.java.FullyConnectedLayer;
 import com.simiacryptus.mindseye.layers.java.ReLuActivationLayer;
-import com.simiacryptus.mindseye.layers.java.SoftmaxActivationLayer;
+import com.simiacryptus.mindseye.layers.java.SoftmaxLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.test.data.CIFAR10;
 import com.simiacryptus.mindseye.test.integration.*;
@@ -51,7 +51,7 @@ public class CifarTests {
       network.add(new BiasLayer(16, 16, 5));
       network.add(new FullyConnectedLayer(new int[]{16, 16, 5}, new int[]{features})
           .set(() -> 0.001 * (Math.random() - 0.45)));
-      network.add(new SoftmaxActivationLayer());
+      network.add(new SoftmaxLayer());
       return network;
     });
   };
@@ -66,7 +66,7 @@ public class CifarTests {
       network.add(new BiasLayer(32, 32, 3));
       network.add(new FullyConnectedLayer(new int[]{32, 32, 3}, new int[]{features})
           .set(() -> 0.001 * (Math.random() - 0.45)));
-      network.add(new SoftmaxActivationLayer());
+      network.add(new SoftmaxLayer());
       return network;
     });
   };

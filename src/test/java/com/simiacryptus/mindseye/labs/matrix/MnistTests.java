@@ -57,7 +57,7 @@ public class MnistTests {
       network.add(new FullyConnectedLayer(new int[]{1024}, new int[]{features})
           .set(() -> 0.001 * (Math.random() - 0.45)));
       network.add(new BiasLayer(features));
-      network.add(new SoftmaxActivationLayer());
+      network.add(new SoftmaxLayer());
       return network;
     });
   };
@@ -92,7 +92,7 @@ public class MnistTests {
       network.add(new DropoutNoiseLayer(0.5));
       network.add(new FullyConnectedLayer(new int[]{1024}, new int[]{features}).set(init));
       network.add(new BiasLayer(features));
-      network.add(new SoftmaxActivationLayer());
+      network.add(new SoftmaxLayer());
 
       return network;
     });
@@ -109,7 +109,7 @@ public class MnistTests {
       network.add(new BiasLayer(28, 28, 1));
       network.add(new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{features})
           .set(() -> 0.001 * (Math.random() - 0.45)));
-      network.add(new SoftmaxActivationLayer());
+      network.add(new SoftmaxLayer());
       return network;
     });
   };

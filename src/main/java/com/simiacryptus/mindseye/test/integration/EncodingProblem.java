@@ -200,7 +200,7 @@ public class EncodingProblem implements Problem {
 
     @Nonnull final PipelineNetwork trainingNetwork = new PipelineNetwork(2);
     @Nullable final DAGNode image = trainingNetwork.add(imageNetwork, trainingNetwork.getInput(0));
-    @Nullable final DAGNode softmax = trainingNetwork.add(new SoftmaxActivationLayer(), trainingNetwork.getInput(0));
+    @Nullable final DAGNode softmax = trainingNetwork.add(new SoftmaxLayer(), trainingNetwork.getInput(0));
     trainingNetwork.add(new SumInputsLayer(),
         trainingNetwork.add(new EntropyLossLayer(), softmax, softmax),
         trainingNetwork.add(new NthPowerActivationLayer().setPower(1.0 / 2.0),

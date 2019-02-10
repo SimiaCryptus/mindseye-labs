@@ -24,7 +24,7 @@ import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.java.BiasLayer;
 import com.simiacryptus.mindseye.layers.java.FullyConnectedLayer;
 import com.simiacryptus.mindseye.layers.MonitoringWrapperLayer;
-import com.simiacryptus.mindseye.layers.java.SoftmaxActivationLayer;
+import com.simiacryptus.mindseye.layers.java.SoftmaxLayer;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.test.NotebookReportBase;
@@ -125,7 +125,7 @@ public abstract class MnistTestBase extends NotebookReportBase {
       network.wrap(new BiasLayer(28, 28, 1)).freeRef();
       network.wrap(new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{10})
           .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
-      network.wrap(new SoftmaxActivationLayer()).freeRef();
+      network.wrap(new SoftmaxLayer()).freeRef();
       return network;
     });
   }

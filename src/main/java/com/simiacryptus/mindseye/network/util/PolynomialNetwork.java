@@ -180,6 +180,7 @@ public class PolynomialNetwork extends DAGNetwork {
         }
       }
     }
+    head.addRef();
     return head;
   }
 
