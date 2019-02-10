@@ -21,9 +21,9 @@ package com.simiacryptus.mindseye.opt;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.mindseye.layers.MonitoringWrapperLayer;
 import com.simiacryptus.mindseye.layers.java.BiasLayer;
 import com.simiacryptus.mindseye.layers.java.FullyConnectedLayer;
-import com.simiacryptus.mindseye.layers.MonitoringWrapperLayer;
 import com.simiacryptus.mindseye.layers.java.SoftmaxLayer;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.PipelineNetwork;

@@ -22,9 +22,9 @@ package com.simiacryptus.mindseye.test;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
-import com.simiacryptus.mindseye.layers.StochasticComponent;
 import com.simiacryptus.mindseye.layers.LoggingWrapperLayer;
 import com.simiacryptus.mindseye.layers.MonitoringWrapperLayer;
+import com.simiacryptus.mindseye.layers.StochasticComponent;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.opt.Step;
@@ -936,7 +936,7 @@ public class TestUtil {
    * @return the string
    */
   public static String toString(final StackTraceElement[] stack) {
-    return toString(stack, "\n");
+    return Util.toString(stack, "\n");
   }
 
   /**
@@ -956,7 +956,7 @@ public class TestUtil {
    * @return the caller
    */
   public static CharSequence getCaller() {
-    return toString(getStackTrace(4));
+    return Util.toString(Util.getStackTrace(4));
   }
 
   /**
@@ -965,7 +965,7 @@ public class TestUtil {
    * @return the stack trace element [ ]
    */
   public static StackTraceElement[] getStackTrace() {
-    return getStackTrace(4);
+    return Util.getStackTrace(4);
   }
 
   /**

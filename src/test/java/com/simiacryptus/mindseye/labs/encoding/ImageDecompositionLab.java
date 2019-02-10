@@ -19,44 +19,6 @@
 
 package com.simiacryptus.mindseye.labs.encoding;
 
-import com.simiacryptus.mindseye.eval.ArrayTrainable;
-import com.simiacryptus.mindseye.eval.SampledArrayTrainable;
-import com.simiacryptus.mindseye.eval.SampledTrainable;
-import com.simiacryptus.mindseye.eval.TrainableDataMask;
-import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.lang.Tensor;
-import com.simiacryptus.mindseye.layers.cudnn.ActivationLayer;
-import com.simiacryptus.mindseye.layers.cudnn.conv.ConvolutionLayer;
-import com.simiacryptus.mindseye.layers.java.ImgBandBiasLayer;
-import com.simiacryptus.mindseye.layers.java.ImgCropLayer;
-import com.simiacryptus.mindseye.layers.java.RescaledSubnetLayer;
-import com.simiacryptus.mindseye.network.DAGNetwork;
-import com.simiacryptus.mindseye.network.PipelineNetwork;
-import com.simiacryptus.mindseye.opt.TrainingMonitor;
-import com.simiacryptus.mindseye.opt.ValidatingTrainer;
-import com.simiacryptus.mindseye.opt.line.QuadraticSearch;
-import com.simiacryptus.mindseye.opt.orient.GradientDescent;
-import com.simiacryptus.mindseye.opt.orient.QQN;
-import com.simiacryptus.mindseye.test.StepRecord;
-import com.simiacryptus.mindseye.test.TestUtil;
-import com.simiacryptus.notebook.MarkdownNotebookOutput;
-import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.util.Util;
-
-import javax.annotation.Nonnull;
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
 /**
  * The type Image encoding pca apply.
  */
