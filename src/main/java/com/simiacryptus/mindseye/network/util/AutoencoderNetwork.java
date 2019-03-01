@@ -127,9 +127,12 @@ public class AutoencoderNetwork {
    * @return the tensor list
    */
   public TensorList encode(@Nonnull final TensorList data) {
-    return encoder.getLayer()
-        .eval(ConstantResult.batchResultArray(data.stream().map(x -> new Tensor[]{x}).toArray(i -> new Tensor[i][])))
-        .getData();
+    Layer layer = encoder.getLayer();
+    TensorList tensorList = layer
+        .evalAndFree(ConstantResult.batchResultArray(data.stream().map(x -> new Tensor[]{x}).toArray(i -> new Tensor[i][])))
+        .getDataAndFree();
+    layer.freeRef();
+    return tensorList;
   }
 
   /**

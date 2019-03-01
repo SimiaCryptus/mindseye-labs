@@ -106,6 +106,14 @@ public class PolynomialNetwork extends DAGNetwork {
     });
   }
 
+  @Override
+  protected void _free() {
+    head.freeRef();
+    alpha.freeRef();
+    alphaBias.freeRef();
+    super._free();
+  }
+
   /**
    * From json polynomial network.
    *

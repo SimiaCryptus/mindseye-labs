@@ -97,6 +97,18 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
     mode = NodeMode.valueOf(json.get("mode").getAsString());
   }
 
+  @Override
+  protected void _free() {
+    head.freeRef();
+    alpha.freeRef();
+    alphaBias.freeRef();
+    beta.freeRef();
+    betaBias.freeRef();
+    gate.freeRef();
+    super._free();
+  }
+
+
   /**
    * Instantiates a new Sigmoid tree network.
    *
