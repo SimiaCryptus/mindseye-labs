@@ -37,6 +37,7 @@ import com.simiacryptus.notebook.TableOutput;
 import com.simiacryptus.util.test.LabeledObject;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.Graph;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -159,15 +160,15 @@ public class AutoencodingProblem implements Problem {
 
     log.h3("Network Diagrams");
     log.eval(() -> {
-      return Graphviz.fromGraph(TestUtil.toGraph(fwdNetwork))
+      return Graphviz.fromGraph((Graph) TestUtil.toGraph(fwdNetwork))
           .height(400).width(600).render(Format.PNG).toImage();
     });
     log.eval(() -> {
-      return Graphviz.fromGraph(TestUtil.toGraph(revNetwork))
+      return Graphviz.fromGraph((Graph) TestUtil.toGraph(revNetwork))
           .height(400).width(600).render(Format.PNG).toImage();
     });
     log.eval(() -> {
-      return Graphviz.fromGraph(TestUtil.toGraph(supervisedNetwork))
+      return Graphviz.fromGraph((Graph) TestUtil.toGraph(supervisedNetwork))
           .height(400).width(600).render(Format.PNG).toImage();
     });
 

@@ -33,6 +33,7 @@ import com.simiacryptus.util.Util;
 import com.simiacryptus.util.test.SysOutInterceptor;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.Graph;
 import org.junit.Test;
 
 import javax.annotation.Nonnull;
@@ -125,7 +126,7 @@ public abstract class NLayerTest {
     if (layer instanceof DAGNetwork) {
       log.p("This is a network apply the following layout:");
       log.eval(() -> {
-        return Graphviz.fromGraph(TestUtil.toGraph((DAGNetwork) layer))
+        return Graphviz.fromGraph((Graph) TestUtil.toGraph((DAGNetwork) layer))
             .height(400).width(600).render(Format.PNG).toImage();
       });
     }
