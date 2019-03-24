@@ -176,6 +176,7 @@ public abstract class PipelineTest {
       protected void printHeader(NotebookOutput log) {
         log.h1(header);
       }
+
       @Override
       protected Layer lossLayer() {
         return new MeanSqLossLayer();

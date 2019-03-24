@@ -52,13 +52,12 @@ public abstract class NLayerTest {
     SysOutInterceptor.INSTANCE.init();
   }
 
-
+  protected final String reportingFolder = "reports/_reports";
   /**
    * The Dim list.
    */
   @Nonnull
   final List<int[]> dimList;
-
 
   /**
    * Instantiates a new N key apply.
@@ -151,7 +150,6 @@ public abstract class NLayerTest {
     return Arrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random)).toArray(i -> new Tensor[i]);
   }
 
-  protected final String reportingFolder = "reports/_reports";
   /**
    * Test.
    *
@@ -195,7 +193,7 @@ public abstract class NLayerTest {
     @Nonnull final Layer component = layer.copy();
     final Tensor[] randomize = randomize(inputDims);
     new SerializationTest().test(log, component, randomize);
-    return new TrainingTester(){
+    return new TrainingTester() {
       @Override
       protected Layer lossLayer() {
         return new MeanSqLossLayer();
