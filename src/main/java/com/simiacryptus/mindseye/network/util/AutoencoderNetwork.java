@@ -288,8 +288,6 @@ public class AutoencoderNetwork {
 
           @Override
           public void onStepComplete(final Step currentPoint) {
-            inputNoise.shuffle();
-            encodedNoise.shuffle(StochasticComponent.random.get().nextLong());
             monitor.onStepComplete(currentPoint);
           }
         };
@@ -630,10 +628,6 @@ public class AutoencoderNetwork {
 
             @Override
             public void onStepComplete(final Step currentPoint) {
-              layers.forEach(layer -> {
-                layer.inputNoise.shuffle();
-                layer.encodedNoise.shuffle(StochasticComponent.random.get().nextLong());
-              });
               monitor.onStepComplete(currentPoint);
             }
           };
