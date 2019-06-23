@@ -39,15 +39,8 @@ import java.awt.*;
 import java.util.List;
 import java.util.function.Function;
 
-/**
- * We compare a variety of conventional "textbook" optimizer configurations against a standard optimization benchmarking
- * suite.
- */
 public class TextbookOptimizers extends OptimizerComparison {
 
-  /**
-   * The constant conjugate_gradient_descent.
-   */
   @Nonnull
   public static OptimizationStrategy conjugate_gradient_descent = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Conjugate Gradient Descent method:");
@@ -61,9 +54,6 @@ public class TextbookOptimizers extends OptimizerComparison {
       return trainer;
     });
   };
-  /**
-   * The constant limited_memory_bfgs.
-   */
   @Nonnull
   public static OptimizationStrategy limited_memory_bfgs = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Limited-Memory BFGS method:");
@@ -78,9 +68,6 @@ public class TextbookOptimizers extends OptimizerComparison {
       return trainer;
     });
   };
-  /**
-   * The constant orthantwise_quasi_newton.
-   */
   @Nonnull
   public static OptimizationStrategy orthantwise_quasi_newton = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Orthantwise Quasi-Newton search method:");
@@ -95,9 +82,6 @@ public class TextbookOptimizers extends OptimizerComparison {
       return trainer;
     });
   };
-  /**
-   * The constant simple_gradient_descent.
-   */
   @Nonnull
   public static OptimizationStrategy simple_gradient_descent = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Stochastic Gradient Descent method:");
@@ -113,9 +97,6 @@ public class TextbookOptimizers extends OptimizerComparison {
       return trainer;
     });
   };
-  /**
-   * The constant stochastic_gradient_descent.
-   */
   @Nonnull
   public static OptimizationStrategy stochastic_gradient_descent = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Stochastic Gradient Descent method apply momentum and adaptve learning rate:");
@@ -131,9 +112,6 @@ public class TextbookOptimizers extends OptimizerComparison {
     });
   };
 
-  /**
-   * Instantiates a new Compare textbook.
-   */
   public TextbookOptimizers() {
     super(MnistTests.fwd_conv_1, MnistTests.rev_conv_1, new MnistProblemData());
   }

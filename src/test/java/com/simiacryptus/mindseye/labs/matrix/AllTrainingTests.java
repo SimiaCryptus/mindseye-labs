@@ -31,60 +31,25 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 
-/**
- * The type All training tests.
- */
 public abstract class AllTrainingTests extends NotebookReportBase {
-  /**
-   * The Fwd factory.
-   */
   protected final FwdNetworkFactory fwdFactory;
-  /**
-   * The Optimization strategy.
-   */
   protected final OptimizationStrategy optimizationStrategy;
-  /**
-   * The Rev factory.
-   */
   protected final RevNetworkFactory revFactory;
-  /**
-   * The Timeout minutes.
-   */
   protected int timeoutMinutes = 10;
-  /**
-   * The Batch size.
-   */
   protected int batchSize = 1000;
 
-  /**
-   * Instantiates a new All training tests.
-   *
-   * @param fwdFactory           the fwd factory
-   * @param revFactory           the rev factory
-   * @param optimizationStrategy the optimization strategy
-   */
   public AllTrainingTests(final FwdNetworkFactory fwdFactory, final RevNetworkFactory revFactory, final OptimizationStrategy optimizationStrategy) {
     this.fwdFactory = fwdFactory;
     this.revFactory = revFactory;
     this.optimizationStrategy = optimizationStrategy;
   }
 
-  /**
-   * Autoencoder allocationOverflow.
-   *
-   * @param log the log
-   */
   public void autoencoder_test(@Nonnull NotebookOutput log) {
     log.h1(getDatasetName() + " Denoising Autoencoder");
     intro(log);
     new AutoencodingProblem(fwdFactory, optimizationStrategy, revFactory, getData(), 100, 0.8).setTimeoutMinutes(timeoutMinutes).run(log);
   }
 
-  /**
-   * Autoencoder apply.
-   *
-   * @throws IOException the io exception
-   */
   @Test
   @Ignore
   @Category(TestCategories.Report.class)
@@ -92,33 +57,18 @@ public abstract class AllTrainingTests extends NotebookReportBase {
     run(this::autoencoder_test, getClass().getSimpleName(), "Autoencoder");
   }
 
-  /**
-   * Classification allocationOverflow.
-   *
-   * @throws IOException the io exception
-   */
   @Test
   @Category(TestCategories.Report.class)
   public void classification_test() {
     run(this::classification_test, getClass().getSimpleName(), "Classification");
   }
 
-  /**
-   * Classification allocationOverflow.
-   *
-   * @param log the log
-   */
   public void classification_test(@Nonnull NotebookOutput log) {
     log.h1(getDatasetName() + " Denoising Autoencoder");
     intro(log);
     new ClassifyProblem(fwdFactory, optimizationStrategy, getData(), 100).setBatchSize(batchSize).setTimeoutMinutes(timeoutMinutes).run(log);
   }
 
-  /**
-   * Encoding allocationOverflow.
-   *
-   * @throws IOException the io exception
-   */
   @Test
   @Ignore
   @Category(TestCategories.Report.class)
@@ -126,11 +76,6 @@ public abstract class AllTrainingTests extends NotebookReportBase {
     run(this::encoding_test, getClass().getSimpleName(), "Encoding");
   }
 
-  /**
-   * Encoding allocationOverflow.
-   *
-   * @param log the log
-   */
   public void encoding_test(@Nonnull NotebookOutput log) {
     log.h1(getDatasetName() + " Image-to-Vector Encoding");
     intro(log);
@@ -148,26 +93,11 @@ public abstract class AllTrainingTests extends NotebookReportBase {
     log.p("_Optimization Strategy Javadoc_: " + optimizationStrategy_javadoc);
   }
 
-  /**
-   * Intro.
-   *
-   * @param log the log
-   */
   protected abstract void intro(NotebookOutput log);
 
-  /**
-   * Gets data.
-   *
-   * @return the data
-   */
   @Nonnull
   public abstract ImageProblemData getData();
 
-  /**
-   * Gets dataset name.
-   *
-   * @return the dataset name
-   */
   @Nonnull
   public abstract CharSequence getDatasetName();
 }

@@ -30,14 +30,8 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.function.IntToDoubleFunction;
 
-/**
- * The type Mnist apply base.
- */
 public class CaltechTests {
 
-  /**
-   * The constant fwd_conv_1.
-   */
   @Nonnull
   public static FwdNetworkFactory fwd_conv_1 = (log, features) -> {
     log.p("The png-to-vector network is a single key convolutional:");
@@ -77,9 +71,6 @@ public class CaltechTests {
     });
   };
 
-  /**
-   * The constant rev_conv_1.
-   */
   @Nonnull
   public static RevNetworkFactory rev_conv_1 = (log, features) -> {
     log.p("The vector-to-png network uses a fully connected key then a single convolutional key:");
@@ -124,19 +115,9 @@ public class CaltechTests {
     });
   };
 
-  /**
-   * Basic demonstratin problems involving the Caltech101 png dataset.
-   */
   public abstract static class All_Caltech_Tests extends AllTrainingTests {
 
 
-    /**
-     * Instantiates a new All tests.
-     *
-     * @param optimizationStrategy the optimization strategy
-     * @param revFactory           the rev factory
-     * @param fwdFactory           the fwd factory
-     */
     public All_Caltech_Tests(final OptimizationStrategy optimizationStrategy, final RevNetworkFactory revFactory, final FwdNetworkFactory fwdFactory) {
       super(fwdFactory, revFactory, optimizationStrategy);
       batchSize = 10;
@@ -168,13 +149,7 @@ public class CaltechTests {
 
   }
 
-  /**
-   * Basic demonstration problems involving the Caltech101 png dataset and Quadratic Quasi-Newton optimizer
-   */
   public static class QQN extends All_Caltech_Tests {
-    /**
-     * Instantiates a new Qqn.
-     */
     public QQN() {
       super(Research.quadratic_quasi_newton, CaltechTests.rev_conv_1, CaltechTests.fwd_conv_1);
     }

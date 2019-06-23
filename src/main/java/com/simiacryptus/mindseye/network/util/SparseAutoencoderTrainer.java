@@ -29,47 +29,17 @@ import com.simiacryptus.mindseye.network.SupervisedNetwork;
 
 import javax.annotation.Nonnull;
 
-/**
- * The type Sparse autoencoder trainer.
- */
 @SuppressWarnings("serial")
 public class SparseAutoencoderTrainer extends SupervisedNetwork {
 
-  /**
-   * The Decoder.
-   */
   public final DAGNode decoder;
-  /**
-   * The Encoder.
-   */
   public final DAGNode encoder;
-  /**
-   * The Loss.
-   */
   public final DAGNode loss;
-  /**
-   * The Sparsity.
-   */
   public final DAGNode sparsity;
-  /**
-   * The Sparsity throttle key.
-   */
   public final DAGNode sparsityThrottleLayer;
-  /**
-   * The Sum fitness key.
-   */
   public final DAGNode sumFitnessLayer;
-  /**
-   * The Sum sparsity key.
-   */
   public final DAGNode sumSparsityLayer;
 
-  /**
-   * Instantiates a new Sparse autoencoder trainer.
-   *
-   * @param encoder the encoder
-   * @param decoder the decoder
-   */
   public SparseAutoencoderTrainer(@Nonnull final Layer encoder, @Nonnull final Layer decoder) {
     super(1);
     this.encoder = add(encoder, getInput(0));

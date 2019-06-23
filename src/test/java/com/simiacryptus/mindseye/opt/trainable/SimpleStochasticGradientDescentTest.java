@@ -34,9 +34,6 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
-/**
- * The type Simple stochastic gradient descent apply.
- */
 public class SimpleStochasticGradientDescentTest extends MnistTestBase {
 
   @Override

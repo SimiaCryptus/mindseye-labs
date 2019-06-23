@@ -32,57 +32,25 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Function;
 
-/**
- * The type Optimizer comparison.
- */
 public abstract class OptimizerComparison extends NotebookReportBase {
 
-  /**
-   * The Data.
-   */
   protected ImageProblemData data;
-  /**
-   * The Fwd factory.
-   */
   protected FwdNetworkFactory fwdFactory;
-  /**
-   * The Rev factory.
-   */
   protected RevNetworkFactory revFactory;
-  /**
-   * The Timeout minutes.
-   */
   protected int timeoutMinutes = 10;
 
-  /**
-   * Instantiates a new Optimizer comparison.
-   *
-   * @param fwdFactory the fwd factory
-   * @param revFactory the rev factory
-   * @param data       the data
-   */
   public OptimizerComparison(final FwdNetworkFactory fwdFactory, final RevNetworkFactory revFactory, final ImageProblemData data) {
     this.fwdFactory = fwdFactory;
     this.revFactory = revFactory;
     this.data = data;
   }
 
-  /**
-   * Classification comparison.
-   *
-   * @throws IOException the io exception
-   */
   @Test
   @Category(TestCategories.Report.class)
   public void classification() {
     run(this::classification, getClass().getSimpleName(), "Classification");
   }
 
-  /**
-   * Classification.
-   *
-   * @param log the log
-   */
   public void classification(@Nonnull NotebookOutput log) {
     compare(log, opt -> {
       return new ClassifyProblem(fwdFactory, opt, data, 10)
@@ -90,31 +58,15 @@ public abstract class OptimizerComparison extends NotebookReportBase {
     });
   }
 
-  /**
-   * Compare.
-   *
-   * @param log  the log
-   * @param test the apply
-   */
   public abstract void compare(NotebookOutput log, Function<OptimizationStrategy, List<StepRecord>> test);
 
 
-  /**
-   * Classification comparison.
-   *
-   * @throws IOException the io exception
-   */
   @Test
   @Category(TestCategories.Report.class)
   public void encoding() {
     run(this::encoding, getClass().getSimpleName(), "Encoding");
   }
 
-  /**
-   * Encoding.
-   *
-   * @param log the log
-   */
   public void encoding(@Nonnull NotebookOutput log) {
     compare(log, opt -> {
       return new EncodingProblem(revFactory, opt, data, 20)
@@ -122,21 +74,10 @@ public abstract class OptimizerComparison extends NotebookReportBase {
     });
   }
 
-  /**
-   * Gets timeout minutes.
-   *
-   * @return the timeout minutes
-   */
   public int getTimeoutMinutes() {
     return timeoutMinutes;
   }
 
-  /**
-   * Sets timeout minutes.
-   *
-   * @param timeoutMinutes the timeout minutes
-   * @return the timeout minutes
-   */
   @Nonnull
   public OptimizerComparison setTimeoutMinutes(final int timeoutMinutes) {
     this.timeoutMinutes = timeoutMinutes;

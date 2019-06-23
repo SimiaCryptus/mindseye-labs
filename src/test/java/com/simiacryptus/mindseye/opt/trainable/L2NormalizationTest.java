@@ -34,9 +34,6 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
-/**
- * The type L 2 normalization apply.
- */
 public class L2NormalizationTest extends MnistTestBase {
 
   @Override

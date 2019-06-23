@@ -43,14 +43,8 @@ import java.awt.*;
 import java.util.List;
 import java.util.function.Function;
 
-/**
- * We compare some traditional baseline optimizers against proprietary MindsEye optimization components.
- */
 public class Research extends OptimizerComparison {
 
-  /**
-   * The constant quadratic_quasi_newton.
-   */
   @Nonnull
   public static OptimizationStrategy recursive_subspace = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Recursive Subspace method:");
@@ -69,9 +63,6 @@ public class Research extends OptimizerComparison {
       return trainer;
     });
   };
-  /**
-   * The constant recursive_subspace_2.
-   */
   @Nonnull
   public static OptimizationStrategy recursive_subspace_2 = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Recursive Subspace method:");
@@ -103,9 +94,6 @@ public class Research extends OptimizerComparison {
     });
   };
 
-  /**
-   * The constant quadratic_quasi_newton.
-   */
   @Nonnull
   public static OptimizationStrategy quadratic_quasi_newton = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Quadratic Quasi-Newton method:");
@@ -121,9 +109,6 @@ public class Research extends OptimizerComparison {
     });
   };
 
-  /**
-   * The constant limited_memory_bfgs.
-   */
   @Nonnull
   public static OptimizationStrategy limited_memory_bfgs = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Limited-Memory BFGS method:");
@@ -139,9 +124,6 @@ public class Research extends OptimizerComparison {
     });
   };
 
-  /**
-   * Instantiates a new Compare qqn.
-   */
   public Research() {
     super(MnistTests.fwd_conv_1, MnistTests.rev_conv_1, new MnistProblemData());
   }

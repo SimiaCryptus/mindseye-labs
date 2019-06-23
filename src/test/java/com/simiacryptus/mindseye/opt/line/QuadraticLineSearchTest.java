@@ -34,9 +34,6 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
-/**
- * The type Quadratic line search apply.
- */
 public class QuadraticLineSearchTest extends MnistTestBase {
 
   @Override

@@ -19,12 +19,6 @@
 
 package com.simiacryptus.mindseye.network.util;
 
-/**
- * The interface Evolving network.
- */
 public interface EvolvingNetwork {
-  /**
-   * Next phase.
-   */
   void nextPhase();
 }

@@ -32,14 +32,8 @@ import com.simiacryptus.notebook.NotebookOutput;
 
 import javax.annotation.Nonnull;
 
-/**
- * The type Mnist apply base.
- */
 public class CifarTests {
 
-  /**
-   * The constant fwd_conv_1.
-   */
   @Nonnull
   public static FwdNetworkFactory fwd_conv_1 = (log, features) -> {
     log.p("The png-to-vector network is a single key convolutional:");
@@ -55,9 +49,6 @@ public class CifarTests {
       return network;
     });
   };
-  /**
-   * The constant fwd_linear_1.
-   */
   @Nonnull
   public static FwdNetworkFactory fwd_linear_1 = (log, features) -> {
     log.p("The png-to-vector network is a single key, fully connected:");
@@ -70,9 +61,6 @@ public class CifarTests {
       return network;
     });
   };
-  /**
-   * The constant rev_conv_1.
-   */
   @Nonnull
   public static RevNetworkFactory rev_conv_1 = (log, features) -> {
     log.p("The vector-to-png network uses a fully connected key then a single convolutional key:");
@@ -88,9 +76,6 @@ public class CifarTests {
       return network;
     });
   };
-  /**
-   * The constant rev_linear_1.
-   */
   @Nonnull
   public static RevNetworkFactory rev_linear_1 = (log, features) -> {
     log.p("The vector-to-png network is a single fully connected key:");
@@ -103,17 +88,7 @@ public class CifarTests {
     });
   };
 
-  /**
-   * The type All cifar tests.
-   */
   public abstract static class All_CIFAR_Tests extends AllTrainingTests {
-    /**
-     * Instantiates a new All tests.
-     *
-     * @param optimizationStrategy the optimization strategy
-     * @param revFactory           the rev factory
-     * @param fwdFactory           the fwd factory
-     */
     public All_CIFAR_Tests(final OptimizationStrategy optimizationStrategy, final RevNetworkFactory revFactory, final FwdNetworkFactory fwdFactory) {
       super(fwdFactory, revFactory, optimizationStrategy);
     }
@@ -143,13 +118,7 @@ public class CifarTests {
     }
   }
 
-  /**
-   * Owls are deadly and silent forest raptors. HOOT! HOOT!
-   */
   public static class OWL_QN extends All_CIFAR_Tests {
-    /**
-     * Instantiates a new Owl qn.
-     */
     public OWL_QN() {
       super(TextbookOptimizers.orthantwise_quasi_newton, CifarTests.rev_conv_1, CifarTests.fwd_conv_1);
     }
@@ -160,13 +129,7 @@ public class CifarTests {
     }
   }
 
-  /**
-   * Quadratic Quasi-Newton optimization applied to basic problems apply the CIFAR10 png dataset.
-   */
   public static class QQN extends All_CIFAR_Tests {
-    /**
-     * Instantiates a new Qqn.
-     */
     public QQN() {
       super(Research.quadratic_quasi_newton, CifarTests.rev_conv_1, CifarTests.fwd_conv_1);
     }
@@ -178,13 +141,7 @@ public class CifarTests {
 
   }
 
-  /**
-   * Classic Stochastic Gradient Descent optimization applied to basic problems apply the CIFAR10 png dataset.
-   */
   public static class SGD extends All_CIFAR_Tests {
-    /**
-     * Instantiates a new Sgd.
-     */
     public SGD() {
       super(TextbookOptimizers.stochastic_gradient_descent, CifarTests.rev_linear_1, CifarTests.fwd_linear_1);
     }

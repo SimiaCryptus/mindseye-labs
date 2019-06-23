@@ -30,13 +30,7 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.function.DoubleSupplier;
 
-/**
- * The type Mnist apply base.
- */
 public class MnistTests {
-  /**
-   * The constant fwd_conv_1.
-   */
   @Nonnull
   public static FwdNetworkFactory fwd_conv_1 = (log, features) -> {
     log.p("The png-to-vector network is a single key convolutional:");
@@ -62,9 +56,6 @@ public class MnistTests {
     });
   };
 
-  /**
-   * The constant fwd_conv_1_n.
-   */
   @Nonnull
   public static FwdNetworkFactory fwd_conv_1_n = (log, features) -> {
     log.p("The png-to-vector network is a single key convolutional:");
@@ -98,9 +89,6 @@ public class MnistTests {
     });
   };
 
-  /**
-   * The constant fwd_linear_1.
-   */
   @Nonnull
   public static FwdNetworkFactory fwd_linear_1 = (log, features) -> {
     log.p("The png-to-vector network is a single key, fully connected:");
@@ -113,9 +101,6 @@ public class MnistTests {
       return network;
     });
   };
-  /**
-   * The constant rev_conv_1.
-   */
   @Nonnull
   public static RevNetworkFactory rev_conv_1 = (log, features) -> {
     log.p("The vector-to-png network uses a fully connected key then a single convolutional key:");
@@ -143,9 +128,6 @@ public class MnistTests {
       return network;
     });
   };
-  /**
-   * The constant rev_linear_1.
-   */
   @Nonnull
   public static RevNetworkFactory rev_linear_1 = (log, features) -> {
     log.p("The vector-to-png network is a single fully connected key:");
@@ -159,17 +141,7 @@ public class MnistTests {
   };
 
 
-  /**
-   * The type All mnist tests.
-   */
   public abstract static class All_MNIST_Tests extends AllTrainingTests {
-    /**
-     * Instantiates a new All tests.
-     *
-     * @param optimizationStrategy the optimization strategy
-     * @param revFactory           the rev factory
-     * @param fwdFactory           the fwd factory
-     */
     public All_MNIST_Tests(final OptimizationStrategy optimizationStrategy, final RevNetworkFactory revFactory, final FwdNetworkFactory fwdFactory) {
       super(fwdFactory, revFactory, optimizationStrategy);
     }
@@ -200,13 +172,7 @@ public class MnistTests {
 
   }
 
-  /**
-   * Owls are to be respected and feared. HOOT!
-   */
   public static class OWL_QN extends All_MNIST_Tests {
-    /**
-     * Instantiates a new Owl qn.
-     */
     public OWL_QN() {
       super(TextbookOptimizers.orthantwise_quasi_newton, MnistTests.rev_conv_1, MnistTests.fwd_conv_1);
     }
@@ -217,13 +183,7 @@ public class MnistTests {
     }
   }
 
-  /**
-   * Quadraic Quasi-Newton handwriting recognition.
-   */
   public static class QQN extends All_MNIST_Tests {
-    /**
-     * Instantiates a new Qqn.
-     */
     public QQN() {
       super(Research.quadratic_quasi_newton, MnistTests.rev_conv_1, MnistTests.fwd_conv_1);
     }
@@ -235,13 +195,7 @@ public class MnistTests {
 
   }
 
-  /**
-   * Stochastic Gradient Descent applied to Handwriting Recognition!
-   */
   public static class SGD extends All_MNIST_Tests {
-    /**
-     * Instantiates a new Sgd.
-     */
     public SGD() {
       super(TextbookOptimizers.stochastic_gradient_descent, MnistTests.rev_linear_1, MnistTests.fwd_linear_1);
     }

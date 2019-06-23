@@ -41,41 +41,19 @@ import java.util.Arrays;
 import java.util.List;
 
 
-/**
- * The type N key apply.
- */
 public abstract class PipelineTest {
 
-  /**
-   * The Dim list.
-   */
   final List<Layer> pipeline;
 
 
-  /**
-   * Instantiates a new N key apply.
-   *
-   * @param pipeline the pipeline
-   */
   public PipelineTest(final List<Layer> pipeline) {
     this.pipeline = pipeline;
   }
 
-  /**
-   * Instantiates a new Pipeline apply.
-   *
-   * @param pipeline the pipeline
-   */
   public PipelineTest(final Layer... pipeline) {
     this(Arrays.asList(pipeline));
   }
 
-  /**
-   * Build network nn key.
-   *
-   * @param layers the length list
-   * @return the nn key
-   */
   @Nonnull
   public Layer buildNetwork(@Nonnull final Layer... layers) {
     @Nonnull final PipelineNetwork network = new PipelineNetwork(1);
@@ -85,20 +63,9 @@ public abstract class PipelineTest {
     return network;
   }
 
-  /**
-   * Get input dims int [ ] [ ].
-   *
-   * @return the int [ ] [ ]
-   */
   @Nonnull
   public abstract int[] getInputDims();
 
-  /**
-   * Graphviz.
-   *
-   * @param log   the log
-   * @param layer the key
-   */
   public void graphviz(@Nonnull final NotebookOutput log, final Layer layer) {
     if (layer instanceof DAGNetwork) {
       log.p("This is a network apply the following layout:");
@@ -109,30 +76,14 @@ public abstract class PipelineTest {
     }
   }
 
-  /**
-   * Random double.
-   *
-   * @return the double
-   */
   public double random() {
     return Math.round(1000.0 * (Util.R.get().nextDouble() - 0.5)) / 250.0;
   }
 
-  /**
-   * Random tensor [ ].
-   *
-   * @param inputDims the input dims
-   * @return the tensor [ ]
-   */
   public Tensor[] randomize(@Nonnull final int[][] inputDims) {
     return Arrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random)).toArray(i -> new Tensor[i]);
   }
 
-  /**
-   * Test.
-   *
-   * @throws Throwable the throwable
-   */
   @Test
   public void test() throws Throwable {
     try (@Nonnull NotebookOutput log = MarkdownNotebookOutput.get(NotebookReportBase.getTestReportLocation(((Object) this).getClass(), "reports/_reports"))) {
@@ -140,11 +91,6 @@ public abstract class PipelineTest {
     }
   }
 
-  /**
-   * Test.
-   *
-   * @param log the log
-   */
   public void test(@Nonnull final NotebookOutput log) {
     @Nonnull final ArrayList<Layer> workingSpec = new ArrayList<>();
     int layerIndex = 0;
@@ -156,15 +102,6 @@ public abstract class PipelineTest {
     }
   }
 
-  /**
-   * Test double.
-   *
-   * @param log       the log
-   * @param layer     the key
-   * @param header    the header
-   * @param inputDims the input dims
-   * @return the double
-   */
   @Nullable
   public TrainingTester.ComponentResult test(@Nonnull final NotebookOutput log, @Nonnull final Layer layer, final String header, @Nonnull final int[]... inputDims) {
     @Nonnull final Layer component = layer.copy();

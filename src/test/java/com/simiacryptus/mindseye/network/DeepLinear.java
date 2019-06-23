@@ -28,16 +28,8 @@ import com.simiacryptus.util.Util;
 
 import javax.annotation.Nonnull;
 
-/**
- * The type Convolution network apply.
- */
 public abstract class DeepLinear extends NLayerTest {
 
-  /**
-   * Instantiates a new Linear depth.
-   *
-   * @param dimList the length list
-   */
   public DeepLinear(final int[]... dimList) {
     super(dimList);
   }
@@ -49,11 +41,6 @@ public abstract class DeepLinear extends NLayerTest {
     network.wrap(getActivation()).freeRef();
   }
 
-  /**
-   * Gets activation.
-   *
-   * @return the activation
-   */
   @Nonnull
   public Layer getActivation() {
     return new ReLuActivationLayer();
@@ -70,13 +57,7 @@ public abstract class DeepLinear extends NLayerTest {
     return 0.1 * Math.round(1000.0 * (Util.R.get().nextDouble() - 0.5)) / 500.0;
   }
 
-  /**
-   * The type Four key.
-   */
   public static class NarrowingPipeline extends DeepLinear {
-    /**
-     * Instantiates a new Four key.
-     */
     public NarrowingPipeline() {
       super(
           new int[]{4, 4, 2},
@@ -88,13 +69,7 @@ public abstract class DeepLinear extends NLayerTest {
 
   }
 
-  /**
-   * The type Four key.
-   */
   public static class SigmoidPipeline extends DeepLinear {
-    /**
-     * Instantiates a new Four key.
-     */
     public SigmoidPipeline() {
       super(
           new int[]{10},
@@ -112,13 +87,7 @@ public abstract class DeepLinear extends NLayerTest {
 
   }
 
-  /**
-   * The type Four key.
-   */
   public static class UniformPipeline extends DeepLinear {
-    /**
-     * Instantiates a new Four key.
-     */
     public UniformPipeline() {
       super(
           new int[]{10},

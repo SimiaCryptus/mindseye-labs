@@ -43,45 +43,21 @@ import java.util.List;
 import java.util.stream.Stream;
 
 
-/**
- * The type N key apply.
- */
 public abstract class NLayerTest {
   static {
     SysOutInterceptor.INSTANCE.init();
   }
 
   protected final String reportingFolder = "reports/_reports";
-  /**
-   * The Dim list.
-   */
   @Nonnull
   final List<int[]> dimList;
 
-  /**
-   * Instantiates a new N key apply.
-   *
-   * @param dimList the length list
-   */
   public NLayerTest(final int[]... dimList) {
     this.dimList = Arrays.asList(dimList);
   }
 
-  /**
-   * Add key.
-   *
-   * @param network the network
-   * @param in      the in
-   * @param out     the dims
-   */
   public abstract void addLayer(PipelineNetwork network, int[] in, int[] out);
 
-  /**
-   * Build network nn key.
-   *
-   * @param dimList the length list
-   * @return the nn key
-   */
   @Nonnull
   public Layer buildNetwork(@Nonnull final int[]... dimList) {
     @Nonnull final PipelineNetwork network = new PipelineNetwork(1);
@@ -95,31 +71,13 @@ public abstract class NLayerTest {
     return network;
   }
 
-  /**
-   * Concat int [ ] [ ].
-   *
-   * @param a the a
-   * @param b the b
-   * @return the int [ ] [ ]
-   */
   public int[][] concat(final int[] a, @Nonnull final List<int[]> b) {
     return Stream.concat(Stream.of(a), b.stream()).toArray(i -> new int[i][]);
   }
 
-  /**
-   * Get input dims int [ ] [ ].
-   *
-   * @return the int [ ] [ ]
-   */
   @Nonnull
   public abstract int[] getInputDims();
 
-  /**
-   * Graphviz.
-   *
-   * @param log   the log
-   * @param layer the key
-   */
   public void graphviz(@Nonnull final NotebookOutput log, final Layer layer) {
     if (layer instanceof DAGNetwork) {
       log.p("This is a network apply the following layout:");
@@ -130,30 +88,14 @@ public abstract class NLayerTest {
     }
   }
 
-  /**
-   * Random double.
-   *
-   * @return the double
-   */
   public double random() {
     return Math.round(1000.0 * (Util.R.get().nextDouble() - 0.5)) / 250.0;
   }
 
-  /**
-   * Random tensor [ ].
-   *
-   * @param inputDims the input dims
-   * @return the tensor [ ]
-   */
   public Tensor[] randomize(@Nonnull final int[][] inputDims) {
     return Arrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random)).toArray(i -> new Tensor[i]);
   }
 
-  /**
-   * Test.
-   *
-   * @throws Throwable the throwable
-   */
   @Test
   public void test() throws Throwable {
     try (@Nonnull NotebookOutput log = MarkdownNotebookOutput.get(NotebookReportBase.getTestReportLocation(((Object) this).getClass(), reportingFolder))) {
@@ -161,11 +103,6 @@ public abstract class NLayerTest {
     }
   }
 
-  /**
-   * Test.
-   *
-   * @param log the log
-   */
   public void test(@Nonnull final NotebookOutput log) {
 
     log.h1("%s", getClass().getSimpleName());
@@ -179,14 +116,6 @@ public abstract class NLayerTest {
     }
   }
 
-  /**
-   * Test double.
-   *
-   * @param log       the log
-   * @param layer     the key
-   * @param inputDims the input dims
-   * @return the double
-   */
   @Nullable
   public TrainingTester.ComponentResult test(@Nonnull final NotebookOutput log, @Nonnull final Layer layer, @Nonnull final int[]... inputDims) {
     @Nonnull final Layer component = layer.copy();

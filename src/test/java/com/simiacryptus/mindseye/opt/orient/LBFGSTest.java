@@ -34,9 +34,6 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
-/**
- * The type Lbfgs apply.
- */
 public class LBFGSTest extends MnistTestBase {
 
   @Override

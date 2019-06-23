@@ -36,46 +36,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-/**
- * The type Polynomial network.
- */
 @SuppressWarnings("serial")
 public class PolynomialNetwork extends DAGNetwork {
 
-  /**
-   * The Input dims.
-   */
   protected final int[] inputDims;
-  /**
-   * The Output dims.
-   */
   protected final int[] outputDims;
-  /**
-   * The Alpha.
-   */
   @Nullable
   protected Layer alpha = null;
-  /**
-   * The Alpha bias.
-   */
   @Nullable
   protected Layer alphaBias = null;
-  /**
-   * The Corrections.
-   */
   @Nonnull
   protected List<Correcton> corrections = new ArrayList<>();
-  /**
-   * The Head.
-   */
   protected DAGNode head;
 
-  /**
-   * Instantiates a new Polynomial network.
-   *
-   * @param inputDims  the input dims
-   * @param outputDims the output dims
-   */
   public PolynomialNetwork(final int[] inputDims, final int[] outputDims) {
     super(1);
     this.inputDims = inputDims;
@@ -83,12 +56,6 @@ public class PolynomialNetwork extends DAGNetwork {
   }
 
 
-  /**
-   * Instantiates a new Polynomial network.
-   *
-   * @param json the json
-   * @param rs   the rs
-   */
   protected PolynomialNetwork(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     head = getNodeById(UUID.fromString(json.get("head").getAsString()));
@@ -106,23 +73,10 @@ public class PolynomialNetwork extends DAGNetwork {
     });
   }
 
-  /**
-   * From json polynomial network.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the polynomial network
-   */
   public static PolynomialNetwork fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new PolynomialNetwork(json, rs);
   }
 
-  /**
-   * To int array int [ ].
-   *
-   * @param dims the dims
-   * @return the int [ ]
-   */
   @Nonnull
   public static int[] toIntArray(@Nonnull final JsonArray dims) {
     @Nonnull final int[] x = new int[dims.size()];
@@ -133,12 +87,6 @@ public class PolynomialNetwork extends DAGNetwork {
     return x;
   }
 
-  /**
-   * To json json array.
-   *
-   * @param dims the dims
-   * @return the json array
-   */
   @Nonnull
   public static JsonArray toJson(@Nonnull final int[] dims) {
     @Nonnull final JsonArray array = new JsonArray();
@@ -156,11 +104,6 @@ public class PolynomialNetwork extends DAGNetwork {
     super._free();
   }
 
-  /**
-   * Add term.
-   *
-   * @param power the power
-   */
   public void addTerm(final double power) {
     corrections.add(new Correcton(power,
         newBias(outputDims, 1.0),
@@ -215,85 +158,37 @@ public class PolynomialNetwork extends DAGNetwork {
     return json;
   }
 
-  /**
-   * New bias nn key.
-   *
-   * @param dims   the dims
-   * @param weight the weight
-   * @return the nn key
-   */
   @Nonnull
   public Layer newBias(final int[] dims, final double weight) {
     return new BiasLayer(dims).setWeights(i -> weight);
   }
 
-  /**
-   * New nth power key nn key.
-   *
-   * @param power the power
-   * @return the nn key
-   */
   @Nonnull
   public Layer newNthPowerLayer(final double power) {
     return new NthPowerActivationLayer().setPower(power);
   }
 
-  /**
-   * New product key nn key.
-   *
-   * @return the nn key
-   */
   @Nonnull
   public Layer newProductLayer() {
     return new ProductInputsLayer();
   }
 
-  /**
-   * New synapse nn key.
-   *
-   * @param weight the weight
-   * @return the nn key
-   */
   @Nonnull
   public Layer newSynapse(final double weight) {
     return new FullyConnectedLayer(inputDims, outputDims).set(() -> weight * (Math.random() - 1));
   }
 
-  /**
-   * The type Correcton.
-   */
   public class Correcton {
-    /**
-     * The Bias.
-     */
     public final Layer bias;
-    /**
-     * The Factor.
-     */
     public final Layer factor;
-    /**
-     * The Power.
-     */
     public final double power;
 
-    /**
-     * Instantiates a new Correcton.
-     *
-     * @param power  the power
-     * @param bias   the bias
-     * @param factor the factor
-     */
     public Correcton(final double power, final Layer bias, final Layer factor) {
       this.power = power;
       this.bias = bias;
       this.factor = factor;
     }
 
-    /**
-     * Instantiates a new Correcton.
-     *
-     * @param json the json
-     */
     public Correcton(@Nonnull final JsonObject json) {
       power = json.get("power").getAsDouble();
       Map<UUID, Layer> layersById = getLayersById();
@@ -301,21 +196,10 @@ public class PolynomialNetwork extends DAGNetwork {
       factor = layersById.get(UUID.fromString(json.get("factor").getAsString()));
     }
 
-    /**
-     * Add dag node.
-     *
-     * @param input the input
-     * @return the dag node
-     */
     public DAGNode add(final DAGNode input) {
       return PolynomialNetwork.this.add(newNthPowerLayer(power), PolynomialNetwork.this.add(bias, PolynomialNetwork.this.add(factor, input)));
     }
 
-    /**
-     * Gets json.
-     *
-     * @return the json
-     */
     @Nonnull
     public JsonObject getJson() {
       @Nonnull final JsonObject json = new JsonObject();

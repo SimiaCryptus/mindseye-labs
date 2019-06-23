@@ -34,9 +34,6 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
-/**
- * The type Linear sum constraint apply.
- */
 public class LinearSumConstraintTest extends MnistTestBase {
 
   @Override

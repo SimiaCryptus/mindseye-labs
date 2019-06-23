@@ -33,17 +33,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * The type Sigmoid tree network.
- */
 @SuppressWarnings("serial")
 public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
 
 
   private final boolean multigate = false;
-  /**
-   * The Initial fuzzy coeff.
-   */
   double initialFuzzyCoeff = 1e-8;
   @Nullable
   private Layer alpha = null;
@@ -64,12 +58,6 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
   private boolean skipChildStage = true;
   private boolean skipFuzzy = false;
 
-  /**
-   * Instantiates a new Sigmoid tree network.
-   *
-   * @param json the json
-   * @param rs   the rs
-   */
   protected SigmoidTreeNetwork(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     head = getNodeById(UUID.fromString(json.get("head").getAsString()));
@@ -97,12 +85,6 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
     mode = NodeMode.valueOf(json.get("mode").getAsString());
   }
 
-  /**
-   * Instantiates a new Sigmoid tree network.
-   *
-   * @param alpha     the alphaList
-   * @param alphaBias the alphaList bias
-   */
   public SigmoidTreeNetwork(final Layer alpha, final Layer alphaBias) {
     super(1);
     this.alpha = alpha;
@@ -110,13 +92,6 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
     mode = NodeMode.Linear;
   }
 
-  /**
-   * From json sigmoid tree network.
-   *
-   * @param json the json
-   * @param rs   the rs
-   * @return the sigmoid tree network
-   */
   public static SigmoidTreeNetwork fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SigmoidTreeNetwork(json, rs);
   }
@@ -132,12 +107,6 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
     super._free();
   }
 
-  /**
-   * Copy state.
-   *
-   * @param from the from
-   * @param to   the to
-   */
   public void copyState(@Nonnull final Layer from, @Nonnull final Layer to) {
     @Nullable final List<double[]> alphaState = from.state();
     @Nullable final List<double[]> betaState = to.state();
@@ -235,31 +204,15 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
     return json;
   }
 
-  /**
-   * Gets mode.
-   *
-   * @return the mode
-   */
   @Nullable
   public NodeMode getMode() {
     return mode;
   }
 
-  /**
-   * Is skip fuzzy boolean.
-   *
-   * @return the boolean
-   */
   public boolean isSkipFuzzy() {
     return skipFuzzy;
   }
 
-  /**
-   * Sets skip fuzzy.
-   *
-   * @param skipFuzzy the skip fuzzy
-   * @return the skip fuzzy
-   */
   @Nonnull
   public SigmoidTreeNetwork setSkipFuzzy(final boolean skipFuzzy) {
     this.skipFuzzy = skipFuzzy;
@@ -315,46 +268,20 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
     }
   }
 
-  /**
-   * Sets skip child stage.
-   *
-   * @param skipChildStage the skip child stage
-   * @return the skip child stage
-   */
   @Nonnull
   public SigmoidTreeNetwork setSkipChildStage(final boolean skipChildStage) {
     this.skipChildStage = skipChildStage;
     return this;
   }
 
-  /**
-   * Skip child stage boolean.
-   *
-   * @return the boolean
-   */
   public boolean skipChildStage() {
     return skipChildStage;
   }
 
-  /**
-   * The enum Node mode.
-   */
   public enum NodeMode {
-    /**
-     * Bilinear node mode.
-     */
     Bilinear,
-    /**
-     * Final node mode.
-     */
     Final,
-    /**
-     * Fuzzy node mode.
-     */
     Fuzzy,
-    /**
-     * Linear node mode.
-     */
     Linear
   }
 

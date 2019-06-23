@@ -49,22 +49,11 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.IntStream;
 
-/**
- * The type Mnist apply base.
- */
 public abstract class MnistTestBase extends NotebookReportBase {
   private static final Logger log = LoggerFactory.getLogger(MnistTestBase.class);
 
-  /**
-   * The Model no.
-   */
   int modelNo = 0;
 
-  /**
-   * Test.
-   *
-   * @throws IOException the io exception
-   */
   @Test
   @Category(TestCategories.Report.class)
   public void test() {
@@ -77,11 +66,6 @@ public abstract class MnistTestBase extends NotebookReportBase {
     return ReportType.Optimizers;
   }
 
-  /**
-   * Run.
-   *
-   * @param log the log
-   */
   public void run(@Nonnull NotebookOutput log) {
     @Nonnull final List<Step> history = new ArrayList<>();
     @Nonnull final MonitoredObject monitoringRoot = new MonitoredObject();
@@ -96,12 +80,6 @@ public abstract class MnistTestBase extends NotebookReportBase {
     removeMonitoring(network);
   }
 
-  /**
-   * Add monitoring.
-   *
-   * @param network        the network
-   * @param monitoringRoot the monitoring root
-   */
   public void addMonitoring(@Nonnull final DAGNetwork network, @Nonnull final MonitoredObject monitoringRoot) {
     network.visitNodes(node -> {
       if (!(node.getLayer() instanceof MonitoringWrapperLayer)) {
@@ -110,12 +88,6 @@ public abstract class MnistTestBase extends NotebookReportBase {
     });
   }
 
-  /**
-   * Build model dag network.
-   *
-   * @param log the log
-   * @return the dag network
-   */
   public DAGNetwork buildModel(@Nonnull final NotebookOutput log) {
     log.h1("Model");
     log.p("This is a very simple model that performs basic logistic regression. " +
@@ -130,12 +102,6 @@ public abstract class MnistTestBase extends NotebookReportBase {
     });
   }
 
-  /**
-   * Get training data tensor [ ] [ ].
-   *
-   * @param log the log
-   * @return the tensor [ ] [ ]
-   */
   public Tensor[][] getTrainingData(final NotebookOutput log) {
     Tensor[][] tensors = MNIST.trainingDataStream().map(labeledObject -> {
       @Nonnull final Tensor categoryTensor = new Tensor(10);
@@ -146,33 +112,15 @@ public abstract class MnistTestBase extends NotebookReportBase {
     return tensors;
   }
 
-  /**
-   * Parse int.
-   *
-   * @param label the label
-   * @return the int
-   */
   public int parse(@Nonnull final String label) {
     return Integer.parseInt(label.replaceAll("[^\\d]", ""));
   }
 
-  /**
-   * Predict int [ ].
-   *
-   * @param network       the network
-   * @param labeledObject the labeled object
-   * @return the int [ ]
-   */
   public int[] predict(@Nonnull final Layer network, @Nonnull final LabeledObject<Tensor> labeledObject) {
     @Nullable final double[] predictionSignal = network.eval(labeledObject.data).getData().get(0).getData();
     return IntStream.range(0, 10).mapToObj(x -> x).sorted(Comparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x).toArray();
   }
 
-  /**
-   * Remove monitoring.
-   *
-   * @param network the network
-   */
   public void removeMonitoring(@Nonnull final DAGNetwork network) {
     network.visitNodes(node -> {
       if (node.getLayer() instanceof MonitoringWrapperLayer) {
@@ -181,14 +129,6 @@ public abstract class MnistTestBase extends NotebookReportBase {
     });
   }
 
-  /**
-   * Report.
-   *
-   * @param log            the log
-   * @param monitoringRoot the monitoring root
-   * @param history        the history
-   * @param network        the network
-   */
   public void report(@Nonnull final NotebookOutput log, @Nonnull final MonitoredObject monitoringRoot, @Nonnull final List<Step> history, @Nonnull final Layer network) {
 
     if (!history.isEmpty()) {
@@ -216,12 +156,6 @@ public abstract class MnistTestBase extends NotebookReportBase {
     });
   }
 
-  /**
-   * Gets monitor.
-   *
-   * @param history the history
-   * @return the monitor
-   */
   @Nonnull
   public TrainingMonitor getMonitor(@Nonnull final List<Step> history) {
     return new TrainingMonitor() {
@@ -244,22 +178,8 @@ public abstract class MnistTestBase extends NotebookReportBase {
     };
   }
 
-  /**
-   * Train.
-   *
-   * @param log          the log
-   * @param network      the network
-   * @param trainingData the training data
-   * @param monitor      the monitor
-   */
   public abstract void train(NotebookOutput log, Layer network, Tensor[][] trainingData, TrainingMonitor monitor);
 
-  /**
-   * Validate.
-   *
-   * @param log     the log
-   * @param network the network
-   */
   public void validate(@Nonnull final NotebookOutput log, @Nonnull final Layer network) {
     log.h1("Validation");
     log.p("If we apply our model against the entire validation dataset, we get this accuracy:");

@@ -29,27 +29,13 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/**
- * The type Find feature space.
- */
 abstract class FindPCAFeatures extends FindFeatureSpace {
 
-  /**
-   * Instantiates a new Find feature space.
-   *
-   * @param log        the log
-   * @param inputBands the input bands
-   */
   public FindPCAFeatures(final NotebookOutput log, final int inputBands) {
     super(log, inputBands);
   }
 
 
-  /**
-   * Find band bias double [ ].
-   *
-   * @return the double [ ]
-   */
   protected double[] findBandBias() {
     final int outputBands = getFeatures().findAny().get()[1].getDimensions()[2];
     return IntStream.range(0, outputBands).parallel().mapToDouble(b -> {
@@ -61,14 +47,6 @@ abstract class FindPCAFeatures extends FindFeatureSpace {
 
   protected abstract Stream<Tensor[]> getFeatures();
 
-  /**
-   * Find feature space tensor [ ].
-   *
-   * @param log            the log
-   * @param featureVectors the feature vectors
-   * @param components     the components
-   * @return the tensor [ ]
-   */
   protected Tensor[] findFeatureSpace(@Nonnull final NotebookOutput log, @Nonnull final Supplier<Stream<Tensor[]>> featureVectors, final int components) {
     return log.eval(() -> {
       final int column = 1;
@@ -80,11 +58,6 @@ abstract class FindPCAFeatures extends FindFeatureSpace {
   }
 
 
-  /**
-   * Invoke find feature space.
-   *
-   * @return the find feature space
-   */
   @Nonnull
   @Override
   public FindFeatureSpace invoke() {
