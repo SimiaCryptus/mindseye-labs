@@ -29,7 +29,6 @@ import org.junit.experimental.categories.Category;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.IOException;
 
 public abstract class AllTrainingTests extends NotebookReportBase {
   protected final FwdNetworkFactory fwdFactory;
