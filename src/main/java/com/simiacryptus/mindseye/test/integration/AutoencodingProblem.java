@@ -117,9 +117,7 @@ public class AutoencodingProblem implements Problem {
     @Nonnull final DropoutNoiseLayer dropoutNoiseLayer = new DropoutNoiseLayer().setValue(dropout);
     supervisedNetwork.add(dropoutNoiseLayer).freeRef();
     supervisedNetwork.add(revNetwork).freeRef();
-    supervisedNetwork.wrap(new MeanSqLossLayer(),
-        supervisedNetwork.getHead(),
-        supervisedNetwork.getInput(0)).freeRef();
+    supervisedNetwork.add(new MeanSqLossLayer(), supervisedNetwork.getHead(), supervisedNetwork.getInput(0)).freeRef();
 
     log.h3("Network Diagrams");
     log.eval(() -> {

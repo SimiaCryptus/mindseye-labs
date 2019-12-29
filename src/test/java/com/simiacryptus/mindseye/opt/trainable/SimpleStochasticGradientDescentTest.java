@@ -46,11 +46,10 @@ public class SimpleStochasticGradientDescentTest extends MnistTestBase {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 10000);
       return new IterativeTrainer(trainable)
-          .setMonitor(monitor)
-          .setOrientation(new GradientDescent())
-          .setTimeout(5, TimeUnit.MINUTES)
-          .setMaxIterations(500)
-          .runAndFree();
+            .setMonitor(monitor)
+            .setOrientation(new GradientDescent())
+            .setTimeout(5, TimeUnit.MINUTES)
+            .setMaxIterations(500).run();
     });
   }
 

@@ -23,6 +23,7 @@ import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.util.test.TestCategories;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -82,7 +83,7 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   }
 
   @Override
-  public void printHeader(NotebookOutput log) {
+  public void printHeader(@NotNull NotebookOutput log) {
     @Nullable CharSequence fwdFactory_javadoc = printHeader(log, fwdFactory.getClass(), "fwd");
     @Nullable CharSequence optimizationStrategy_javadoc = printHeader(log, optimizationStrategy.getClass(), "opt");
     @Nullable CharSequence revFactory_javadoc = printHeader(log, revFactory.getClass(), "rev");

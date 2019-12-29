@@ -41,11 +41,10 @@ public class MomentumTest extends MnistTestBase {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
       return new IterativeTrainer(trainable)
-          .setMonitor(monitor)
-          .setOrientation(new ValidatingOrientationWrapper(new MomentumStrategy(new GradientDescent()).setCarryOver(0.8)))
-          .setTimeout(5, TimeUnit.MINUTES)
-          .setMaxIterations(500)
-          .runAndFree();
+            .setMonitor(monitor)
+            .setOrientation(new ValidatingOrientationWrapper(new MomentumStrategy(new GradientDescent()).setCarryOver(0.8)))
+            .setTimeout(5, TimeUnit.MINUTES)
+            .setMaxIterations(500).run();
     });
   }
 

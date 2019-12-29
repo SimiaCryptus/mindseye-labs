@@ -47,14 +47,14 @@ public class SingleOrthantTrustRegionTest extends MnistTestBase {
           return new SingleOrthant();
         }
       };
+      //.setOrientation(new ValidatingOrientationWrapper(trustRegionStrategy))
       return new IterativeTrainer(trainable)
-          .setIterationsPerSample(100)
-          .setMonitor(monitor)
-          //.setOrientation(new ValidatingOrientationWrapper(trustRegionStrategy))
-          .setOrientation(trustRegionStrategy)
-          .setTimeout(3, TimeUnit.MINUTES)
-          .setMaxIterations(500)
-          .runAndFree();
+            .setIterationsPerSample(100)
+            .setMonitor(monitor)
+            //.setOrientation(new ValidatingOrientationWrapper(trustRegionStrategy))
+            .setOrientation(trustRegionStrategy)
+            .setTimeout(3, TimeUnit.MINUTES)
+            .setMaxIterations(500).run();
     });
   }
 

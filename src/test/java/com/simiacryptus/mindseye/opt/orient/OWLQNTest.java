@@ -41,12 +41,11 @@ public class OWLQNTest extends MnistTestBase {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 10000);
       return new IterativeTrainer(trainable)
-          .setIterationsPerSample(100)
-          .setMonitor(monitor)
-          .setOrientation(new ValidatingOrientationWrapper(new OwlQn()))
-          .setTimeout(5, TimeUnit.MINUTES)
-          .setMaxIterations(500)
-          .runAndFree();
+            .setIterationsPerSample(100)
+            .setMonitor(monitor)
+            .setOrientation(new ValidatingOrientationWrapper(new OwlQn()))
+            .setTimeout(5, TimeUnit.MINUTES)
+            .setMaxIterations(500).run();
     });
   }
 

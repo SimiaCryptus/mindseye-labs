@@ -94,10 +94,10 @@ public abstract class MnistTestBase extends NotebookReportBase {
         "It is expected to be trainable to about 91% accuracy on MNIST.");
     return log.eval(() -> {
       @Nonnull final PipelineNetwork network = new PipelineNetwork();
-      network.wrap(new BiasLayer(28, 28, 1)).freeRef();
-      network.wrap(new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{10})
+      network.add(new BiasLayer(28, 28, 1)).freeRef();
+      network.add(new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{10})
           .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
-      network.wrap(new SoftmaxLayer()).freeRef();
+      network.add(new SoftmaxLayer()).freeRef();
       return network;
     });
   }

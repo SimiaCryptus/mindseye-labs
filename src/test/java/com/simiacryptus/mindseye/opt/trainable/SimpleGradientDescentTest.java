@@ -52,10 +52,9 @@ public class SimpleGradientDescentTest extends MnistTestBase {
       @Nonnull final Tensor[][] randomSelection = trainingList.subList(0, 10000).toArray(new Tensor[][]{});
       @Nonnull final Trainable trainable = new ArrayTrainable(randomSelection, supervisedNetwork);
       return new IterativeTrainer(trainable)
-          .setMonitor(monitor)
-          .setTimeout(3, TimeUnit.MINUTES)
-          .setMaxIterations(500)
-          .runAndFree();
+            .setMonitor(monitor)
+            .setTimeout(3, TimeUnit.MINUTES)
+            .setMaxIterations(500).run();
     });
   }
 

@@ -106,9 +106,7 @@ public class AutoencoderNetwork {
 
   public TensorList encode(@Nonnull final TensorList data) {
     Layer layer = encoder.getLayer();
-    TensorList tensorList = layer
-        .evalAndFree(ConstantResult.batchResultArray(data.stream().map(x -> new Tensor[]{x}).toArray(i -> new Tensor[i][])))
-        .getDataAndFree();
+    TensorList tensorList = layer.eval(ConstantResult.batchResultArray(data.stream().map(x -> new Tensor[]{x}).toArray(i -> new Tensor[i][]))).getData();
     layer.freeRef();
     return tensorList;
   }
@@ -357,7 +355,7 @@ public class AutoencoderNetwork {
         @Nonnull final ArrayList<Tensor> list = new ArrayList<>(data.stream().collect(Collectors.toList()));
         Collections.shuffle(list);
         @Nonnull final Tensor[] pretrainingSet = list.subList(0, pretrainingSize).toArray(new Tensor[]{});
-        configure(newLayer.train()).setMaxIterations(pretrainIterations).setTimeoutMinutes(pretrainingMinutes).run(TensorArray.create(pretrainingSet));
+        configure(newLayer.train()).setMaxIterations(pretrainIterations).setTimeoutMinutes(pretrainingMinutes).run(new TensorArray(pretrainingSet));
       }
       newLayer.decoderSynapse = ((FullyConnectedLayer) newLayer.decoderSynapse).getTranspose();
       newLayer.decoderSynapsePlaceholder.setInner(newLayer.decoderSynapse);
@@ -524,7 +522,7 @@ public class AutoencoderNetwork {
       trainer.setTimeout(getTimeoutMinutes(), TimeUnit.MINUTES);
       trainer.setTerminateThreshold(getEndFitness());
       trainer.setMaxIterations(maxIterations);
-      trainer.runAndFree();
+      trainer.run();
     }
 
     @Nonnull

@@ -32,6 +32,7 @@ import com.simiacryptus.util.Util;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Graph;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import javax.annotation.Nonnull;
@@ -109,7 +110,7 @@ public abstract class PipelineTest {
     new SerializationTest().test(log, component, randomize);
     return new TrainingTester() {
       @Override
-      protected void printHeader(NotebookOutput log) {
+      protected void printHeader(@NotNull NotebookOutput log) {
         log.h1(header);
       }
 

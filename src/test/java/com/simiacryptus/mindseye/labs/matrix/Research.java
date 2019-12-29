@@ -37,6 +37,7 @@ import com.simiacryptus.mindseye.test.TestUtil;
 import com.simiacryptus.mindseye.test.integration.MnistProblemData;
 import com.simiacryptus.mindseye.test.integration.OptimizationStrategy;
 import com.simiacryptus.notebook.NotebookOutput;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -54,7 +55,7 @@ public class Research extends OptimizerComparison {
       trainer.getRegimen().get(0)
           .setOrientation(new RecursiveSubspace() {
             @Override
-            public void train(TrainingMonitor monitor, Layer subspace) {
+            public void train(@NotNull TrainingMonitor monitor, Layer subspace) {
               //new SingleDerivativeTester(1e-3,1e-4).apply(subspace, new Tensor[]{new Tensor()});
               super.train(monitor, subspace);
             }
@@ -72,21 +73,20 @@ public class Research extends OptimizerComparison {
       trainer.getRegimen().get(0)
           .setOrientation(new RecursiveSubspace() {
             @Override
-            public void train(TrainingMonitor monitor, Layer subspace) {
+            public void train(@NotNull TrainingMonitor monitor, Layer subspace) {
               //new SingleDerivativeTester(1e-3,1e-4).apply(subspace, new Tensor[]{new Tensor()});
               @Nonnull ArrayTrainable trainable = new ArrayTrainable(new BasicTrainable(subspace), new Tensor[][]{{new Tensor()}});
               new IterativeTrainer(trainable)
-                  .setOrientation(new QQN())
-                  .setLineSearchFactory(n -> new QuadraticSearch())
-                  .setMonitor(new TrainingMonitor() {
-                    @Override
-                    public void log(String msg) {
-                      monitor.log("\t" + msg);
-                    }
-                  })
-                  .setMaxIterations(getIterations())
-                  .setIterationsPerSample(getIterations())
-                  .runAndFree();
+                            .setOrientation(new QQN())
+                            .setLineSearchFactory(n -> new QuadraticSearch())
+                            .setMonitor(new TrainingMonitor() {
+                              @Override
+                              public void log(String msg) {
+                                monitor.log("\t" + msg);
+                              }
+                            })
+                            .setMaxIterations(getIterations())
+                            .setIterationsPerSample(getIterations()).run();
             }
           })
           .setLineSearchFactory(name -> new StaticLearningRate(1.0));

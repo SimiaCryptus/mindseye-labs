@@ -42,12 +42,11 @@ public class BisectionLineSearchTest extends MnistTestBase {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
       return new IterativeTrainer(trainable)
-          .setMonitor(monitor)
-          .setOrientation(new GradientDescent())
-          .setLineSearchFactory((@Nonnull final CharSequence name) -> new BisectionSearch())
-          .setTimeout(3, TimeUnit.MINUTES)
-          .setMaxIterations(500)
-          .runAndFree();
+            .setMonitor(monitor)
+            .setOrientation(new GradientDescent())
+            .setLineSearchFactory((@Nonnull final CharSequence name) -> new BisectionSearch())
+            .setTimeout(3, TimeUnit.MINUTES)
+            .setMaxIterations(500).run();
     });
   }
 
