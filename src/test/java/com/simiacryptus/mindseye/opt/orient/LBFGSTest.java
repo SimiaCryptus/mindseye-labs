@@ -34,31 +34,56 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
-public class LBFGSTest extends MnistTestBase {
-
-  @Override
-  public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network, @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
-    log.eval(() -> {
-      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull ValidatingTrainer trainer = new ValidatingTrainer(
-          new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 10000),
-          new ArrayTrainable(trainingData, supervisedNetwork).cached()
-      )
-          .setMonitor(monitor);
-      trainer.getRegimen().get(0)
-          //.setOrientation(new ValidatingOrientationWrapper(new LBFGS()))
-          .setOrientation(new LBFGS())
-          .setLineSearchFactory(name -> name.toString().contains("LBFGS") ? new QuadraticSearch().setCurrentRate(1.0) : new QuadraticSearch());
-      return trainer
-          .setTimeout(5, TimeUnit.MINUTES)
-          .setMaxIterations(500)
-          .run();
-    });
-  }
+public @com.simiacryptus.ref.lang.RefAware
+class LBFGSTest extends MnistTestBase {
 
   @Nonnull
   @Override
   protected Class<?> getTargetClass() {
     return LBFGS.class;
+  }
+
+  public static @SuppressWarnings("unused")
+  LBFGSTest[] addRefs(LBFGSTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRef)
+        .toArray((x) -> new LBFGSTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  LBFGSTest[][] addRefs(LBFGSTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRefs)
+        .toArray((x) -> new LBFGSTest[x][]);
+  }
+
+  @Override
+  public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
+                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+    log.eval(() -> {
+      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull
+      ValidatingTrainer trainer = new ValidatingTrainer(
+          new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 10000),
+          new ArrayTrainable(trainingData, supervisedNetwork).cached()).setMonitor(monitor);
+      trainer.getRegimen().get(0)
+          //.setOrientation(new ValidatingOrientationWrapper(new LBFGS()))
+          .setOrientation(new LBFGS())
+          .setLineSearchFactory(name -> name.toString().contains("LBFGS") ? new QuadraticSearch().setCurrentRate(1.0)
+              : new QuadraticSearch());
+      return trainer.setTimeout(5, TimeUnit.MINUTES).setMaxIterations(500).run();
+    });
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  LBFGSTest addRef() {
+    return (LBFGSTest) super.addRef();
   }
 }

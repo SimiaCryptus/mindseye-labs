@@ -30,7 +30,8 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.function.IntToDoubleFunction;
 
-public class CaltechTests {
+public @com.simiacryptus.ref.lang.RefAware
+class CaltechTests {
 
   @Nonnull
   public static FwdNetworkFactory fwd_conv_1 = (log, features) -> {
@@ -38,7 +39,8 @@ public class CaltechTests {
     return log.eval(() -> {
       @Nonnull final PipelineNetwork network = new PipelineNetwork();
 
-      @Nonnull IntToDoubleFunction weights = i -> 1e-8 * (Math.random() - 0.5);
+      @Nonnull
+      IntToDoubleFunction weights = i -> 1e-8 * (Math.random() - 0.5);
       network.add(new ConvolutionLayer(3, 3, 3, 10).set(weights)).freeRef();
       network.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max)).freeRef();
       network.add(new ReLuActivationLayer()).freeRef();
@@ -77,7 +79,8 @@ public class CaltechTests {
     return log.eval(() -> {
       @Nonnull final PipelineNetwork network = new PipelineNetwork();
 
-      @Nonnull IntToDoubleFunction weights = i -> 1e-8 * (Math.random() - 0.5);
+      @Nonnull
+      IntToDoubleFunction weights = i -> 1e-8 * (Math.random() - 0.5);
       network.add(new FullyConnectedLayer(new int[]{features}, new int[]{4, 4, 40}).set(weights)).freeRef();
       network.add(new ImgBandBiasLayer(40)).freeRef();
       network.add(new NormalizationMetaLayer()).freeRef();
@@ -115,18 +118,13 @@ public class CaltechTests {
     });
   };
 
-  public abstract static class All_Caltech_Tests extends AllTrainingTests {
+  public abstract static @com.simiacryptus.ref.lang.RefAware
+  class All_Caltech_Tests extends AllTrainingTests {
 
-
-    public All_Caltech_Tests(final OptimizationStrategy optimizationStrategy, final RevNetworkFactory revFactory, final FwdNetworkFactory fwdFactory) {
+    public All_Caltech_Tests(final OptimizationStrategy optimizationStrategy, final RevNetworkFactory revFactory,
+                             final FwdNetworkFactory fwdFactory) {
       super(fwdFactory, revFactory, optimizationStrategy);
       batchSize = 10;
-    }
-
-    @Nonnull
-    @Override
-    protected Class<?> getTargetClass() {
-      return Caltech101.class;
     }
 
     @Nonnull
@@ -147,11 +145,53 @@ public class CaltechTests {
       return ReportType.Experiments;
     }
 
+    @Nonnull
+    @Override
+    protected Class<?> getTargetClass() {
+      return Caltech101.class;
+    }
+
+    public static @SuppressWarnings("unused")
+    All_Caltech_Tests[] addRefs(All_Caltech_Tests[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(All_Caltech_Tests::addRef)
+          .toArray((x) -> new All_Caltech_Tests[x]);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    All_Caltech_Tests addRef() {
+      return (All_Caltech_Tests) super.addRef();
+    }
+
   }
 
-  public static class QQN extends All_Caltech_Tests {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class QQN extends All_Caltech_Tests {
     public QQN() {
       super(Research.quadratic_quasi_newton, CaltechTests.rev_conv_1, CaltechTests.fwd_conv_1);
+    }
+
+    public static @SuppressWarnings("unused")
+    QQN[] addRefs(QQN[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    QQN addRef() {
+      return (QQN) super.addRef();
     }
 
     @Override

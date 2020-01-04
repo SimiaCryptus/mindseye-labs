@@ -33,29 +33,52 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
-public class QQNTest extends MnistTestBase {
-
-  @Override
-  public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network, @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
-    log.eval(() -> {
-      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      //return new IterativeTrainer(new SampledArrayTrainable(trainingData, supervisedNetwork, 10000))
-      @Nonnull ValidatingTrainer trainer = new ValidatingTrainer(
-          new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 10000),
-          new ArrayTrainable(trainingData, supervisedNetwork)
-      )
-          .setMonitor(monitor);
-      trainer.getRegimen().get(0).setOrientation(new QQN());
-      return trainer
-          .setTimeout(5, TimeUnit.MINUTES)
-          .setMaxIterations(500)
-          .run();
-    });
-  }
+public @com.simiacryptus.ref.lang.RefAware
+class QQNTest extends MnistTestBase {
 
   @Nonnull
   @Override
   protected Class<?> getTargetClass() {
     return QQN.class;
+  }
+
+  public static @SuppressWarnings("unused")
+  QQNTest[] addRefs(QQNTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(QQNTest::addRef).toArray((x) -> new QQNTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  QQNTest[][] addRefs(QQNTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(QQNTest::addRefs)
+        .toArray((x) -> new QQNTest[x][]);
+  }
+
+  @Override
+  public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
+                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+    log.eval(() -> {
+      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      //return new IterativeTrainer(new SampledArrayTrainable(trainingData, supervisedNetwork, 10000))
+      @Nonnull
+      ValidatingTrainer trainer = new ValidatingTrainer(
+          new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 10000),
+          new ArrayTrainable(trainingData, supervisedNetwork)).setMonitor(monitor);
+      trainer.getRegimen().get(0).setOrientation(new QQN());
+      return trainer.setTimeout(5, TimeUnit.MINUTES).setMaxIterations(500).run();
+    });
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  QQNTest addRef() {
+    return (QQNTest) super.addRef();
   }
 }

@@ -34,25 +34,50 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
-public class QuadraticLineSearchTest extends MnistTestBase {
-
-  @Override
-  public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network, @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
-    log.eval(() -> {
-      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
-      return new IterativeTrainer(trainable)
-            .setMonitor(monitor)
-            .setOrientation(new GradientDescent())
-            .setLineSearchFactory((@Nonnull final CharSequence name) -> new QuadraticSearch())
-            .setTimeout(3, TimeUnit.MINUTES)
-            .setMaxIterations(500).run();
-    });
-  }
+public @com.simiacryptus.ref.lang.RefAware
+class QuadraticLineSearchTest extends MnistTestBase {
 
   @Nonnull
   @Override
   protected Class<?> getTargetClass() {
     return QuadraticSearch.class;
+  }
+
+  public static @SuppressWarnings("unused")
+  QuadraticLineSearchTest[] addRefs(QuadraticLineSearchTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(QuadraticLineSearchTest::addRef)
+        .toArray((x) -> new QuadraticLineSearchTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  QuadraticLineSearchTest[][] addRefs(QuadraticLineSearchTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(QuadraticLineSearchTest::addRefs)
+        .toArray((x) -> new QuadraticLineSearchTest[x][]);
+  }
+
+  @Override
+  public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
+                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+    log.eval(() -> {
+      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
+      return new IterativeTrainer(trainable).setMonitor(monitor).setOrientation(new GradientDescent())
+          .setLineSearchFactory((@Nonnull final CharSequence name) -> new QuadraticSearch())
+          .setTimeout(3, TimeUnit.MINUTES).setMaxIterations(500).run();
+    });
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  QuadraticLineSearchTest addRef() {
+    return (QuadraticLineSearchTest) super.addRef();
   }
 }

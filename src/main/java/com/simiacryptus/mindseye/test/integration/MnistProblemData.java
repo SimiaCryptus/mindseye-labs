@@ -25,19 +25,18 @@ import com.simiacryptus.util.test.LabeledObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.stream.Stream;
-
-public class MnistProblemData implements ImageProblemData {
+public @com.simiacryptus.ref.lang.RefAware
+class MnistProblemData implements ImageProblemData {
   static final Logger log = LoggerFactory.getLogger(MnistProblemData.class);
 
   @Override
-  public Stream<LabeledObject<Tensor>> trainingData() {
+  public com.simiacryptus.ref.wrappers.RefStream<LabeledObject<Tensor>> trainingData() {
     log.info(String.format("Loaded %d items", MNIST.trainingDataStream().count()));
     return MNIST.trainingDataStream();
   }
 
   @Override
-  public Stream<LabeledObject<Tensor>> validationData() {
+  public com.simiacryptus.ref.wrappers.RefStream<LabeledObject<Tensor>> validationData() {
     return MNIST.validationDataStream();
   }
 

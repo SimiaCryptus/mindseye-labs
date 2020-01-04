@@ -50,7 +50,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class EncodingProblem implements Problem {
+public @com.simiacryptus.ref.lang.RefAware
+class EncodingProblem implements Problem {
 
   private static int modelNo = 0;
   private final ImageProblemData data;
@@ -62,13 +63,13 @@ public class EncodingProblem implements Problem {
   private int timeoutMinutes = 1;
   private int trainingSize = 15000;
 
-  public EncodingProblem(final RevNetworkFactory revFactory, final OptimizationStrategy optimizer, final ImageProblemData data, final int features) {
+  public EncodingProblem(final RevNetworkFactory revFactory, final OptimizationStrategy optimizer,
+                         final ImageProblemData data, final int features) {
     this.revFactory = revFactory;
     this.optimizer = optimizer;
     this.data = data;
     this.features = features;
   }
-
 
   public int getBatchSize() {
     return batchSize;
@@ -136,25 +137,24 @@ public class EncodingProblem implements Problem {
     @Nonnull final DAGNetwork imageNetwork = revFactory.vectorToImage(log, features);
     log.h3("Network Diagram");
     log.eval(() -> {
-      return Graphviz.fromGraph((Graph) TestUtil.toGraph(imageNetwork))
-          .height(400).width(600).render(Format.PNG).toImage();
+      return Graphviz.fromGraph((Graph) TestUtil.toGraph(imageNetwork)).height(400).width(600).render(Format.PNG)
+          .toImage();
     });
 
     @Nonnull final PipelineNetwork trainingNetwork = new PipelineNetwork(2);
     @Nullable final DAGNode image = trainingNetwork.add(imageNetwork, trainingNetwork.getInput(0));
     @Nullable final DAGNode softmax = trainingNetwork.add(new SoftmaxLayer(), trainingNetwork.getInput(0));
-    trainingNetwork.add(new SumInputsLayer(),
-        trainingNetwork.add(new EntropyLossLayer(), softmax, softmax),
+    trainingNetwork.add(new SumInputsLayer(), trainingNetwork.add(new EntropyLossLayer(), softmax, softmax),
         trainingNetwork.add(new NthPowerActivationLayer().setPower(1.0 / 2.0),
-            trainingNetwork.add(new MeanSqLossLayer(), image, trainingNetwork.getInput(1))
-        )
-    ).freeRef();
+            trainingNetwork.add(new MeanSqLossLayer(), image, trainingNetwork.getInput(1))))
+        .freeRef();
     log.h3("Training");
     log.p("We start by training apply a very small population to improve initial convergence performance:");
     TestUtil.instrumentPerformance(trainingNetwork);
-    @Nonnull final Tensor[][] primingData = Arrays.copyOfRange(trainingData, 0, 1000);
+    @Nonnull final Tensor[][] primingData = com.simiacryptus.ref.wrappers.RefArrays.copyOfRange(trainingData, 0, 1000);
     @Nonnull final ValidatingTrainer preTrainer = optimizer.train(log,
-        (SampledTrainable) new SampledArrayTrainable(primingData, trainingNetwork, trainingSize, batchSize).setMinSamples(trainingSize).setMask(true, false),
+        (SampledTrainable) new SampledArrayTrainable(primingData, trainingNetwork, trainingSize, batchSize)
+            .setMinSamples(trainingSize).setMask(true, false),
         new ArrayTrainable(primingData, trainingNetwork, batchSize), monitor);
     log.run(() -> {
       preTrainer.setTimeout(timeoutMinutes / 2, TimeUnit.MINUTES).setMaxIterations(batchSize).run();
@@ -164,7 +164,8 @@ public class EncodingProblem implements Problem {
     log.p("Then our main training phase:");
     TestUtil.instrumentPerformance(trainingNetwork);
     @Nonnull final ValidatingTrainer mainTrainer = optimizer.train(log,
-        (SampledTrainable) new SampledArrayTrainable(trainingData, trainingNetwork, trainingSize, batchSize).setMinSamples(trainingSize).setMask(true, false),
+        (SampledTrainable) new SampledArrayTrainable(trainingData, trainingNetwork, trainingSize, batchSize)
+            .setMinSamples(trainingSize).setMask(true, false),
         new ArrayTrainable(trainingData, trainingNetwork, batchSize), monitor);
     log.run(() -> {
       mainTrainer.setTimeout(timeoutMinutes, TimeUnit.MINUTES).setMaxIterations(batchSize).run();
@@ -181,7 +182,8 @@ public class EncodingProblem implements Problem {
     }
 
     try {
-      @Nonnull String filename = log.getName().toString() + EncodingProblem.modelNo++ + "_plot.png";
+      @Nonnull
+      String filename = log.getName().toString() + EncodingProblem.modelNo++ + "_plot.png";
       ImageIO.write(Util.toImage(TestUtil.plot(history)), "png", log.file(filename));
       log.appendFrontMatterProperty("result_plot", filename, ";");
     } catch (IOException e) {
@@ -198,7 +200,7 @@ public class EncodingProblem implements Problem {
     testNetwork.add(imageNetwork, testNetwork.getInput(0));
     log.eval(() -> {
       @Nonnull final TableOutput table = new TableOutput();
-      Arrays.stream(trainingData).map(tensorArray -> {
+      com.simiacryptus.ref.wrappers.RefArrays.stream(trainingData).map(tensorArray -> {
         @Nullable final Tensor predictionSignal = testNetwork.eval(tensorArray).getData().get(0);
         @Nonnull final LinkedHashMap<CharSequence, Object> row = new LinkedHashMap<>();
         row.put("Source", log.png(tensorArray[1].toImage(), ""));
@@ -219,8 +221,8 @@ public class EncodingProblem implements Problem {
     log.p("Learned Representation Statistics:");
     log.eval(() -> {
       @Nonnull final ScalarStatistics scalarStatistics = new ScalarStatistics();
-      Arrays.stream(trainingData)
-          .flatMapToDouble(row -> Arrays.stream(row[0].getData()))
+      com.simiacryptus.ref.wrappers.RefArrays.stream(trainingData)
+          .flatMapToDouble(row -> com.simiacryptus.ref.wrappers.RefArrays.stream(row[0].getData()))
           .forEach(v -> scalarStatistics.add(v));
       return scalarStatistics.getMetrics();
     });

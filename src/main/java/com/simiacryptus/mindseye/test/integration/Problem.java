@@ -25,7 +25,8 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public interface Problem {
+public @com.simiacryptus.ref.lang.RefAware
+interface Problem {
   @Nonnull
   List<StepRecord> getHistory();
 

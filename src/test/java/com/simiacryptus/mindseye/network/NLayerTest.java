@@ -42,8 +42,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-
-public abstract class NLayerTest {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class NLayerTest {
   static {
     SysOutInterceptor.INSTANCE.init();
   }
@@ -56,12 +56,16 @@ public abstract class NLayerTest {
     this.dimList = Arrays.asList(dimList);
   }
 
+  @Nonnull
+  public abstract int[] getInputDims();
+
   public abstract void addLayer(PipelineNetwork network, int[] in, int[] out);
 
   @Nonnull
   public Layer buildNetwork(@Nonnull final int[]... dimList) {
     @Nonnull final PipelineNetwork network = new PipelineNetwork(1);
-    @Nullable int[] last = null;
+    @Nullable
+    int[] last = null;
     for (final int[] dims : dimList) {
       if (null != last) {
         addLayer(network, last, dims);
@@ -72,18 +76,16 @@ public abstract class NLayerTest {
   }
 
   public int[][] concat(final int[] a, @Nonnull final List<int[]> b) {
-    return Stream.concat(Stream.of(a), b.stream()).toArray(i -> new int[i][]);
+    return Stream.concat(Stream.of(a), b.stream())
+        .toArray(i -> new int[i][]);
   }
-
-  @Nonnull
-  public abstract int[] getInputDims();
 
   public void graphviz(@Nonnull final NotebookOutput log, final Layer layer) {
     if (layer instanceof DAGNetwork) {
       log.p("This is a network apply the following layout:");
       log.eval(() -> {
-        return Graphviz.fromGraph((Graph) TestUtil.toGraph((DAGNetwork) layer))
-            .height(400).width(600).render(Format.PNG).toImage();
+        return Graphviz.fromGraph((Graph) TestUtil.toGraph((DAGNetwork) layer)).height(400).width(600)
+            .render(Format.PNG).toImage();
       });
     }
   }
@@ -93,12 +95,15 @@ public abstract class NLayerTest {
   }
 
   public Tensor[] randomize(@Nonnull final int[][] inputDims) {
-    return Arrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random)).toArray(i -> new Tensor[i]);
+    return com.simiacryptus.ref.wrappers.RefArrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random))
+        .toArray(i -> new Tensor[i]);
   }
 
   @Test
   public void test() throws Throwable {
-    try (@Nonnull NotebookOutput log = MarkdownNotebookOutput.get(NotebookReportBase.getTestReportLocation(((Object) this).getClass(), reportingFolder))) {
+    try (@Nonnull
+         NotebookOutput log = MarkdownNotebookOutput
+        .get(NotebookReportBase.getTestReportLocation(((Object) this).getClass(), reportingFolder))) {
       test(log);
     }
   }
@@ -117,11 +122,16 @@ public abstract class NLayerTest {
   }
 
   @Nullable
-  public TrainingTester.ComponentResult test(@Nonnull final NotebookOutput log, @Nonnull final Layer layer, @Nonnull final int[]... inputDims) {
+  public TrainingTester.ComponentResult test(@Nonnull final NotebookOutput log, @Nonnull final Layer layer,
+                                             @Nonnull final int[]... inputDims) {
     @Nonnull final Layer component = layer.copy();
     final Tensor[] randomize = randomize(inputDims);
     new SerializationTest().test(log, component, randomize);
     return new TrainingTester() {
+      public @SuppressWarnings("unused")
+      void _free() {
+      }
+
       @Override
       protected Layer lossLayer() {
         return new MeanSqLossLayer();

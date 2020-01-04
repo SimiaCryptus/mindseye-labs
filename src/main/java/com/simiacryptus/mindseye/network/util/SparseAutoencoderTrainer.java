@@ -30,7 +30,8 @@ import com.simiacryptus.mindseye.network.SupervisedNetwork;
 import javax.annotation.Nonnull;
 
 @SuppressWarnings("serial")
-public class SparseAutoencoderTrainer extends SupervisedNetwork {
+public @com.simiacryptus.ref.lang.RefAware
+class SparseAutoencoderTrainer extends SupervisedNetwork {
 
   public final DAGNode decoder;
   public final DAGNode encoder;
@@ -55,5 +56,31 @@ public class SparseAutoencoderTrainer extends SupervisedNetwork {
   public DAGNode getHead() {
     sumFitnessLayer.addRef();
     return sumFitnessLayer;
+  }
+
+  public static @SuppressWarnings("unused")
+  SparseAutoencoderTrainer[] addRefs(SparseAutoencoderTrainer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SparseAutoencoderTrainer::addRef)
+        .toArray((x) -> new SparseAutoencoderTrainer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  SparseAutoencoderTrainer[][] addRefs(SparseAutoencoderTrainer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SparseAutoencoderTrainer::addRefs)
+        .toArray((x) -> new SparseAutoencoderTrainer[x][]);
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  SparseAutoencoderTrainer addRef() {
+    return (SparseAutoencoderTrainer) super.addRef();
   }
 }

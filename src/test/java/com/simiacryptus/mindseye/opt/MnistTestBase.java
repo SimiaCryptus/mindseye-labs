@@ -46,19 +46,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.IntStream;
 
-public abstract class MnistTestBase extends NotebookReportBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class MnistTestBase extends NotebookReportBase {
   private static final Logger log = LoggerFactory.getLogger(MnistTestBase.class);
 
   int modelNo = 0;
-
-  @Test
-  @Category(TestCategories.Report.class)
-  public void test() {
-    run(this::run);
-  }
 
   @Nonnull
   @Override
@@ -66,8 +59,30 @@ public abstract class MnistTestBase extends NotebookReportBase {
     return ReportType.Optimizers;
   }
 
+  public static @SuppressWarnings("unused")
+  MnistTestBase[] addRefs(MnistTestBase[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MnistTestBase::addRef)
+        .toArray((x) -> new MnistTestBase[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  MnistTestBase[][] addRefs(MnistTestBase[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MnistTestBase::addRefs)
+        .toArray((x) -> new MnistTestBase[x][]);
+  }
+
+  @Test
+  @Category(TestCategories.Report.class)
+  public void test() {
+    run(this::run);
+  }
+
   public void run(@Nonnull NotebookOutput log) {
-    @Nonnull final List<Step> history = new ArrayList<>();
+    @Nonnull final com.simiacryptus.ref.wrappers.RefList<Step> history = new com.simiacryptus.ref.wrappers.RefArrayList<>();
     @Nonnull final MonitoredObject monitoringRoot = new MonitoredObject();
     @Nonnull final TrainingMonitor monitor = getMonitor(history);
     final Tensor[][] trainingData = getTrainingData(log);
@@ -90,13 +105,14 @@ public abstract class MnistTestBase extends NotebookReportBase {
 
   public DAGNetwork buildModel(@Nonnull final NotebookOutput log) {
     log.h1("Model");
-    log.p("This is a very simple model that performs basic logistic regression. " +
-        "It is expected to be trainable to about 91% accuracy on MNIST.");
+    log.p("This is a very simple model that performs basic logistic regression. "
+        + "It is expected to be trainable to about 91% accuracy on MNIST.");
     return log.eval(() -> {
       @Nonnull final PipelineNetwork network = new PipelineNetwork();
       network.add(new BiasLayer(28, 28, 1)).freeRef();
-      network.add(new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{10})
-          .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
+      network.add(
+          new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{10}).set(() -> 0.001 * (Math.random() - 0.45)))
+          .freeRef();
       network.add(new SoftmaxLayer()).freeRef();
       return network;
     });
@@ -118,7 +134,9 @@ public abstract class MnistTestBase extends NotebookReportBase {
 
   public int[] predict(@Nonnull final Layer network, @Nonnull final LabeledObject<Tensor> labeledObject) {
     @Nullable final double[] predictionSignal = network.eval(labeledObject.data).getData().get(0).getData();
-    return IntStream.range(0, 10).mapToObj(x -> x).sorted(Comparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x).toArray();
+    return com.simiacryptus.ref.wrappers.RefIntStream.range(0, 10).mapToObj(x -> x)
+        .sorted(com.simiacryptus.ref.wrappers.RefComparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x)
+        .toArray();
   }
 
   public void removeMonitoring(@Nonnull final DAGNetwork network) {
@@ -129,11 +147,14 @@ public abstract class MnistTestBase extends NotebookReportBase {
     });
   }
 
-  public void report(@Nonnull final NotebookOutput log, @Nonnull final MonitoredObject monitoringRoot, @Nonnull final List<Step> history, @Nonnull final Layer network) {
+  public void report(@Nonnull final NotebookOutput log, @Nonnull final MonitoredObject monitoringRoot,
+                     @Nonnull final com.simiacryptus.ref.wrappers.RefList<Step> history, @Nonnull final Layer network) {
 
     if (!history.isEmpty()) {
       log.eval(() -> {
-        @Nonnull final PlotCanvas plot = ScatterPlot.plot(history.stream().map(step -> new double[]{step.iteration, Math.log10(step.point.getMean())}).toArray(i -> new double[i][]));
+        @Nonnull final PlotCanvas plot = ScatterPlot
+            .plot(history.stream().map(step -> new double[]{step.iteration, Math.log10(step.point.getMean())})
+                .toArray(i -> new double[i][]));
         plot.setTitle("Convergence Plot");
         plot.setAxisLabels("Iteration", "log10(Fitness)");
         plot.setSize(600, 400);
@@ -157,7 +178,7 @@ public abstract class MnistTestBase extends NotebookReportBase {
   }
 
   @Nonnull
-  public TrainingMonitor getMonitor(@Nonnull final List<Step> history) {
+  public TrainingMonitor getMonitor(@Nonnull final com.simiacryptus.ref.wrappers.RefList<Step> history) {
     return new TrainingMonitor() {
       @Override
       public void clear() {
@@ -184,8 +205,8 @@ public abstract class MnistTestBase extends NotebookReportBase {
     log.h1("Validation");
     log.p("If we apply our model against the entire validation dataset, we get this accuracy:");
     log.eval(() -> {
-      return MNIST.validationDataStream().mapToDouble(labeledObject ->
-          predict(network, labeledObject)[0] == parse(labeledObject.label) ? 1 : 0)
+      return MNIST.validationDataStream()
+          .mapToDouble(labeledObject -> predict(network, labeledObject)[0] == parse(labeledObject.label) ? 1 : 0)
           .average().getAsDouble() * 100;
     });
 
@@ -195,16 +216,30 @@ public abstract class MnistTestBase extends NotebookReportBase {
       MNIST.validationDataStream().map(labeledObject -> {
         final int actualCategory = parse(labeledObject.label);
         @Nullable final double[] predictionSignal = network.eval(labeledObject.data).getData().get(0).getData();
-        final int[] predictionList = IntStream.range(0, 10).mapToObj(x -> x).sorted(Comparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x).toArray();
-        if (predictionList[0] == actualCategory) return null; // We will only examine mispredicted rows
-        @Nonnull final LinkedHashMap<CharSequence, Object> row = new LinkedHashMap<>();
+        final int[] predictionList = com.simiacryptus.ref.wrappers.RefIntStream.range(0, 10).mapToObj(x -> x)
+            .sorted(com.simiacryptus.ref.wrappers.RefComparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x)
+            .toArray();
+        if (predictionList[0] == actualCategory)
+          return null; // We will only examine mispredicted rows
+        @Nonnull final com.simiacryptus.ref.wrappers.RefLinkedHashMap<CharSequence, Object> row = new com.simiacryptus.ref.wrappers.RefLinkedHashMap<>();
         row.put("Image", log.png(labeledObject.data.toGrayImage(), labeledObject.label));
-        row.put("Prediction", Arrays.stream(predictionList).limit(3)
-            .mapToObj(i -> String.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
-            .reduce((a, b) -> a + ", " + b).get());
+        row.put("Prediction",
+            com.simiacryptus.ref.wrappers.RefArrays.stream(predictionList).limit(3)
+                .mapToObj(i -> String.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
+                .reduce((a, b) -> a + ", " + b).get());
         return row;
       }).filter(x -> null != x).limit(10).forEach(table::putRow);
       return table;
     });
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  MnistTestBase addRef() {
+    return (MnistTestBase) super.addRef();
   }
 }

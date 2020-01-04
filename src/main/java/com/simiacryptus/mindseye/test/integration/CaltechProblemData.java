@@ -27,9 +27,9 @@ import com.simiacryptus.util.test.LabeledObject;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class CaltechProblemData implements ImageProblemData {
+public @com.simiacryptus.ref.lang.RefAware
+class CaltechProblemData implements ImageProblemData {
 
   private final int imageSize;
   @Nullable
@@ -43,16 +43,6 @@ public class CaltechProblemData implements ImageProblemData {
     this.imageSize = imageSize;
   }
 
-  @Override
-  public Stream<LabeledObject<Tensor>> trainingData() {
-    return Caltech101.trainingDataStream().parallel().map(x -> x.map(y -> Tensor.fromRGB(ImageUtil.resize(y.get(), getImageSize()))));
-  }
-
-  @Override
-  public Stream<LabeledObject<Tensor>> validationData() {
-    return trainingData();
-  }
-
   public int getImageSize() {
     return imageSize;
   }
@@ -62,11 +52,23 @@ public class CaltechProblemData implements ImageProblemData {
     if (null == labels) {
       synchronized (this) {
         if (null == labels) {
-          labels = trainingData().map(x -> x.label).distinct().sorted().collect(Collectors.toList());
+          labels = trainingData().map(x -> x.label).distinct().sorted()
+              .collect(Collectors.toList());
         }
       }
     }
     return labels;
+  }
+
+  @Override
+  public com.simiacryptus.ref.wrappers.RefStream<LabeledObject<Tensor>> trainingData() {
+    return Caltech101.trainingDataStream().parallel()
+        .map(x -> x.map(y -> Tensor.fromRGB(ImageUtil.resize(y.get(), getImageSize()))));
+  }
+
+  @Override
+  public com.simiacryptus.ref.wrappers.RefStream<LabeledObject<Tensor>> validationData() {
+    return trainingData();
   }
 
 }

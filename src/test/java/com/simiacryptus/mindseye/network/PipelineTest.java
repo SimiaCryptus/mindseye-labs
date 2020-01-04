@@ -28,6 +28,7 @@ import com.simiacryptus.mindseye.test.unit.SerializationTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
 import com.simiacryptus.notebook.MarkdownNotebookOutput;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.util.Util;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
@@ -37,23 +38,22 @@ import org.junit.Test;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
+public abstract @com.simiacryptus.ref.lang.RefAware
+class PipelineTest extends ReferenceCountingBase {
 
-public abstract class PipelineTest {
+  final com.simiacryptus.ref.wrappers.RefList<Layer> pipeline;
 
-  final List<Layer> pipeline;
-
-
-  public PipelineTest(final List<Layer> pipeline) {
+  public PipelineTest(final com.simiacryptus.ref.wrappers.RefList<Layer> pipeline) {
     this.pipeline = pipeline;
   }
 
   public PipelineTest(final Layer... pipeline) {
-    this(Arrays.asList(pipeline));
+    this(com.simiacryptus.ref.wrappers.RefArrays.asList(pipeline));
   }
+
+  @Nonnull
+  public abstract int[] getInputDims();
 
   @Nonnull
   public Layer buildNetwork(@Nonnull final Layer... layers) {
@@ -64,15 +64,12 @@ public abstract class PipelineTest {
     return network;
   }
 
-  @Nonnull
-  public abstract int[] getInputDims();
-
   public void graphviz(@Nonnull final NotebookOutput log, final Layer layer) {
     if (layer instanceof DAGNetwork) {
       log.p("This is a network apply the following layout:");
       log.eval(() -> {
-        return Graphviz.fromGraph((Graph) TestUtil.toGraph((DAGNetwork) layer))
-            .height(400).width(600).render(Format.PNG).toImage();
+        return Graphviz.fromGraph((Graph) TestUtil.toGraph((DAGNetwork) layer)).height(400).width(600)
+            .render(Format.PNG).toImage();
       });
     }
   }
@@ -82,18 +79,21 @@ public abstract class PipelineTest {
   }
 
   public Tensor[] randomize(@Nonnull final int[][] inputDims) {
-    return Arrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random)).toArray(i -> new Tensor[i]);
+    return com.simiacryptus.ref.wrappers.RefArrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random))
+        .toArray(i -> new Tensor[i]);
   }
 
   @Test
   public void test() throws Throwable {
-    try (@Nonnull NotebookOutput log = MarkdownNotebookOutput.get(NotebookReportBase.getTestReportLocation(((Object) this).getClass(), "reports/_reports"))) {
+    try (@Nonnull
+         NotebookOutput log = MarkdownNotebookOutput
+        .get(NotebookReportBase.getTestReportLocation(((Object) this).getClass(), "reports/_reports"))) {
       test(log);
     }
   }
 
   public void test(@Nonnull final NotebookOutput log) {
-    @Nonnull final ArrayList<Layer> workingSpec = new ArrayList<>();
+    @Nonnull final com.simiacryptus.ref.wrappers.RefArrayList<Layer> workingSpec = new com.simiacryptus.ref.wrappers.RefArrayList<>();
     int layerIndex = 0;
     for (final Layer l : pipeline) {
       workingSpec.add(l);
@@ -104,11 +104,16 @@ public abstract class PipelineTest {
   }
 
   @Nullable
-  public TrainingTester.ComponentResult test(@Nonnull final NotebookOutput log, @Nonnull final Layer layer, final String header, @Nonnull final int[]... inputDims) {
+  public TrainingTester.ComponentResult test(@Nonnull final NotebookOutput log, @Nonnull final Layer layer,
+                                             final String header, @Nonnull final int[]... inputDims) {
     @Nonnull final Layer component = layer.copy();
     final Tensor[] randomize = randomize(inputDims);
     new SerializationTest().test(log, component, randomize);
     return new TrainingTester() {
+      public @SuppressWarnings("unused")
+      void _free() {
+      }
+
       @Override
       protected void printHeader(@NotNull NotebookOutput log) {
         log.h1(header);

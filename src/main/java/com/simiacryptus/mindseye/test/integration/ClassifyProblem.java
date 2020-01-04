@@ -19,7 +19,6 @@
 
 package com.simiacryptus.mindseye.test.integration;
 
-import com.google.common.collect.Lists;
 import com.simiacryptus.mindseye.eval.ArrayTrainable;
 import com.simiacryptus.mindseye.eval.SampledArrayTrainable;
 import com.simiacryptus.mindseye.lang.*;
@@ -52,7 +51,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class ClassifyProblem implements Problem {
+public @com.simiacryptus.ref.lang.RefAware
+class ClassifyProblem implements Problem {
 
   private static final Logger logger = LoggerFactory.getLogger(ClassifyProblem.class);
 
@@ -66,18 +66,29 @@ public class ClassifyProblem implements Problem {
   private int batchSize = 10000;
   private int timeoutMinutes = 1;
 
-  public ClassifyProblem(final FwdNetworkFactory fwdFactory, final OptimizationStrategy optimizer, final ImageProblemData data, final int categories) {
+  public ClassifyProblem(final FwdNetworkFactory fwdFactory, final OptimizationStrategy optimizer,
+                         final ImageProblemData data, final int categories) {
     this.fwdFactory = fwdFactory;
     this.optimizer = optimizer;
     this.data = data;
     this.categories = categories;
     try {
-      this.labels = Stream.concat(this.data.trainingData(), this.data.validationData()).map(x -> x.label).distinct().sorted().collect(Collectors.toList());
+      this.labels = Stream.concat(this.data.trainingData(), this.data.validationData())
+          .map(x -> x.label).distinct().sorted().collect(Collectors.toList());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
+  public int getBatchSize() {
+    return batchSize;
+  }
+
+  @Nonnull
+  public ClassifyProblem setBatchSize(int batchSize) {
+    this.batchSize = batchSize;
+    return this;
+  }
 
   @Nonnull
   @Override
@@ -114,7 +125,9 @@ public class ClassifyProblem implements Problem {
 
   public int[] predict(@Nonnull final Layer network, @Nonnull final LabeledObject<Tensor> labeledObject) {
     @Nullable final double[] predictionSignal = network.eval(labeledObject.data).getData().get(0).getData();
-    return IntStream.range(0, categories).mapToObj(x -> x).sorted(Comparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x).toArray();
+    return IntStream.range(0, categories).mapToObj(x -> x)
+        .sorted(Comparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x)
+        .toArray();
   }
 
   @Nonnull
@@ -126,8 +139,7 @@ public class ClassifyProblem implements Problem {
     @Nonnull final DAGNetwork network = fwdFactory.imageToVector(log, categories);
     log.h3("Network Diagram");
     log.eval(() -> {
-      return Graphviz.fromGraph((Graph) TestUtil.toGraph(network))
-          .height(400).width(600).render(Format.PNG).toImage();
+      return Graphviz.fromGraph((Graph) TestUtil.toGraph(network)).height(400).width(600).render(Format.PNG).toImage();
     });
 
     log.h3("Training");
@@ -149,10 +161,12 @@ public class ClassifyProblem implements Problem {
       });
     }
 
-    @Nonnull String training_name = log.getName() + "_" + ClassifyProblem.modelNo++ + "_plot.png";
+    @Nonnull
+    String training_name = log.getName() + "_" + ClassifyProblem.modelNo++ + "_plot.png";
     try {
       BufferedImage image = Util.toImage(TestUtil.plot(history));
-      if (null != image) ImageIO.write(image, "png", log.file(training_name));
+      if (null != image)
+        ImageIO.write(image, "png", log.file(training_name));
     } catch (IOException e) {
       logger.warn("Error writing result images", e);
     }
@@ -166,8 +180,8 @@ public class ClassifyProblem implements Problem {
     log.h3("Validation");
     log.p("If we apply our model against the entire validation dataset, we get this accuracy:");
     log.eval(() -> {
-      return data.validationData().mapToDouble(labeledObject ->
-          predict(network, labeledObject)[0] == parse(labeledObject.label) ? 1 : 0)
+      return data.validationData()
+          .mapToDouble(labeledObject -> predict(network, labeledObject)[0] == parse(labeledObject.label) ? 1 : 0)
           .average().getAsDouble() * 100;
     });
 
@@ -175,8 +189,11 @@ public class ClassifyProblem implements Problem {
     log.eval(() -> {
       try {
         @Nonnull final TableOutput table = new TableOutput();
-        Lists.partition(data.validationData().collect(Collectors.toList()), 100).stream().flatMap(batch -> {
-          @Nonnull TensorList batchIn = new TensorArray(batch.stream().map(x -> x.data).toArray(i1 -> new Tensor[i1]));
+        com.simiacryptus.ref.wrappers.RefLists
+            .partition(data.validationData().collect(com.simiacryptus.ref.wrappers.RefCollectors.toList()), 100)
+            .stream().flatMap(batch -> {
+          @Nonnull
+          TensorList batchIn = new TensorArray(batch.stream().map(x -> x.data).toArray(i1 -> new Tensor[i1]));
           TensorList batchOut = network.eval(new ConstantResult(batchIn)).getData();
           return IntStream.range(0, batchOut.length())
               .mapToObj(i -> toRow(log, batch.get(i), batchOut.get(i).getData()));
@@ -190,25 +207,20 @@ public class ClassifyProblem implements Problem {
   }
 
   @Nullable
-  public LinkedHashMap<CharSequence, Object> toRow(@Nonnull final NotebookOutput log, @Nonnull final LabeledObject<Tensor> labeledObject, final double[] predictionSignal) {
+  public LinkedHashMap<CharSequence, Object> toRow(@Nonnull final NotebookOutput log,
+                                                   @Nonnull final LabeledObject<Tensor> labeledObject, final double[] predictionSignal) {
     final int actualCategory = parse(labeledObject.label);
-    final int[] predictionList = IntStream.range(0, categories).mapToObj(x -> x).sorted(Comparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x).toArray();
-    if (predictionList[0] == actualCategory) return null; // We will only examine mispredicted rows
+    final int[] predictionList = IntStream.range(0, categories).mapToObj(x -> x)
+        .sorted(Comparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x)
+        .toArray();
+    if (predictionList[0] == actualCategory)
+      return null; // We will only examine mispredicted rows
     @Nonnull final LinkedHashMap<CharSequence, Object> row = new LinkedHashMap<>();
     row.put("Image", log.png(labeledObject.data.toImage(), labeledObject.label));
-    row.put("Prediction", Arrays.stream(predictionList).limit(3)
-        .mapToObj(i -> String.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
-        .reduce((a, b) -> a + ", " + b).get());
+    row.put("Prediction",
+        Arrays.stream(predictionList).limit(3)
+            .mapToObj(i -> String.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i])).reduce((a, b) -> a + ", " + b)
+            .get());
     return row;
-  }
-
-  public int getBatchSize() {
-    return batchSize;
-  }
-
-  @Nonnull
-  public ClassifyProblem setBatchSize(int batchSize) {
-    this.batchSize = batchSize;
-    return this;
   }
 }

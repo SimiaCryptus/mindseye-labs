@@ -44,23 +44,25 @@ import java.awt.*;
 import java.util.List;
 import java.util.function.Function;
 
-public class Research extends OptimizerComparison {
+public @com.simiacryptus.ref.lang.RefAware
+class Research extends OptimizerComparison {
 
   @Nonnull
   public static OptimizationStrategy recursive_subspace = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Recursive Subspace method:");
     return log.eval(() -> {
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
-          .setMonitor(monitor);
-      trainer.getRegimen().get(0)
-          .setOrientation(new RecursiveSubspace() {
-            @Override
-            public void train(@NotNull TrainingMonitor monitor, Layer subspace) {
-              //new SingleDerivativeTester(1e-3,1e-4).apply(subspace, new Tensor[]{new Tensor()});
-              super.train(monitor, subspace);
-            }
-          })
-          .setLineSearchFactory(name -> new StaticLearningRate(1.0));
+      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject).setMonitor(monitor);
+      trainer.getRegimen().get(0).setOrientation(new RecursiveSubspace() {
+        @Override
+        public void train(@NotNull TrainingMonitor monitor, Layer subspace) {
+          //new SingleDerivativeTester(1e-3,1e-4).apply(subspace, new Tensor[]{new Tensor()});
+          super.train(monitor, subspace);
+        }
+
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      }).setLineSearchFactory(name -> new StaticLearningRate(1.0));
       return trainer;
     });
   };
@@ -68,28 +70,27 @@ public class Research extends OptimizerComparison {
   public static OptimizationStrategy recursive_subspace_2 = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Recursive Subspace method:");
     return log.eval(() -> {
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
-          .setMonitor(monitor);
-      trainer.getRegimen().get(0)
-          .setOrientation(new RecursiveSubspace() {
-            @Override
-            public void train(@NotNull TrainingMonitor monitor, Layer subspace) {
-              //new SingleDerivativeTester(1e-3,1e-4).apply(subspace, new Tensor[]{new Tensor()});
-              @Nonnull ArrayTrainable trainable = new ArrayTrainable(new BasicTrainable(subspace), new Tensor[][]{{new Tensor()}});
-              new IterativeTrainer(trainable)
-                            .setOrientation(new QQN())
-                            .setLineSearchFactory(n -> new QuadraticSearch())
-                            .setMonitor(new TrainingMonitor() {
-                              @Override
-                              public void log(String msg) {
-                                monitor.log("\t" + msg);
-                              }
-                            })
-                            .setMaxIterations(getIterations())
-                            .setIterationsPerSample(getIterations()).run();
-            }
-          })
-          .setLineSearchFactory(name -> new StaticLearningRate(1.0));
+      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject).setMonitor(monitor);
+      trainer.getRegimen().get(0).setOrientation(new RecursiveSubspace() {
+        @Override
+        public void train(@NotNull TrainingMonitor monitor, Layer subspace) {
+          //new SingleDerivativeTester(1e-3,1e-4).apply(subspace, new Tensor[]{new Tensor()});
+          @Nonnull
+          ArrayTrainable trainable = new ArrayTrainable(new BasicTrainable(subspace),
+              new Tensor[][]{{new Tensor()}});
+          new IterativeTrainer(trainable).setOrientation(new QQN()).setLineSearchFactory(n -> new QuadraticSearch())
+              .setMonitor(new TrainingMonitor() {
+                @Override
+                public void log(String msg) {
+                  monitor.log("\t" + msg);
+                }
+              }).setMaxIterations(getIterations()).setIterationsPerSample(getIterations()).run();
+        }
+
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+      }).setLineSearchFactory(name -> new StaticLearningRate(1.0));
       return trainer;
     });
   };
@@ -98,13 +99,9 @@ public class Research extends OptimizerComparison {
   public static OptimizationStrategy quadratic_quasi_newton = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Quadratic Quasi-Newton method:");
     return log.eval(() -> {
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
-          .setMonitor(monitor);
-      trainer.getRegimen().get(0)
-          .setOrientation(new QQN())
-          .setLineSearchFactory(name -> new QuadraticSearch()
-              .setCurrentRate(name.toString().contains("QQN") ? 1.0 : 1e-6)
-              .setRelativeTolerance(2e-1));
+      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject).setMonitor(monitor);
+      trainer.getRegimen().get(0).setOrientation(new QQN()).setLineSearchFactory(name -> new QuadraticSearch()
+          .setCurrentRate(name.toString().contains("QQN") ? 1.0 : 1e-6).setRelativeTolerance(2e-1));
       return trainer;
     });
   };
@@ -114,12 +111,9 @@ public class Research extends OptimizerComparison {
     log.p("Optimized via the Limited-Memory BFGS method:");
     return log.eval(() -> {
       @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
-          .setMinTrainingSize(Integer.MAX_VALUE)
-          .setMonitor(monitor);
-      trainer.getRegimen().get(0)
-          .setOrientation(new LBFGS())
-          .setLineSearchFactory(name -> new QuadraticSearch()
-              .setCurrentRate(name.toString().contains("LBFGS") ? 1.0 : 1e-6));
+          .setMinTrainingSize(Integer.MAX_VALUE).setMonitor(monitor);
+      trainer.getRegimen().get(0).setOrientation(new LBFGS()).setLineSearchFactory(
+          name -> new QuadraticSearch().setCurrentRate(name.toString().contains("LBFGS") ? 1.0 : 1e-6));
       return trainer;
     });
   };
@@ -128,8 +122,25 @@ public class Research extends OptimizerComparison {
     super(MnistTests.fwd_conv_1, MnistTests.rev_conv_1, new MnistProblemData());
   }
 
+  public static @SuppressWarnings("unused")
+  Research[] addRefs(Research[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(Research::addRef)
+        .toArray((x) -> new Research[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  Research[][] addRefs(Research[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(Research::addRefs)
+        .toArray((x) -> new Research[x][]);
+  }
+
   @Override
-  public void compare(@Nonnull final NotebookOutput log, @Nonnull final Function<OptimizationStrategy, List<StepRecord>> test) {
+  public void compare(@Nonnull final NotebookOutput log,
+                      @Nonnull final Function<OptimizationStrategy, List<StepRecord>> test) {
     log.h1("Research Optimizer Comparison");
 
     log.h2("Recursive Subspace (Un-Normalized)");
@@ -159,8 +170,8 @@ public class Research extends OptimizerComparison {
 
     log.h2("L-BFGS-0 (Un-Normalized)");
     fwdFactory = MnistTests.fwd_conv_1;
-    @Nonnull final ProblemRun rawlbfgs = new ProblemRun("LBFGS-0", test.apply(TextbookOptimizers.limited_memory_bfgs), Color.CYAN,
-        ProblemRun.PlotType.Line);
+    @Nonnull final ProblemRun rawlbfgs = new ProblemRun("LBFGS-0", test.apply(TextbookOptimizers.limited_memory_bfgs),
+        Color.CYAN, ProblemRun.PlotType.Line);
 
     log.h2("Comparison");
     log.eval(() -> {
@@ -169,6 +180,16 @@ public class Research extends OptimizerComparison {
     log.eval(() -> {
       return TestUtil.compareTime("Convergence Plot", subspace_1, subspace_2, rawlbfgs, lbfgs_1, lbfgs_2, qqn1);
     });
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  Research addRef() {
+    return (Research) super.addRef();
   }
 
 }

@@ -23,7 +23,8 @@ import com.simiacryptus.notebook.NotebookOutput;
 
 import javax.annotation.Nonnull;
 
-public abstract class FindFeatureSpace {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class FindFeatureSpace {
   public final int inputBands;
   public final NotebookOutput log;
 

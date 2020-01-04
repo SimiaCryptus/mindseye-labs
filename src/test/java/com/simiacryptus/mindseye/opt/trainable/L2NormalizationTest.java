@@ -35,14 +35,39 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
-public class L2NormalizationTest extends MnistTestBase {
+public @com.simiacryptus.ref.lang.RefAware
+class L2NormalizationTest extends MnistTestBase {
+
+  @Nonnull
+  @Override
+  protected Class<?> getTargetClass() {
+    return L12Normalizer.class;
+  }
+
+  public static @SuppressWarnings("unused")
+  L2NormalizationTest[] addRefs(L2NormalizationTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(L2NormalizationTest::addRef)
+        .toArray((x) -> new L2NormalizationTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  L2NormalizationTest[][] addRefs(L2NormalizationTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(L2NormalizationTest::addRefs)
+        .toArray((x) -> new L2NormalizationTest[x][]);
+  }
 
   @Override
-  public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network, @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
-    log.p("Training a model involves a few different components. First, our model is combined mapCoords a loss function. " +
-        "Then we take that model and combine it mapCoords our training data to define a trainable object. " +
-        "Finally, we use a simple iterative scheme to refine the weights of our model. " +
-        "The final output is the last output value of the loss function when evaluating the last batch.");
+  public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
+                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+    log.p(
+        "Training a model involves a few different components. First, our model is combined mapCoords a loss function. "
+            + "Then we take that model and combine it mapCoords our training data to define a trainable object. "
+            + "Finally, we use a simple iterative scheme to refine the weights of our model. "
+            + "The final output is the last output value of the loss function when evaluating the last batch.");
     log.eval(() -> {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       @Nonnull final Trainable trainable = new L12Normalizer(new SampledArrayTrainable(trainingData, supervisedNetwork, 1000)) {
@@ -50,6 +75,10 @@ public class L2NormalizationTest extends MnistTestBase {
         @Override
         public Layer getLayer() {
           return inner.getLayer();
+        }
+
+        public @SuppressWarnings("unused")
+        void _free() {
         }
 
         @Override
@@ -62,16 +91,18 @@ public class L2NormalizationTest extends MnistTestBase {
           return 1e4;
         }
       };
-      return new IterativeTrainer(trainable)
-            .setMonitor(monitor)
-            .setTimeout(3, TimeUnit.MINUTES)
-            .setMaxIterations(500).run();
+      return new IterativeTrainer(trainable).setMonitor(monitor).setTimeout(3, TimeUnit.MINUTES).setMaxIterations(500)
+          .run();
     });
   }
 
-  @Nonnull
-  @Override
-  protected Class<?> getTargetClass() {
-    return L12Normalizer.class;
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  L2NormalizationTest addRef() {
+    return (L2NormalizationTest) super.addRef();
   }
 }

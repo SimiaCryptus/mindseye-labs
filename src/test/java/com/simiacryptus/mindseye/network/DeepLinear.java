@@ -28,17 +28,11 @@ import com.simiacryptus.util.Util;
 
 import javax.annotation.Nonnull;
 
-public abstract class DeepLinear extends NLayerTest {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class DeepLinear extends NLayerTest {
 
   public DeepLinear(final int[]... dimList) {
     super(dimList);
-  }
-
-  @Override
-  public void addLayer(@Nonnull final PipelineNetwork network, @Nonnull final int[] in, @Nonnull final int[] dims) {
-    network.add(new FullyConnectedLayer(in, dims).set(this::random)).freeRef();
-    network.add(new BiasLayer(dims)).freeRef();
-    network.add(getActivation()).freeRef();
   }
 
   @Nonnull
@@ -53,30 +47,29 @@ public abstract class DeepLinear extends NLayerTest {
   }
 
   @Override
+  public void addLayer(@Nonnull final PipelineNetwork network, @Nonnull final int[] in, @Nonnull final int[] dims) {
+    network.add(new FullyConnectedLayer(in, dims).set(this::random)).freeRef();
+    network.add(new BiasLayer(dims)).freeRef();
+    network.add(getActivation()).freeRef();
+  }
+
+  @Override
   public double random() {
     return 0.1 * Math.round(1000.0 * (Util.R.get().nextDouble() - 0.5)) / 500.0;
   }
 
-  public static class NarrowingPipeline extends DeepLinear {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class NarrowingPipeline extends DeepLinear {
     public NarrowingPipeline() {
-      super(
-          new int[]{4, 4, 2},
-          new int[]{3, 3, 1},
-          new int[]{2, 2, 1},
-          new int[]{2, 2, 1}
-      );
+      super(new int[]{4, 4, 2}, new int[]{3, 3, 1}, new int[]{2, 2, 1}, new int[]{2, 2, 1});
     }
 
   }
 
-  public static class SigmoidPipeline extends DeepLinear {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class SigmoidPipeline extends DeepLinear {
     public SigmoidPipeline() {
-      super(
-          new int[]{10},
-          new int[]{10},
-          new int[]{10},
-          new int[]{10}
-      );
+      super(new int[]{10}, new int[]{10}, new int[]{10}, new int[]{10});
     }
 
     @Nonnull
@@ -87,14 +80,10 @@ public abstract class DeepLinear extends NLayerTest {
 
   }
 
-  public static class UniformPipeline extends DeepLinear {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class UniformPipeline extends DeepLinear {
     public UniformPipeline() {
-      super(
-          new int[]{10},
-          new int[]{10},
-          new int[]{10},
-          new int[]{10}
-      );
+      super(new int[]{10}, new int[]{10}, new int[]{10}, new int[]{10});
     }
 
   }

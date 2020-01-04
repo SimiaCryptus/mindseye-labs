@@ -33,24 +33,51 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
-public class MomentumTest extends MnistTestBase {
-
-  @Override
-  public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network, @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
-    log.eval(() -> {
-      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
-      return new IterativeTrainer(trainable)
-            .setMonitor(monitor)
-            .setOrientation(new ValidatingOrientationWrapper(new MomentumStrategy(new GradientDescent()).setCarryOver(0.8)))
-            .setTimeout(5, TimeUnit.MINUTES)
-            .setMaxIterations(500).run();
-    });
-  }
+public @com.simiacryptus.ref.lang.RefAware
+class MomentumTest extends MnistTestBase {
 
   @Nonnull
   @Override
   protected Class<?> getTargetClass() {
     return MomentumStrategy.class;
+  }
+
+  public static @SuppressWarnings("unused")
+  MomentumTest[] addRefs(MomentumTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MomentumTest::addRef)
+        .toArray((x) -> new MomentumTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  MomentumTest[][] addRefs(MomentumTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MomentumTest::addRefs)
+        .toArray((x) -> new MomentumTest[x][]);
+  }
+
+  @Override
+  public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
+                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+    log.eval(() -> {
+      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
+      return new IterativeTrainer(trainable).setMonitor(monitor)
+          .setOrientation(
+              new ValidatingOrientationWrapper(new MomentumStrategy(new GradientDescent()).setCarryOver(0.8)))
+          .setTimeout(5, TimeUnit.MINUTES).setMaxIterations(500).run();
+    });
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  MomentumTest addRef() {
+    return (MomentumTest) super.addRef();
   }
 }

@@ -31,23 +31,48 @@ import org.junit.experimental.categories.Category;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AllTrainingTests extends NotebookReportBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class AllTrainingTests extends NotebookReportBase {
   protected final FwdNetworkFactory fwdFactory;
   protected final OptimizationStrategy optimizationStrategy;
   protected final RevNetworkFactory revFactory;
   protected int timeoutMinutes = 10;
   protected int batchSize = 1000;
 
-  public AllTrainingTests(final FwdNetworkFactory fwdFactory, final RevNetworkFactory revFactory, final OptimizationStrategy optimizationStrategy) {
+  public AllTrainingTests(final FwdNetworkFactory fwdFactory, final RevNetworkFactory revFactory,
+                          final OptimizationStrategy optimizationStrategy) {
     this.fwdFactory = fwdFactory;
     this.revFactory = revFactory;
     this.optimizationStrategy = optimizationStrategy;
   }
 
+  @Nonnull
+  public abstract ImageProblemData getData();
+
+  @Nonnull
+  public abstract CharSequence getDatasetName();
+
+  public static @SuppressWarnings("unused")
+  AllTrainingTests[] addRefs(AllTrainingTests[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AllTrainingTests::addRef)
+        .toArray((x) -> new AllTrainingTests[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  AllTrainingTests[][] addRefs(AllTrainingTests[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AllTrainingTests::addRefs)
+        .toArray((x) -> new AllTrainingTests[x][]);
+  }
+
   public void autoencoder_test(@Nonnull NotebookOutput log) {
     log.h1(getDatasetName() + " Denoising Autoencoder");
     intro(log);
-    new AutoencodingProblem(fwdFactory, optimizationStrategy, revFactory, getData(), 100, 0.8).setTimeoutMinutes(timeoutMinutes).run(log);
+    new AutoencodingProblem(fwdFactory, optimizationStrategy, revFactory, getData(), 100, 0.8)
+        .setTimeoutMinutes(timeoutMinutes).run(log);
   }
 
   @Test
@@ -66,7 +91,8 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   public void classification_test(@Nonnull NotebookOutput log) {
     log.h1(getDatasetName() + " Denoising Autoencoder");
     intro(log);
-    new ClassifyProblem(fwdFactory, optimizationStrategy, getData(), 100).setBatchSize(batchSize).setTimeoutMinutes(timeoutMinutes).run(log);
+    new ClassifyProblem(fwdFactory, optimizationStrategy, getData(), 100).setBatchSize(batchSize)
+        .setTimeoutMinutes(timeoutMinutes).run(log);
   }
 
   @Test
@@ -84,20 +110,27 @@ public abstract class AllTrainingTests extends NotebookReportBase {
 
   @Override
   public void printHeader(@NotNull NotebookOutput log) {
-    @Nullable CharSequence fwdFactory_javadoc = printHeader(log, fwdFactory.getClass(), "fwd");
-    @Nullable CharSequence optimizationStrategy_javadoc = printHeader(log, optimizationStrategy.getClass(), "opt");
-    @Nullable CharSequence revFactory_javadoc = printHeader(log, revFactory.getClass(), "rev");
+    @Nullable
+    CharSequence fwdFactory_javadoc = printHeader(log, fwdFactory.getClass(), "fwd");
+    @Nullable
+    CharSequence optimizationStrategy_javadoc = printHeader(log, optimizationStrategy.getClass(), "opt");
+    @Nullable
+    CharSequence revFactory_javadoc = printHeader(log, revFactory.getClass(), "rev");
     super.printHeader(log);
     log.p("_Forward Strategy Javadoc_: " + fwdFactory_javadoc);
     log.p("_Reverse Strategy Javadoc_: " + revFactory_javadoc);
     log.p("_Optimization Strategy Javadoc_: " + optimizationStrategy_javadoc);
   }
 
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  AllTrainingTests addRef() {
+    return (AllTrainingTests) super.addRef();
+  }
+
   protected abstract void intro(NotebookOutput log);
-
-  @Nonnull
-  public abstract ImageProblemData getData();
-
-  @Nonnull
-  public abstract CharSequence getDatasetName();
 }

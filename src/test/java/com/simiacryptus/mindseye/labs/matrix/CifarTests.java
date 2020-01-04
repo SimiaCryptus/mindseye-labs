@@ -32,7 +32,8 @@ import com.simiacryptus.notebook.NotebookOutput;
 
 import javax.annotation.Nonnull;
 
-public class CifarTests {
+public @com.simiacryptus.ref.lang.RefAware
+class CifarTests {
 
   @Nonnull
   public static FwdNetworkFactory fwd_conv_1 = (log, features) -> {
@@ -69,8 +70,7 @@ public class CifarTests {
       network.add(new FullyConnectedLayer(new int[]{features}, new int[]{32, 32, 5})
           .set(() -> 0.25 * (Math.random() - 0.5)));
       network.add(new ReLuActivationLayer());
-      network.add(new ConvolutionLayer(3, 3, 5, 3)
-          .set(i -> 1e-8 * (Math.random() - 0.5)));
+      network.add(new ConvolutionLayer(3, 3, 5, 3).set(i -> 1e-8 * (Math.random() - 0.5)));
       network.add(new BiasLayer(32, 32, 3));
       network.add(new ReLuActivationLayer());
       return network;
@@ -88,21 +88,11 @@ public class CifarTests {
     });
   };
 
-  public abstract static class All_CIFAR_Tests extends AllTrainingTests {
-    public All_CIFAR_Tests(final OptimizationStrategy optimizationStrategy, final RevNetworkFactory revFactory, final FwdNetworkFactory fwdFactory) {
+  public abstract static @com.simiacryptus.ref.lang.RefAware
+  class All_CIFAR_Tests extends AllTrainingTests {
+    public All_CIFAR_Tests(final OptimizationStrategy optimizationStrategy, final RevNetworkFactory revFactory,
+                           final FwdNetworkFactory fwdFactory) {
       super(fwdFactory, revFactory, optimizationStrategy);
-    }
-
-    @Nonnull
-    @Override
-    protected Class<?> getTargetClass() {
-      return CIFAR10.class;
-    }
-
-    @Nonnull
-    @Override
-    public ReportType getReportType() {
-      return ReportType.Experiments;
     }
 
     @Nonnull
@@ -116,24 +106,90 @@ public class CifarTests {
     public CharSequence getDatasetName() {
       return "CIFAR10";
     }
+
+    @Nonnull
+    @Override
+    public ReportType getReportType() {
+      return ReportType.Experiments;
+    }
+
+    @Nonnull
+    @Override
+    protected Class<?> getTargetClass() {
+      return CIFAR10.class;
+    }
+
+    public static @SuppressWarnings("unused")
+    All_CIFAR_Tests[] addRefs(All_CIFAR_Tests[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(All_CIFAR_Tests::addRef)
+          .toArray((x) -> new All_CIFAR_Tests[x]);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    All_CIFAR_Tests addRef() {
+      return (All_CIFAR_Tests) super.addRef();
+    }
   }
 
-  public static class OWL_QN extends All_CIFAR_Tests {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class OWL_QN extends All_CIFAR_Tests {
     public OWL_QN() {
       super(TextbookOptimizers.orthantwise_quasi_newton, CifarTests.rev_conv_1, CifarTests.fwd_conv_1);
     }
 
+    public static @SuppressWarnings("unused")
+    OWL_QN[] addRefs(OWL_QN[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(OWL_QN::addRef).toArray((x) -> new OWL_QN[x]);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    OWL_QN addRef() {
+      return (OWL_QN) super.addRef();
+    }
+
     @Override
     protected void intro(@Nonnull final NotebookOutput log) {
       log.p("");
     }
   }
 
-  public static class QQN extends All_CIFAR_Tests {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class QQN extends All_CIFAR_Tests {
     public QQN() {
       super(Research.quadratic_quasi_newton, CifarTests.rev_conv_1, CifarTests.fwd_conv_1);
     }
 
+    public static @SuppressWarnings("unused")
+    QQN[] addRefs(QQN[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    QQN addRef() {
+      return (QQN) super.addRef();
+    }
+
     @Override
     protected void intro(@Nonnull final NotebookOutput log) {
       log.p("");
@@ -141,9 +197,27 @@ public class CifarTests {
 
   }
 
-  public static class SGD extends All_CIFAR_Tests {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class SGD extends All_CIFAR_Tests {
     public SGD() {
       super(TextbookOptimizers.stochastic_gradient_descent, CifarTests.rev_linear_1, CifarTests.fwd_linear_1);
+    }
+
+    public static @SuppressWarnings("unused")
+    SGD[] addRefs(SGD[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(SGD::addRef).toArray((x) -> new SGD[x]);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    SGD addRef() {
+      return (SGD) super.addRef();
     }
 
     @Override

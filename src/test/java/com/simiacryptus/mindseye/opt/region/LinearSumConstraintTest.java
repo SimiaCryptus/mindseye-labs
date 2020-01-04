@@ -34,10 +34,34 @@ import com.simiacryptus.notebook.NotebookOutput;
 import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
-public class LinearSumConstraintTest extends MnistTestBase {
+public @com.simiacryptus.ref.lang.RefAware
+class LinearSumConstraintTest extends MnistTestBase {
+
+  @Nonnull
+  @Override
+  protected Class<?> getTargetClass() {
+    return LinearSumConstraint.class;
+  }
+
+  public static @SuppressWarnings("unused")
+  LinearSumConstraintTest[] addRefs(LinearSumConstraintTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LinearSumConstraintTest::addRef)
+        .toArray((x) -> new LinearSumConstraintTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  LinearSumConstraintTest[][] addRefs(LinearSumConstraintTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LinearSumConstraintTest::addRefs)
+        .toArray((x) -> new LinearSumConstraintTest[x][]);
+  }
 
   @Override
-  public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network, @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+  public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
+                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 10000);
@@ -46,21 +70,25 @@ public class LinearSumConstraintTest extends MnistTestBase {
         public TrustRegion getRegionPolicy(final Layer layer) {
           return new LinearSumConstraint();
         }
+
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
       };
       //.setOrientation(new ValidatingOrientationWrapper(trustRegionStrategy))
-      return new IterativeTrainer(trainable)
-            .setIterationsPerSample(100)
-            .setMonitor(monitor)
-            //.setOrientation(new ValidatingOrientationWrapper(trustRegionStrategy))
-            .setOrientation(trustRegionStrategy)
-            .setTimeout(3, TimeUnit.MINUTES)
-            .setMaxIterations(500).run();
+      return new IterativeTrainer(trainable).setIterationsPerSample(100).setMonitor(monitor)
+          //.setOrientation(new ValidatingOrientationWrapper(trustRegionStrategy))
+          .setOrientation(trustRegionStrategy).setTimeout(3, TimeUnit.MINUTES).setMaxIterations(500).run();
     });
   }
 
-  @Nonnull
-  @Override
-  protected Class<?> getTargetClass() {
-    return LinearSumConstraint.class;
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  LinearSumConstraintTest addRef() {
+    return (LinearSumConstraintTest) super.addRef();
   }
 }

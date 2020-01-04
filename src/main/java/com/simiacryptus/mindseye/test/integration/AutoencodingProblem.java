@@ -47,7 +47,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class AutoencodingProblem implements Problem {
+public @com.simiacryptus.ref.lang.RefAware
+class AutoencodingProblem implements Problem {
 
   private static int modelNo = 0;
 
@@ -62,7 +63,8 @@ public class AutoencodingProblem implements Problem {
   private final RevNetworkFactory revFactory;
   private int timeoutMinutes = 1;
 
-  public AutoencodingProblem(final FwdNetworkFactory fwdFactory, final OptimizationStrategy optimizer, final RevNetworkFactory revFactory, final ImageProblemData data, final int features, final double dropout) {
+  public AutoencodingProblem(final FwdNetworkFactory fwdFactory, final OptimizationStrategy optimizer,
+                             final RevNetworkFactory revFactory, final ImageProblemData data, final int features, final double dropout) {
     this.fwdFactory = fwdFactory;
     this.optimizer = optimizer;
     this.revFactory = revFactory;
@@ -121,16 +123,16 @@ public class AutoencodingProblem implements Problem {
 
     log.h3("Network Diagrams");
     log.eval(() -> {
-      return Graphviz.fromGraph((Graph) TestUtil.toGraph(fwdNetwork))
-          .height(400).width(600).render(Format.PNG).toImage();
+      return Graphviz.fromGraph((Graph) TestUtil.toGraph(fwdNetwork)).height(400).width(600).render(Format.PNG)
+          .toImage();
     });
     log.eval(() -> {
-      return Graphviz.fromGraph((Graph) TestUtil.toGraph(revNetwork))
-          .height(400).width(600).render(Format.PNG).toImage();
+      return Graphviz.fromGraph((Graph) TestUtil.toGraph(revNetwork)).height(400).width(600).render(Format.PNG)
+          .toImage();
     });
     log.eval(() -> {
-      return Graphviz.fromGraph((Graph) TestUtil.toGraph(supervisedNetwork))
-          .height(400).width(600).render(Format.PNG).toImage();
+      return Graphviz.fromGraph((Graph) TestUtil.toGraph(supervisedNetwork)).height(400).width(600).render(Format.PNG)
+          .toImage();
     });
 
     @Nonnull final TrainingMonitor monitor = new TrainingMonitor() {
@@ -179,10 +181,10 @@ public class AutoencodingProblem implements Problem {
     @Nonnull final String modelName = "decoder_model" + AutoencodingProblem.modelNo++ + ".json";
     log.p("Saved model as " + log.file(revNetwork.getJson().toString(), modelName, modelName));
 
-//    log.h3("Metrics");
-//    log.run(() -> {
-//      return TestUtil.toFormattedJson(monitoringRoot.getMetrics());
-//    });
+    //    log.h3("Metrics");
+    //    log.run(() -> {
+    //      return TestUtil.toFormattedJson(monitoringRoot.getMetrics());
+    //    });
 
     log.h3("Validation");
 
@@ -205,10 +207,12 @@ public class AutoencodingProblem implements Problem {
   }
 
   @Nonnull
-  public LinkedHashMap<CharSequence, Object> toRow(@Nonnull final NotebookOutput log, @Nonnull final LabeledObject<Tensor> labeledObject, final double[] predictionSignal) {
+  public LinkedHashMap<CharSequence, Object> toRow(@Nonnull final NotebookOutput log,
+                                                   @Nonnull final LabeledObject<Tensor> labeledObject, final double[] predictionSignal) {
     @Nonnull final LinkedHashMap<CharSequence, Object> row = new LinkedHashMap<>();
     row.put("Image", log.png(labeledObject.data.toImage(), labeledObject.label));
-    row.put("Echo", log.png(new Tensor(predictionSignal, labeledObject.data.getDimensions()).toImage(), labeledObject.label));
+    row.put("Echo",
+        log.png(new Tensor(predictionSignal, labeledObject.data.getDimensions()).toImage(), labeledObject.label));
     return row;
   }
 }

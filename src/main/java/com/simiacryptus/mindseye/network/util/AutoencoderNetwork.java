@@ -34,16 +34,14 @@ import com.simiacryptus.mindseye.opt.line.ArmijoWolfeSearch;
 import com.simiacryptus.mindseye.opt.line.LineSearchStrategy;
 import com.simiacryptus.mindseye.opt.orient.LBFGS;
 import com.simiacryptus.mindseye.opt.orient.OrientationStrategy;
+import com.simiacryptus.ref.lang.ReferenceCountingBase;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
-public class AutoencoderNetwork {
+public @com.simiacryptus.ref.lang.RefAware
+class AutoencoderNetwork extends ReferenceCountingBase {
 
   @Nonnull
   private final PipelineNetwork decoder;
@@ -78,7 +76,8 @@ public class AutoencoderNetwork {
 
     inputNoise = new GaussianNoiseLayer().setValue(networkParameters.getNoise());
     encoderSynapse = new FullyConnectedLayer(outerSize, innerSize);
-    encoderSynapse.initSpacial(networkParameters.getInitRadius(), networkParameters.getInitStiffness(), networkParameters.getInitPeak());
+    encoderSynapse.initSpacial(networkParameters.getInitRadius(), networkParameters.getInitStiffness(),
+        networkParameters.getInitPeak());
     encoderBias = new BiasLayer(innerSize).setWeights(i -> 0.0);
     encoderActivation = (ReLuActivationLayer) new ReLuActivationLayer().freeze();
     encodedNoise = new DropoutNoiseLayer().setValue(networkParameters.getDropout());
@@ -98,17 +97,6 @@ public class AutoencoderNetwork {
     decoder.add(decoderSynapsePlaceholder);
     decoder.add(decoderBias);
     decoder.add(decoderActivation);
-  }
-
-  public static AutoencoderNetwork.Builder newLayer(final int[] outerSize, final int[] innerSize) {
-    return new AutoencoderNetwork.Builder(outerSize, innerSize);
-  }
-
-  public TensorList encode(@Nonnull final TensorList data) {
-    Layer layer = encoder.getLayer();
-    TensorList tensorList = layer.eval(ConstantResult.batchResultArray(data.stream().map(x -> new Tensor[]{x}).toArray(i -> new Tensor[i][]))).getData();
-    layer.freeRef();
-    return tensorList;
   }
 
   @Nonnull
@@ -168,6 +156,35 @@ public class AutoencoderNetwork {
     return outerSize;
   }
 
+  public static AutoencoderNetwork.Builder newLayer(final int[] outerSize, final int[] innerSize) {
+    return new AutoencoderNetwork.Builder(outerSize, innerSize);
+  }
+
+  public static @SuppressWarnings("unused")
+  AutoencoderNetwork[] addRefs(AutoencoderNetwork[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AutoencoderNetwork::addRef)
+        .toArray((x) -> new AutoencoderNetwork[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  AutoencoderNetwork[][] addRefs(AutoencoderNetwork[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AutoencoderNetwork::addRefs)
+        .toArray((x) -> new AutoencoderNetwork[x][]);
+  }
+
+  public TensorList encode(@Nonnull final TensorList data) {
+    Layer layer = encoder.getLayer();
+    TensorList tensorList = layer
+        .eval(ConstantResult.batchResultArray(data.stream().map(x -> new Tensor[]{x}).toArray(i -> new Tensor[i][])))
+        .getData();
+    layer.freeRef();
+    return tensorList;
+  }
+
   public void runMode() {
     inputNoise.setValue(0.0);
     encodedNoise.setValue(0.0);
@@ -183,6 +200,10 @@ public class AutoencoderNetwork {
         student.add(encoder);
         student.add(decoder);
         return new SimpleLossNetwork(student, new MeanSqLossLayer());
+      }
+
+      public @SuppressWarnings("unused")
+      void _free() {
       }
 
       @Nonnull
@@ -208,7 +229,18 @@ public class AutoencoderNetwork {
     encodedNoise.setValue(networkParameters.getDropout());
   }
 
-  public static class Builder {
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  AutoencoderNetwork addRef() {
+    return (AutoencoderNetwork) super.addRef();
+  }
+
+  public static @com.simiacryptus.ref.lang.RefAware
+  class Builder {
 
     private final int[] innerSize;
     private final int[] outerSize;
@@ -221,11 +253,6 @@ public class AutoencoderNetwork {
     private Builder(final int[] outerSize, final int[] innerSize) {
       this.outerSize = outerSize;
       this.innerSize = innerSize;
-    }
-
-    @Nonnull
-    public AutoencoderNetwork build() {
-      return new AutoencoderNetwork(AutoencoderNetwork.Builder.this);
     }
 
     public double getDropout() {
@@ -285,33 +312,23 @@ public class AutoencoderNetwork {
     public int[] getOuterSize() {
       return outerSize;
     }
+
+    @Nonnull
+    public AutoencoderNetwork build() {
+      return new AutoencoderNetwork(AutoencoderNetwork.Builder.this);
+    }
   }
 
-  public static class RecursiveBuilder {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class RecursiveBuilder extends ReferenceCountingBase {
 
-    private final List<int[]> dimensions = new ArrayList<>();
-    private final List<AutoencoderNetwork> layers = new ArrayList<>();
-    private final List<TensorList> representations = new ArrayList<>();
+    private final com.simiacryptus.ref.wrappers.RefList<int[]> dimensions = new com.simiacryptus.ref.wrappers.RefArrayList<>();
+    private final com.simiacryptus.ref.wrappers.RefList<AutoencoderNetwork> layers = new com.simiacryptus.ref.wrappers.RefArrayList<>();
+    private final com.simiacryptus.ref.wrappers.RefList<TensorList> representations = new com.simiacryptus.ref.wrappers.RefArrayList<>();
 
     public RecursiveBuilder(@Nonnull final TensorList data) {
       representations.add(data);
       dimensions.add(data.get(0).getDimensions());
-    }
-
-    protected AutoencoderNetwork.Builder configure(final AutoencoderNetwork.Builder builder) {
-      return builder;
-    }
-
-    protected AutoencoderNetwork.TrainingParameters configure(final AutoencoderNetwork.TrainingParameters trainingParameters) {
-      return trainingParameters;
-    }
-
-    @Nonnull
-    public Layer echo() {
-      @Nonnull final PipelineNetwork network = new PipelineNetwork();
-      network.add(getEncoder());
-      network.add(getDecoder());
-      return network;
     }
 
     @Nonnull
@@ -333,8 +350,16 @@ public class AutoencoderNetwork {
     }
 
     @Nonnull
-    public List<AutoencoderNetwork> getLayers() {
-      return Collections.unmodifiableList(layers);
+    public com.simiacryptus.ref.wrappers.RefList<AutoencoderNetwork> getLayers() {
+      return com.simiacryptus.ref.wrappers.RefCollections.unmodifiableList(layers);
+    }
+
+    @Nonnull
+    public Layer echo() {
+      @Nonnull final PipelineNetwork network = new PipelineNetwork();
+      network.add(getEncoder());
+      network.add(getDecoder());
+      return network;
     }
 
     @Nonnull
@@ -343,19 +368,23 @@ public class AutoencoderNetwork {
     }
 
     @Nonnull
-    public AutoencoderNetwork growLayer(final int pretrainingSize, final int pretrainingMinutes, final int pretrainIterations, final int[] dims) {
+    public AutoencoderNetwork growLayer(final int pretrainingSize, final int pretrainingMinutes,
+                                        final int pretrainIterations, final int[] dims) {
       trainingMode();
-      @Nonnull final AutoencoderNetwork newLayer = configure(AutoencoderNetwork.newLayer(dimensions.get(dimensions.size() - 1), dims)).build();
+      @Nonnull final AutoencoderNetwork newLayer = configure(
+          AutoencoderNetwork.newLayer(dimensions.get(dimensions.size() - 1), dims)).build();
 
       final TensorList data = representations.get(representations.size() - 1);
       dimensions.add(dims);
       layers.add(newLayer);
 
       if (pretrainingSize > 0 && pretrainIterations > 0 && pretrainingMinutes > 0) {
-        @Nonnull final ArrayList<Tensor> list = new ArrayList<>(data.stream().collect(Collectors.toList()));
-        Collections.shuffle(list);
+        @Nonnull final com.simiacryptus.ref.wrappers.RefArrayList<Tensor> list = new com.simiacryptus.ref.wrappers.RefArrayList<>(
+            data.stream().collect(com.simiacryptus.ref.wrappers.RefCollectors.toList()));
+        com.simiacryptus.ref.wrappers.RefCollections.shuffle(list);
         @Nonnull final Tensor[] pretrainingSet = list.subList(0, pretrainingSize).toArray(new Tensor[]{});
-        configure(newLayer.train()).setMaxIterations(pretrainIterations).setTimeoutMinutes(pretrainingMinutes).run(new TensorArray(pretrainingSet));
+        configure(newLayer.train()).setMaxIterations(pretrainIterations).setTimeoutMinutes(pretrainingMinutes)
+            .run(new TensorArray(pretrainingSet));
       }
       newLayer.decoderSynapse = ((FullyConnectedLayer) newLayer.decoderSynapse).getTranspose();
       newLayer.decoderSynapsePlaceholder.setInner(newLayer.decoderSynapse);
@@ -385,6 +414,10 @@ public class AutoencoderNetwork {
           return new SimpleLossNetwork(student, new MeanSqLossLayer());
         }
 
+        public @SuppressWarnings("unused")
+        void _free() {
+        }
+
         @Nonnull
         @Override
         protected TrainingMonitor wrap(@Nonnull final TrainingMonitor monitor) {
@@ -402,9 +435,19 @@ public class AutoencoderNetwork {
         }
       }).run(representations.get(0));
     }
+
+    protected AutoencoderNetwork.Builder configure(final AutoencoderNetwork.Builder builder) {
+      return builder;
+    }
+
+    protected AutoencoderNetwork.TrainingParameters configure(
+        final AutoencoderNetwork.TrainingParameters trainingParameters) {
+      return trainingParameters;
+    }
   }
 
-  public abstract static class TrainingParameters {
+  public abstract static @com.simiacryptus.ref.lang.RefAware
+  class TrainingParameters extends ReferenceCountingBase {
     private double endFitness = Double.NEGATIVE_INFINITY;
     private double l1normalization = 0.0;
     private double l2normalization = 0.0;
@@ -510,10 +553,21 @@ public class AutoencoderNetwork {
     @Nonnull
     public abstract SimpleLossNetwork getTrainingNetwork();
 
+    public static @SuppressWarnings("unused")
+    TrainingParameters[] addRefs(TrainingParameters[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(TrainingParameters::addRef)
+          .toArray((x) -> new TrainingParameters[x]);
+    }
+
     public void run(@Nonnull final TensorList data) {
       @Nonnull final SimpleLossNetwork trainingNetwork = getTrainingNetwork();
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(data.stream().map(x -> new Tensor[]{x, x}).toArray(i -> new Tensor[i][]), trainingNetwork, getSampleSize());
-      @Nonnull final L12Normalizer normalized = new ConstL12Normalizer(trainable).setFactor_L1(getL1normalization()).setFactor_L2(getL2normalization());
+      @Nonnull final Trainable trainable = new SampledArrayTrainable(
+          data.stream().map(x -> new Tensor[]{x, x}).toArray(i -> new Tensor[i][]), trainingNetwork,
+          getSampleSize());
+      @Nonnull final L12Normalizer normalized = new ConstL12Normalizer(trainable).setFactor_L1(getL1normalization())
+          .setFactor_L2(getL2normalization());
       @Nonnull final IterativeTrainer trainer = new IterativeTrainer(normalized);
       trainer.setOrientation(getOrient());
       trainer.setLineSearchFactory((s) -> getStep());
@@ -523,6 +577,16 @@ public class AutoencoderNetwork {
       trainer.setTerminateThreshold(getEndFitness());
       trainer.setMaxIterations(maxIterations);
       trainer.run();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    TrainingParameters addRef() {
+      return (TrainingParameters) super.addRef();
     }
 
     @Nonnull

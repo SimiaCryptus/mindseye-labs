@@ -26,14 +26,16 @@ import smile.plot.ScatterPlot;
 import java.awt.*;
 import java.util.List;
 
-public class ProblemRun {
+public @com.simiacryptus.ref.lang.RefAware
+class ProblemRun {
 
   public final Color color;
   public final List<StepRecord> history;
   public final String name;
   public final PlotType type;
 
-  public ProblemRun(final String name, final List<StepRecord> history, final Color color, final PlotType type) {
+  public ProblemRun(final String name, final List<StepRecord> history,
+                    final Color color, final PlotType type) {
     this.history = history;
     this.name = name;
     this.color = color;
@@ -59,7 +61,6 @@ public class ProblemRun {
   }
 
   public enum PlotType {
-    Line,
-    Scatter
+    Line, Scatter
   }
 }

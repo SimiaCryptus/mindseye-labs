@@ -19,27 +19,25 @@
 
 package com.simiacryptus.mindseye.test;
 
-import com.simiacryptus.ref.lang.RecycleBin;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.ref.lang.RecycleBin;
 import com.simiacryptus.util.data.DoubleStatistics;
 import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 
 import javax.annotation.Nonnull;
-import java.util.Comparator;
-import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-public class PCAUtil {
+public @com.simiacryptus.ref.lang.RefAware
+class PCAUtil {
   @Nonnull
-  public static RealMatrix getCovariance(@Nonnull final Supplier<Stream<double[]>> stream) {
+  public static RealMatrix getCovariance(
+      @Nonnull final Supplier<com.simiacryptus.ref.wrappers.RefStream<double[]>> stream) {
     final int dimension = stream.get().findAny().get().length;
-    final List<DoubleStatistics> statList = IntStream.range(0, dimension * dimension)
-        .mapToObj(i -> new DoubleStatistics()).collect(Collectors.toList());
+    final com.simiacryptus.ref.wrappers.RefList<DoubleStatistics> statList = com.simiacryptus.ref.wrappers.RefIntStream
+        .range(0, dimension * dimension).mapToObj(i -> new DoubleStatistics())
+        .collect(com.simiacryptus.ref.wrappers.RefCollectors.toList());
     stream.get().forEach(array -> {
       for (int i = 0; i < dimension; i++) {
         for (int j = 0; j <= i; j++) {
@@ -59,19 +57,20 @@ public class PCAUtil {
     return covariance;
   }
 
-  public static Tensor[] pcaFeatures(final RealMatrix covariance, final int components, final int[] featureDimensions, final double power) {
+  public static Tensor[] pcaFeatures(final RealMatrix covariance, final int components, final int[] featureDimensions,
+                                     final double power) {
     @Nonnull final EigenDecomposition decomposition = new EigenDecomposition(covariance);
-    final int[] orderedVectors = IntStream.range(0, components).mapToObj(x -> x)
-        .sorted(Comparator.comparing(x -> -decomposition.getRealEigenvalue(x))).mapToInt(x -> x).toArray();
-    return IntStream.range(0, orderedVectors.length)
-        .mapToObj(i -> {
-              @Nonnull final Tensor src = new Tensor(decomposition.getEigenvector(orderedVectors[i]).toArray(), featureDimensions).copy();
-              return src
-                  .scale(1.0 / src.rms())
-                  .scale((Math.pow(decomposition.getRealEigenvalue(orderedVectors[i]) / decomposition.getRealEigenvalue(orderedVectors[0]), power)))
-                  ;
-            }
-        ).toArray(i -> new Tensor[i]);
+    final int[] orderedVectors = com.simiacryptus.ref.wrappers.RefIntStream.range(0, components).mapToObj(x -> x)
+        .sorted(com.simiacryptus.ref.wrappers.RefComparator.comparing(x -> -decomposition.getRealEigenvalue(x)))
+        .mapToInt(x -> x).toArray();
+    return com.simiacryptus.ref.wrappers.RefIntStream.range(0, orderedVectors.length).mapToObj(i -> {
+      @Nonnull final Tensor src = new Tensor(decomposition.getEigenvector(orderedVectors[i]).toArray(), featureDimensions)
+          .copy();
+      return src.scale(1.0 / src.rms())
+          .scale((Math.pow(
+              decomposition.getRealEigenvalue(orderedVectors[i]) / decomposition.getRealEigenvalue(orderedVectors[0]),
+              power)));
+    }).toArray(i -> new Tensor[i]);
   }
 
   public static void populatePCAKernel_1(final Tensor kernel, final Tensor[] featureSpaceVectors) {
