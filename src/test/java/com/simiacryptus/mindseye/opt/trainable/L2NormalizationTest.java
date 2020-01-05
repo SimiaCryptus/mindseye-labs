@@ -30,12 +30,14 @@ import com.simiacryptus.mindseye.opt.IterativeTrainer;
 import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class L2NormalizationTest extends MnistTestBase {
 
   @Nonnull
@@ -48,7 +50,7 @@ class L2NormalizationTest extends MnistTestBase {
   L2NormalizationTest[] addRefs(L2NormalizationTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(L2NormalizationTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(L2NormalizationTest::addRef)
         .toArray((x) -> new L2NormalizationTest[x]);
   }
 
@@ -56,7 +58,7 @@ class L2NormalizationTest extends MnistTestBase {
   L2NormalizationTest[][] addRefs(L2NormalizationTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(L2NormalizationTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(L2NormalizationTest::addRefs)
         .toArray((x) -> new L2NormalizationTest[x][]);
   }
 

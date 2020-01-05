@@ -28,7 +28,11 @@ import com.simiacryptus.mindseye.test.unit.SerializationTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
 import com.simiacryptus.notebook.MarkdownNotebookOutput;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.ReferenceCountingBase;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.util.Util;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
@@ -39,17 +43,17 @@ import org.junit.Test;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class PipelineTest extends ReferenceCountingBase {
 
-  final com.simiacryptus.ref.wrappers.RefList<Layer> pipeline;
+  final RefList<Layer> pipeline;
 
-  public PipelineTest(final com.simiacryptus.ref.wrappers.RefList<Layer> pipeline) {
+  public PipelineTest(final RefList<Layer> pipeline) {
     this.pipeline = pipeline;
   }
 
   public PipelineTest(final Layer... pipeline) {
-    this(com.simiacryptus.ref.wrappers.RefArrays.asList(pipeline));
+    this(RefArrays.asList(pipeline));
   }
 
   @Nonnull
@@ -79,7 +83,7 @@ class PipelineTest extends ReferenceCountingBase {
   }
 
   public Tensor[] randomize(@Nonnull final int[][] inputDims) {
-    return com.simiacryptus.ref.wrappers.RefArrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random))
+    return RefArrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random))
         .toArray(i -> new Tensor[i]);
   }
 
@@ -93,7 +97,7 @@ class PipelineTest extends ReferenceCountingBase {
   }
 
   public void test(@Nonnull final NotebookOutput log) {
-    @Nonnull final com.simiacryptus.ref.wrappers.RefArrayList<Layer> workingSpec = new com.simiacryptus.ref.wrappers.RefArrayList<>();
+    @Nonnull final RefArrayList<Layer> workingSpec = new RefArrayList<>();
     int layerIndex = 0;
     for (final Layer l : pipeline) {
       workingSpec.add(l);

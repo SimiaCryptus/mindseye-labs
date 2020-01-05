@@ -29,11 +29,13 @@ import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.ValidatingTrainer;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class QQNTest extends MnistTestBase {
 
   @Nonnull
@@ -46,14 +48,14 @@ class QQNTest extends MnistTestBase {
   QQNTest[] addRefs(QQNTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(QQNTest::addRef).toArray((x) -> new QQNTest[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(QQNTest::addRef).toArray((x) -> new QQNTest[x]);
   }
 
   public static @SuppressWarnings("unused")
   QQNTest[][] addRefs(QQNTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(QQNTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(QQNTest::addRefs)
         .toArray((x) -> new QQNTest[x][]);
   }
 

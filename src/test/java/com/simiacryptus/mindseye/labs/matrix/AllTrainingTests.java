@@ -22,6 +22,7 @@ package com.simiacryptus.mindseye.labs.matrix;
 import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.util.test.TestCategories;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Ignore;
@@ -30,8 +31,9 @@ import org.junit.experimental.categories.Category;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class AllTrainingTests extends NotebookReportBase {
   protected final FwdNetworkFactory fwdFactory;
   protected final OptimizationStrategy optimizationStrategy;
@@ -56,7 +58,7 @@ class AllTrainingTests extends NotebookReportBase {
   AllTrainingTests[] addRefs(AllTrainingTests[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AllTrainingTests::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(AllTrainingTests::addRef)
         .toArray((x) -> new AllTrainingTests[x]);
   }
 
@@ -64,7 +66,7 @@ class AllTrainingTests extends NotebookReportBase {
   AllTrainingTests[][] addRefs(AllTrainingTests[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AllTrainingTests::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(AllTrainingTests::addRefs)
         .toArray((x) -> new AllTrainingTests[x][]);
   }
 

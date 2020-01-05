@@ -37,14 +37,16 @@ import com.simiacryptus.mindseye.test.TestUtil;
 import com.simiacryptus.mindseye.test.integration.MnistProblemData;
 import com.simiacryptus.mindseye.test.integration.OptimizationStrategy;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class Research extends OptimizerComparison {
 
   @Nonnull
@@ -126,7 +128,7 @@ class Research extends OptimizerComparison {
   Research[] addRefs(Research[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(Research::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(Research::addRef)
         .toArray((x) -> new Research[x]);
   }
 
@@ -134,7 +136,7 @@ class Research extends OptimizerComparison {
   Research[][] addRefs(Research[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(Research::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(Research::addRefs)
         .toArray((x) -> new Research[x][]);
   }
 

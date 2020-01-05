@@ -31,6 +31,9 @@ import com.simiacryptus.mindseye.test.StepRecord;
 import com.simiacryptus.mindseye.test.TestUtil;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.TableOutput;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefCollectors;
+import com.simiacryptus.ref.wrappers.RefLists;
 import com.simiacryptus.util.Util;
 import com.simiacryptus.util.test.LabeledObject;
 import guru.nidi.graphviz.engine.Format;
@@ -51,7 +54,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ClassifyProblem implements Problem {
 
   private static final Logger logger = LoggerFactory.getLogger(ClassifyProblem.class);
@@ -189,8 +192,8 @@ class ClassifyProblem implements Problem {
     log.eval(() -> {
       try {
         @Nonnull final TableOutput table = new TableOutput();
-        com.simiacryptus.ref.wrappers.RefLists
-            .partition(data.validationData().collect(com.simiacryptus.ref.wrappers.RefCollectors.toList()), 100)
+        RefLists
+            .partition(data.validationData().collect(RefCollectors.toList()), 100)
             .stream().flatMap(batch -> {
           @Nonnull
           TensorList batchIn = new TensorArray(batch.stream().map(x -> x.data).toArray(i1 -> new Tensor[i1]));

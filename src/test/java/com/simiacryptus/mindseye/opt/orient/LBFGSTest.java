@@ -30,11 +30,13 @@ import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.ValidatingTrainer;
 import com.simiacryptus.mindseye.opt.line.QuadraticSearch;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class LBFGSTest extends MnistTestBase {
 
   @Nonnull
@@ -47,7 +49,7 @@ class LBFGSTest extends MnistTestBase {
   LBFGSTest[] addRefs(LBFGSTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRef)
         .toArray((x) -> new LBFGSTest[x]);
   }
 
@@ -55,7 +57,7 @@ class LBFGSTest extends MnistTestBase {
   LBFGSTest[][] addRefs(LBFGSTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRefs)
         .toArray((x) -> new LBFGSTest[x][]);
   }
 

@@ -29,11 +29,17 @@ import com.simiacryptus.mindseye.opt.IterativeTrainer;
 import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefCollections;
+import com.simiacryptus.ref.wrappers.RefCollectors;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SimpleGradientDescentTest extends MnistTestBase {
 
   @Nonnull
@@ -46,7 +52,7 @@ class SimpleGradientDescentTest extends MnistTestBase {
   SimpleGradientDescentTest[] addRefs(SimpleGradientDescentTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SimpleGradientDescentTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SimpleGradientDescentTest::addRef)
         .toArray((x) -> new SimpleGradientDescentTest[x]);
   }
 
@@ -54,7 +60,7 @@ class SimpleGradientDescentTest extends MnistTestBase {
   SimpleGradientDescentTest[][] addRefs(SimpleGradientDescentTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SimpleGradientDescentTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SimpleGradientDescentTest::addRefs)
         .toArray((x) -> new SimpleGradientDescentTest[x][]);
   }
 
@@ -68,10 +74,10 @@ class SimpleGradientDescentTest extends MnistTestBase {
             + "The final output is the last output value of the loss function when evaluating the last batch.");
     log.eval(() -> {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull final com.simiacryptus.ref.wrappers.RefArrayList<Tensor[]> trainingList = new com.simiacryptus.ref.wrappers.RefArrayList<>(
-          com.simiacryptus.ref.wrappers.RefArrays.stream(trainingData)
-              .collect(com.simiacryptus.ref.wrappers.RefCollectors.toList()));
-      com.simiacryptus.ref.wrappers.RefCollections.shuffle(trainingList);
+      @Nonnull final RefArrayList<Tensor[]> trainingList = new RefArrayList<>(
+          RefArrays.stream(trainingData)
+              .collect(RefCollectors.toList()));
+      RefCollections.shuffle(trainingList);
       @Nonnull final Tensor[][] randomSelection = trainingList.subList(0, 10000).toArray(new Tensor[][]{});
       @Nonnull final Trainable trainable = new ArrayTrainable(randomSelection, supervisedNetwork);
       return new IterativeTrainer(trainable).setMonitor(monitor).setTimeout(3, TimeUnit.MINUTES).setMaxIterations(500)

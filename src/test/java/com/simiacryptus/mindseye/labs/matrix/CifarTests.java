@@ -29,10 +29,12 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.test.data.CIFAR10;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class CifarTests {
 
   @Nonnull
@@ -88,7 +90,7 @@ class CifarTests {
     });
   };
 
-  public abstract static @com.simiacryptus.ref.lang.RefAware
+  public abstract static @RefAware
   class All_CIFAR_Tests extends AllTrainingTests {
     public All_CIFAR_Tests(final OptimizationStrategy optimizationStrategy, final RevNetworkFactory revFactory,
                            final FwdNetworkFactory fwdFactory) {
@@ -123,7 +125,7 @@ class CifarTests {
     All_CIFAR_Tests[] addRefs(All_CIFAR_Tests[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(All_CIFAR_Tests::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(All_CIFAR_Tests::addRef)
           .toArray((x) -> new All_CIFAR_Tests[x]);
     }
 
@@ -138,7 +140,7 @@ class CifarTests {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class OWL_QN extends All_CIFAR_Tests {
     public OWL_QN() {
       super(TextbookOptimizers.orthantwise_quasi_newton, CifarTests.rev_conv_1, CifarTests.fwd_conv_1);
@@ -148,7 +150,7 @@ class CifarTests {
     OWL_QN[] addRefs(OWL_QN[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(OWL_QN::addRef).toArray((x) -> new OWL_QN[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(OWL_QN::addRef).toArray((x) -> new OWL_QN[x]);
     }
 
     public @SuppressWarnings("unused")
@@ -167,7 +169,7 @@ class CifarTests {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class QQN extends All_CIFAR_Tests {
     public QQN() {
       super(Research.quadratic_quasi_newton, CifarTests.rev_conv_1, CifarTests.fwd_conv_1);
@@ -177,7 +179,7 @@ class CifarTests {
     QQN[] addRefs(QQN[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
     }
 
     public @SuppressWarnings("unused")
@@ -197,7 +199,7 @@ class CifarTests {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class SGD extends All_CIFAR_Tests {
     public SGD() {
       super(TextbookOptimizers.stochastic_gradient_descent, CifarTests.rev_linear_1, CifarTests.fwd_linear_1);
@@ -207,7 +209,7 @@ class CifarTests {
     SGD[] addRefs(SGD[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(SGD::addRef).toArray((x) -> new SGD[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(SGD::addRef).toArray((x) -> new SGD[x]);
     }
 
     public @SuppressWarnings("unused")

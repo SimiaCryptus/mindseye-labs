@@ -26,11 +26,13 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.test.data.Caltech101;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class CaltechTests {
 
   @Nonnull
@@ -118,7 +120,7 @@ class CaltechTests {
     });
   };
 
-  public abstract static @com.simiacryptus.ref.lang.RefAware
+  public abstract static @RefAware
   class All_Caltech_Tests extends AllTrainingTests {
 
     public All_Caltech_Tests(final OptimizationStrategy optimizationStrategy, final RevNetworkFactory revFactory,
@@ -155,7 +157,7 @@ class CaltechTests {
     All_Caltech_Tests[] addRefs(All_Caltech_Tests[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(All_Caltech_Tests::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(All_Caltech_Tests::addRef)
           .toArray((x) -> new All_Caltech_Tests[x]);
     }
 
@@ -171,7 +173,7 @@ class CaltechTests {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class QQN extends All_Caltech_Tests {
     public QQN() {
       super(Research.quadratic_quasi_newton, CaltechTests.rev_conv_1, CaltechTests.fwd_conv_1);
@@ -181,7 +183,7 @@ class CaltechTests {
     QQN[] addRefs(QQN[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
     }
 
     public @SuppressWarnings("unused")

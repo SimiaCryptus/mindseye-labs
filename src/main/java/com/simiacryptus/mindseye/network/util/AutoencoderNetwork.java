@@ -34,13 +34,19 @@ import com.simiacryptus.mindseye.opt.line.ArmijoWolfeSearch;
 import com.simiacryptus.mindseye.opt.line.LineSearchStrategy;
 import com.simiacryptus.mindseye.opt.orient.LBFGS;
 import com.simiacryptus.mindseye.opt.orient.OrientationStrategy;
+import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.ReferenceCountingBase;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefCollections;
+import com.simiacryptus.ref.wrappers.RefCollectors;
+import com.simiacryptus.ref.wrappers.RefList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class AutoencoderNetwork extends ReferenceCountingBase {
 
   @Nonnull
@@ -164,7 +170,7 @@ class AutoencoderNetwork extends ReferenceCountingBase {
   AutoencoderNetwork[] addRefs(AutoencoderNetwork[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AutoencoderNetwork::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(AutoencoderNetwork::addRef)
         .toArray((x) -> new AutoencoderNetwork[x]);
   }
 
@@ -172,7 +178,7 @@ class AutoencoderNetwork extends ReferenceCountingBase {
   AutoencoderNetwork[][] addRefs(AutoencoderNetwork[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(AutoencoderNetwork::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(AutoencoderNetwork::addRefs)
         .toArray((x) -> new AutoencoderNetwork[x][]);
   }
 
@@ -239,7 +245,7 @@ class AutoencoderNetwork extends ReferenceCountingBase {
     return (AutoencoderNetwork) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Builder {
 
     private final int[] innerSize;
@@ -319,12 +325,12 @@ class AutoencoderNetwork extends ReferenceCountingBase {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class RecursiveBuilder extends ReferenceCountingBase {
 
-    private final com.simiacryptus.ref.wrappers.RefList<int[]> dimensions = new com.simiacryptus.ref.wrappers.RefArrayList<>();
-    private final com.simiacryptus.ref.wrappers.RefList<AutoencoderNetwork> layers = new com.simiacryptus.ref.wrappers.RefArrayList<>();
-    private final com.simiacryptus.ref.wrappers.RefList<TensorList> representations = new com.simiacryptus.ref.wrappers.RefArrayList<>();
+    private final RefList<int[]> dimensions = new RefArrayList<>();
+    private final RefList<AutoencoderNetwork> layers = new RefArrayList<>();
+    private final RefList<TensorList> representations = new RefArrayList<>();
 
     public RecursiveBuilder(@Nonnull final TensorList data) {
       representations.add(data);
@@ -350,8 +356,8 @@ class AutoencoderNetwork extends ReferenceCountingBase {
     }
 
     @Nonnull
-    public com.simiacryptus.ref.wrappers.RefList<AutoencoderNetwork> getLayers() {
-      return com.simiacryptus.ref.wrappers.RefCollections.unmodifiableList(layers);
+    public RefList<AutoencoderNetwork> getLayers() {
+      return RefCollections.unmodifiableList(layers);
     }
 
     @Nonnull
@@ -379,9 +385,9 @@ class AutoencoderNetwork extends ReferenceCountingBase {
       layers.add(newLayer);
 
       if (pretrainingSize > 0 && pretrainIterations > 0 && pretrainingMinutes > 0) {
-        @Nonnull final com.simiacryptus.ref.wrappers.RefArrayList<Tensor> list = new com.simiacryptus.ref.wrappers.RefArrayList<>(
-            data.stream().collect(com.simiacryptus.ref.wrappers.RefCollectors.toList()));
-        com.simiacryptus.ref.wrappers.RefCollections.shuffle(list);
+        @Nonnull final RefArrayList<Tensor> list = new RefArrayList<>(
+            data.stream().collect(RefCollectors.toList()));
+        RefCollections.shuffle(list);
         @Nonnull final Tensor[] pretrainingSet = list.subList(0, pretrainingSize).toArray(new Tensor[]{});
         configure(newLayer.train()).setMaxIterations(pretrainIterations).setTimeoutMinutes(pretrainingMinutes)
             .run(new TensorArray(pretrainingSet));
@@ -446,7 +452,7 @@ class AutoencoderNetwork extends ReferenceCountingBase {
     }
   }
 
-  public abstract static @com.simiacryptus.ref.lang.RefAware
+  public abstract static @RefAware
   class TrainingParameters extends ReferenceCountingBase {
     private double endFitness = Double.NEGATIVE_INFINITY;
     private double l1normalization = 0.0;
@@ -557,7 +563,7 @@ class AutoencoderNetwork extends ReferenceCountingBase {
     TrainingParameters[] addRefs(TrainingParameters[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(TrainingParameters::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(TrainingParameters::addRef)
           .toArray((x) -> new TrainingParameters[x]);
     }
 

@@ -30,11 +30,13 @@ import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.orient.GradientDescent;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SimpleStochasticGradientDescentTest extends MnistTestBase {
 
   @Nonnull
@@ -48,7 +50,7 @@ class SimpleStochasticGradientDescentTest extends MnistTestBase {
       SimpleStochasticGradientDescentTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SimpleStochasticGradientDescentTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SimpleStochasticGradientDescentTest::addRef)
         .toArray((x) -> new SimpleStochasticGradientDescentTest[x]);
   }
 
@@ -57,7 +59,7 @@ class SimpleStochasticGradientDescentTest extends MnistTestBase {
       SimpleStochasticGradientDescentTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SimpleStochasticGradientDescentTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SimpleStochasticGradientDescentTest::addRefs)
         .toArray((x) -> new SimpleStochasticGradientDescentTest[x][]);
   }
 

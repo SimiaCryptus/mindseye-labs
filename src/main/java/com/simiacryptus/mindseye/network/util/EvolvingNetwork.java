@@ -19,7 +19,9 @@
 
 package com.simiacryptus.mindseye.network.util;
 
-public @com.simiacryptus.ref.lang.RefAware
+import com.simiacryptus.ref.lang.RefAware;
+
+public @RefAware
 interface EvolvingNetwork {
   void nextPhase();
 }

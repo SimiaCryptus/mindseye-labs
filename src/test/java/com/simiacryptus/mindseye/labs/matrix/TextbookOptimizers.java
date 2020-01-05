@@ -33,13 +33,15 @@ import com.simiacryptus.mindseye.test.TestUtil;
 import com.simiacryptus.mindseye.test.integration.MnistProblemData;
 import com.simiacryptus.mindseye.test.integration.OptimizationStrategy;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class TextbookOptimizers extends OptimizerComparison {
 
   @Nonnull
@@ -110,7 +112,7 @@ class TextbookOptimizers extends OptimizerComparison {
   TextbookOptimizers[] addRefs(TextbookOptimizers[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TextbookOptimizers::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(TextbookOptimizers::addRef)
         .toArray((x) -> new TextbookOptimizers[x]);
   }
 
@@ -118,7 +120,7 @@ class TextbookOptimizers extends OptimizerComparison {
   TextbookOptimizers[][] addRefs(TextbookOptimizers[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TextbookOptimizers::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(TextbookOptimizers::addRefs)
         .toArray((x) -> new TextbookOptimizers[x][]);
   }
 

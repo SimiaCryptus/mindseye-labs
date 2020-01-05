@@ -29,11 +29,13 @@ import com.simiacryptus.mindseye.opt.IterativeTrainer;
 import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class GDTest extends MnistTestBase {
 
   @Nonnull
@@ -46,14 +48,14 @@ class GDTest extends MnistTestBase {
   GDTest[] addRefs(GDTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(GDTest::addRef).toArray((x) -> new GDTest[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(GDTest::addRef).toArray((x) -> new GDTest[x]);
   }
 
   public static @SuppressWarnings("unused")
   GDTest[][] addRefs(GDTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(GDTest::addRefs).toArray((x) -> new GDTest[x][]);
+    return Arrays.stream(array).filter((x) -> x != null).map(GDTest::addRefs).toArray((x) -> new GDTest[x][]);
   }
 
   @Override

@@ -30,11 +30,13 @@ import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.orient.TrustRegionStrategy;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class LinearSumConstraintTest extends MnistTestBase {
 
   @Nonnull
@@ -47,7 +49,7 @@ class LinearSumConstraintTest extends MnistTestBase {
   LinearSumConstraintTest[] addRefs(LinearSumConstraintTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LinearSumConstraintTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(LinearSumConstraintTest::addRef)
         .toArray((x) -> new LinearSumConstraintTest[x]);
   }
 
@@ -55,7 +57,7 @@ class LinearSumConstraintTest extends MnistTestBase {
   LinearSumConstraintTest[][] addRefs(LinearSumConstraintTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LinearSumConstraintTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(LinearSumConstraintTest::addRefs)
         .toArray((x) -> new LinearSumConstraintTest[x][]);
   }
 

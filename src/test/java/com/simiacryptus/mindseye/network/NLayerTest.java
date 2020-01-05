@@ -28,6 +28,8 @@ import com.simiacryptus.mindseye.test.unit.SerializationTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
 import com.simiacryptus.notebook.MarkdownNotebookOutput;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.util.Util;
 import com.simiacryptus.util.test.SysOutInterceptor;
 import guru.nidi.graphviz.engine.Format;
@@ -42,7 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class NLayerTest {
   static {
     SysOutInterceptor.INSTANCE.init();
@@ -95,7 +97,7 @@ class NLayerTest {
   }
 
   public Tensor[] randomize(@Nonnull final int[][] inputDims) {
-    return com.simiacryptus.ref.wrappers.RefArrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random))
+    return RefArrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random))
         .toArray(i -> new Tensor[i]);
   }
 

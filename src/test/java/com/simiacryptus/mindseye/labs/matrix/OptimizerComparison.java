@@ -23,15 +23,17 @@ import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.StepRecord;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.util.test.TestCategories;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class OptimizerComparison extends NotebookReportBase {
 
   protected ImageProblemData data;
@@ -72,7 +74,7 @@ class OptimizerComparison extends NotebookReportBase {
   OptimizerComparison[] addRefs(OptimizerComparison[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(OptimizerComparison::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(OptimizerComparison::addRef)
         .toArray((x) -> new OptimizerComparison[x]);
   }
 
@@ -80,7 +82,7 @@ class OptimizerComparison extends NotebookReportBase {
   OptimizerComparison[][] addRefs(OptimizerComparison[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(OptimizerComparison::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(OptimizerComparison::addRefs)
         .toArray((x) -> new OptimizerComparison[x][]);
   }
 

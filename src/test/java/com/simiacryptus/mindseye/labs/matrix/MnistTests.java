@@ -26,11 +26,13 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.test.data.MNIST;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.function.DoubleSupplier;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class MnistTests {
   @Nonnull
   public static FwdNetworkFactory fwd_conv_1 = (log, features) -> {
@@ -141,7 +143,7 @@ class MnistTests {
     });
   };
 
-  public abstract static @com.simiacryptus.ref.lang.RefAware
+  public abstract static @RefAware
   class All_MNIST_Tests extends AllTrainingTests {
     public All_MNIST_Tests(final OptimizationStrategy optimizationStrategy, final RevNetworkFactory revFactory,
                            final FwdNetworkFactory fwdFactory) {
@@ -176,7 +178,7 @@ class MnistTests {
     All_MNIST_Tests[] addRefs(All_MNIST_Tests[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(All_MNIST_Tests::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(All_MNIST_Tests::addRef)
           .toArray((x) -> new All_MNIST_Tests[x]);
     }
 
@@ -192,7 +194,7 @@ class MnistTests {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class OWL_QN extends All_MNIST_Tests {
     public OWL_QN() {
       super(TextbookOptimizers.orthantwise_quasi_newton, MnistTests.rev_conv_1, MnistTests.fwd_conv_1);
@@ -202,7 +204,7 @@ class MnistTests {
     OWL_QN[] addRefs(OWL_QN[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(OWL_QN::addRef).toArray((x) -> new OWL_QN[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(OWL_QN::addRef).toArray((x) -> new OWL_QN[x]);
     }
 
     public @SuppressWarnings("unused")
@@ -221,7 +223,7 @@ class MnistTests {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class QQN extends All_MNIST_Tests {
     public QQN() {
       super(Research.quadratic_quasi_newton, MnistTests.rev_conv_1, MnistTests.fwd_conv_1);
@@ -231,7 +233,7 @@ class MnistTests {
     QQN[] addRefs(QQN[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
     }
 
     public @SuppressWarnings("unused")
@@ -251,7 +253,7 @@ class MnistTests {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class SGD extends All_MNIST_Tests {
     public SGD() {
       super(TextbookOptimizers.stochastic_gradient_descent, MnistTests.rev_linear_1, MnistTests.fwd_linear_1);
@@ -261,7 +263,7 @@ class MnistTests {
     SGD[] addRefs(SGD[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(SGD::addRef).toArray((x) -> new SGD[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(SGD::addRef).toArray((x) -> new SGD[x]);
     }
 
     public @SuppressWarnings("unused")

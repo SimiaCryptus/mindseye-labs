@@ -31,6 +31,8 @@ import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.data.MNIST;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.TableOutput;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.MonitoredObject;
 import com.simiacryptus.util.test.LabeledObject;
@@ -46,8 +48,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class MnistTestBase extends NotebookReportBase {
   private static final Logger log = LoggerFactory.getLogger(MnistTestBase.class);
 
@@ -63,7 +66,7 @@ class MnistTestBase extends NotebookReportBase {
   MnistTestBase[] addRefs(MnistTestBase[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MnistTestBase::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(MnistTestBase::addRef)
         .toArray((x) -> new MnistTestBase[x]);
   }
 
@@ -71,7 +74,7 @@ class MnistTestBase extends NotebookReportBase {
   MnistTestBase[][] addRefs(MnistTestBase[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MnistTestBase::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(MnistTestBase::addRefs)
         .toArray((x) -> new MnistTestBase[x][]);
   }
 
@@ -82,7 +85,7 @@ class MnistTestBase extends NotebookReportBase {
   }
 
   public void run(@Nonnull NotebookOutput log) {
-    @Nonnull final com.simiacryptus.ref.wrappers.RefList<Step> history = new com.simiacryptus.ref.wrappers.RefArrayList<>();
+    @Nonnull final RefList<Step> history = new RefArrayList<>();
     @Nonnull final MonitoredObject monitoringRoot = new MonitoredObject();
     @Nonnull final TrainingMonitor monitor = getMonitor(history);
     final Tensor[][] trainingData = getTrainingData(log);
@@ -134,8 +137,8 @@ class MnistTestBase extends NotebookReportBase {
 
   public int[] predict(@Nonnull final Layer network, @Nonnull final LabeledObject<Tensor> labeledObject) {
     @Nullable final double[] predictionSignal = network.eval(labeledObject.data).getData().get(0).getData();
-    return com.simiacryptus.ref.wrappers.RefIntStream.range(0, 10).mapToObj(x -> x)
-        .sorted(com.simiacryptus.ref.wrappers.RefComparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x)
+    return RefIntStream.range(0, 10).mapToObj(x -> x)
+        .sorted(RefComparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x)
         .toArray();
   }
 
@@ -148,7 +151,7 @@ class MnistTestBase extends NotebookReportBase {
   }
 
   public void report(@Nonnull final NotebookOutput log, @Nonnull final MonitoredObject monitoringRoot,
-                     @Nonnull final com.simiacryptus.ref.wrappers.RefList<Step> history, @Nonnull final Layer network) {
+                     @Nonnull final RefList<Step> history, @Nonnull final Layer network) {
 
     if (!history.isEmpty()) {
       log.eval(() -> {
@@ -178,7 +181,7 @@ class MnistTestBase extends NotebookReportBase {
   }
 
   @Nonnull
-  public TrainingMonitor getMonitor(@Nonnull final com.simiacryptus.ref.wrappers.RefList<Step> history) {
+  public TrainingMonitor getMonitor(@Nonnull final RefList<Step> history) {
     return new TrainingMonitor() {
       @Override
       public void clear() {
@@ -216,15 +219,15 @@ class MnistTestBase extends NotebookReportBase {
       MNIST.validationDataStream().map(labeledObject -> {
         final int actualCategory = parse(labeledObject.label);
         @Nullable final double[] predictionSignal = network.eval(labeledObject.data).getData().get(0).getData();
-        final int[] predictionList = com.simiacryptus.ref.wrappers.RefIntStream.range(0, 10).mapToObj(x -> x)
-            .sorted(com.simiacryptus.ref.wrappers.RefComparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x)
+        final int[] predictionList = RefIntStream.range(0, 10).mapToObj(x -> x)
+            .sorted(RefComparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x)
             .toArray();
         if (predictionList[0] == actualCategory)
           return null; // We will only examine mispredicted rows
-        @Nonnull final com.simiacryptus.ref.wrappers.RefLinkedHashMap<CharSequence, Object> row = new com.simiacryptus.ref.wrappers.RefLinkedHashMap<>();
+        @Nonnull final RefLinkedHashMap<CharSequence, Object> row = new RefLinkedHashMap<>();
         row.put("Image", log.png(labeledObject.data.toGrayImage(), labeledObject.label));
         row.put("Prediction",
-            com.simiacryptus.ref.wrappers.RefArrays.stream(predictionList).limit(3)
+            RefArrays.stream(predictionList).limit(3)
                 .mapToObj(i -> String.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
                 .reduce((a, b) -> a + ", " + b).get());
         return row;

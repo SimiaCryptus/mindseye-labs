@@ -31,15 +31,21 @@ import com.simiacryptus.mindseye.layers.java.NthPowerActivationLayer;
 import com.simiacryptus.mindseye.layers.java.ProductInputsLayer;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
+import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.ReferenceCountingBase;
+import com.simiacryptus.ref.wrappers.RefArrayList;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class PolynomialNetwork extends DAGNetwork {
 
   protected final int[] inputDims;
@@ -49,7 +55,7 @@ class PolynomialNetwork extends DAGNetwork {
   @Nullable
   protected Layer alphaBias = null;
   @Nonnull
-  protected com.simiacryptus.ref.wrappers.RefList<Correcton> corrections = new com.simiacryptus.ref.wrappers.RefArrayList<>();
+  protected RefList<Correcton> corrections = new RefArrayList<>();
   protected DAGNode head;
 
   public PolynomialNetwork(final int[] inputDims, final int[] outputDims) {
@@ -59,10 +65,10 @@ class PolynomialNetwork extends DAGNetwork {
   }
 
   protected PolynomialNetwork(@Nonnull final JsonObject json,
-                              com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                              Map<CharSequence, byte[]> rs) {
     super(json, rs);
     head = getNodeById(UUID.fromString(json.get("head").getAsString()));
-    com.simiacryptus.ref.wrappers.RefMap<UUID, Layer> layersById = getLayersById();
+    RefMap<UUID, Layer> layersById = getLayersById();
     if (json.get("alpha") != null) {
       alpha = layersById.get(UUID.fromString(json.get("alpha").getAsString()));
     }
@@ -87,7 +93,7 @@ class PolynomialNetwork extends DAGNetwork {
           }
           reset();
           final DAGNode input = getInput(0);
-          @Nonnull final com.simiacryptus.ref.wrappers.RefArrayList<DAGNode> terms = new com.simiacryptus.ref.wrappers.RefArrayList<>();
+          @Nonnull final RefArrayList<DAGNode> terms = new RefArrayList<>();
           terms.add(add(alpha, add(alphaBias, input)));
           for (@Nonnull final Correcton c : corrections) {
             terms.add(c.add(input));
@@ -101,7 +107,7 @@ class PolynomialNetwork extends DAGNetwork {
   }
 
   public static PolynomialNetwork fromJson(@Nonnull final JsonObject json,
-                                           com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                           Map<CharSequence, byte[]> rs) {
     return new PolynomialNetwork(json, rs);
   }
 
@@ -128,7 +134,7 @@ class PolynomialNetwork extends DAGNetwork {
   PolynomialNetwork[] addRefs(PolynomialNetwork[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(PolynomialNetwork::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(PolynomialNetwork::addRef)
         .toArray((x) -> new PolynomialNetwork[x]);
   }
 
@@ -136,7 +142,7 @@ class PolynomialNetwork extends DAGNetwork {
   PolynomialNetwork[][] addRefs(PolynomialNetwork[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(PolynomialNetwork::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(PolynomialNetwork::addRefs)
         .toArray((x) -> new PolynomialNetwork[x][]);
   }
 
@@ -153,7 +159,7 @@ class PolynomialNetwork extends DAGNetwork {
   }
 
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     assertConsistent();
     @Nullable final UUID head = getHeadId();
@@ -202,7 +208,7 @@ class PolynomialNetwork extends DAGNetwork {
     return (PolynomialNetwork) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Correcton extends ReferenceCountingBase {
     public final Layer bias;
     public final Layer factor;
@@ -219,7 +225,7 @@ class PolynomialNetwork extends DAGNetwork {
     public Correcton(@Nonnull final JsonObject json, PolynomialNetwork parent) {
       power = json.get("power").getAsDouble();
       this.parent = parent;
-      com.simiacryptus.ref.wrappers.RefMap<UUID, Layer> layersById = this.parent.getLayersById();
+      RefMap<UUID, Layer> layersById = this.parent.getLayersById();
       bias = layersById.get(UUID.fromString(json.get("bias").getAsString()));
       factor = layersById.get(UUID.fromString(json.get("factor").getAsString()));
     }
@@ -237,7 +243,7 @@ class PolynomialNetwork extends DAGNetwork {
     Correcton[] addRefs(Correcton[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Correcton::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Correcton::addRef)
           .toArray((x) -> new Correcton[x]);
     }
 

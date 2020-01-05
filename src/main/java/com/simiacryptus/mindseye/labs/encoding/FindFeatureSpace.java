@@ -20,10 +20,11 @@
 package com.simiacryptus.mindseye.labs.encoding;
 
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class FindFeatureSpace {
   public final int inputBands;
   public final NotebookOutput log;

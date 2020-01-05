@@ -26,11 +26,13 @@ import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
 import com.simiacryptus.mindseye.layers.java.SumReducerLayer;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.SupervisedNetwork;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SparseAutoencoderTrainer extends SupervisedNetwork {
 
   public final DAGNode decoder;
@@ -62,7 +64,7 @@ class SparseAutoencoderTrainer extends SupervisedNetwork {
   SparseAutoencoderTrainer[] addRefs(SparseAutoencoderTrainer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SparseAutoencoderTrainer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SparseAutoencoderTrainer::addRef)
         .toArray((x) -> new SparseAutoencoderTrainer[x]);
   }
 
@@ -70,7 +72,7 @@ class SparseAutoencoderTrainer extends SupervisedNetwork {
   SparseAutoencoderTrainer[][] addRefs(SparseAutoencoderTrainer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SparseAutoencoderTrainer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SparseAutoencoderTrainer::addRefs)
         .toArray((x) -> new SparseAutoencoderTrainer[x][]);
   }
 

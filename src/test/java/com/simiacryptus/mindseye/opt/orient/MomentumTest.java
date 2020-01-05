@@ -29,11 +29,13 @@ import com.simiacryptus.mindseye.opt.IterativeTrainer;
 import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class MomentumTest extends MnistTestBase {
 
   @Nonnull
@@ -46,7 +48,7 @@ class MomentumTest extends MnistTestBase {
   MomentumTest[] addRefs(MomentumTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MomentumTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(MomentumTest::addRef)
         .toArray((x) -> new MomentumTest[x]);
   }
 
@@ -54,7 +56,7 @@ class MomentumTest extends MnistTestBase {
   MomentumTest[][] addRefs(MomentumTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MomentumTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(MomentumTest::addRefs)
         .toArray((x) -> new MomentumTest[x][]);
   }
 

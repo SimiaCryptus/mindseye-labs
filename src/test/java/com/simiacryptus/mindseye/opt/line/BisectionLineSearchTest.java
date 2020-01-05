@@ -30,11 +30,13 @@ import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.orient.GradientDescent;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class BisectionLineSearchTest extends MnistTestBase {
 
   @Nonnull
@@ -47,7 +49,7 @@ class BisectionLineSearchTest extends MnistTestBase {
   BisectionLineSearchTest[] addRefs(BisectionLineSearchTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BisectionLineSearchTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(BisectionLineSearchTest::addRef)
         .toArray((x) -> new BisectionLineSearchTest[x]);
   }
 
@@ -55,7 +57,7 @@ class BisectionLineSearchTest extends MnistTestBase {
   BisectionLineSearchTest[][] addRefs(BisectionLineSearchTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BisectionLineSearchTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(BisectionLineSearchTest::addRefs)
         .toArray((x) -> new BisectionLineSearchTest[x][]);
   }
 

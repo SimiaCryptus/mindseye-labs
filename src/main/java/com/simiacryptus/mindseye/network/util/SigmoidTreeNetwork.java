@@ -25,14 +25,19 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.java.*;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefMap;
 import com.simiacryptus.util.FastRandom;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
 
   private final boolean multigate = false;
@@ -57,10 +62,10 @@ class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
   private boolean skipFuzzy = false;
 
   protected SigmoidTreeNetwork(@Nonnull final JsonObject json,
-                               com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                               Map<CharSequence, byte[]> rs) {
     super(json, rs);
     head = getNodeById(UUID.fromString(json.get("head").getAsString()));
-    com.simiacryptus.ref.wrappers.RefMap<UUID, Layer> layersById = getLayersById();
+    RefMap<UUID, Layer> layersById = getLayersById();
     if (json.get("alpha") != null) {
       alpha = layersById.get(UUID.fromString(json.get("alpha").getAsString()));
     }
@@ -162,7 +167,7 @@ class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
   }
 
   public static SigmoidTreeNetwork fromJson(@Nonnull final JsonObject json,
-                                            com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                            Map<CharSequence, byte[]> rs) {
     return new SigmoidTreeNetwork(json, rs);
   }
 
@@ -170,7 +175,7 @@ class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
   SigmoidTreeNetwork[] addRefs(SigmoidTreeNetwork[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SigmoidTreeNetwork::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SigmoidTreeNetwork::addRef)
         .toArray((x) -> new SigmoidTreeNetwork[x]);
   }
 
@@ -178,7 +183,7 @@ class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
   SigmoidTreeNetwork[][] addRefs(SigmoidTreeNetwork[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SigmoidTreeNetwork::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SigmoidTreeNetwork::addRefs)
         .toArray((x) -> new SigmoidTreeNetwork[x][]);
   }
 
@@ -193,8 +198,8 @@ class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
   }
 
   public void copyState(@Nonnull final Layer from, @Nonnull final Layer to) {
-    @Nullable final com.simiacryptus.ref.wrappers.RefList<double[]> alphaState = from.state();
-    @Nullable final com.simiacryptus.ref.wrappers.RefList<double[]> betaState = to.state();
+    @Nullable final RefList<double[]> alphaState = from.state();
+    @Nullable final RefList<double[]> betaState = to.state();
     for (int i = 0; i < alphaState.size(); i++) {
       final double[] betaBuffer = betaState.get(i);
       final double[] alphaBuffer = alphaState.get(i);
@@ -203,7 +208,7 @@ class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
   }
 
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     assertConsistent();
     UUID headId = getHeadId();

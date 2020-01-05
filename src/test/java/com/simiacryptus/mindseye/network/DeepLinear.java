@@ -24,11 +24,12 @@ import com.simiacryptus.mindseye.layers.java.BiasLayer;
 import com.simiacryptus.mindseye.layers.java.FullyConnectedLayer;
 import com.simiacryptus.mindseye.layers.java.ReLuActivationLayer;
 import com.simiacryptus.mindseye.layers.java.SigmoidActivationLayer;
+import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.util.Util;
 
 import javax.annotation.Nonnull;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class DeepLinear extends NLayerTest {
 
   public DeepLinear(final int[]... dimList) {
@@ -58,7 +59,7 @@ class DeepLinear extends NLayerTest {
     return 0.1 * Math.round(1000.0 * (Util.R.get().nextDouble() - 0.5)) / 500.0;
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class NarrowingPipeline extends DeepLinear {
     public NarrowingPipeline() {
       super(new int[]{4, 4, 2}, new int[]{3, 3, 1}, new int[]{2, 2, 1}, new int[]{2, 2, 1});
@@ -66,7 +67,7 @@ class DeepLinear extends NLayerTest {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class SigmoidPipeline extends DeepLinear {
     public SigmoidPipeline() {
       super(new int[]{10}, new int[]{10}, new int[]{10}, new int[]{10});
@@ -80,7 +81,7 @@ class DeepLinear extends NLayerTest {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class UniformPipeline extends DeepLinear {
     public UniformPipeline() {
       super(new int[]{10}, new int[]{10}, new int[]{10}, new int[]{10});

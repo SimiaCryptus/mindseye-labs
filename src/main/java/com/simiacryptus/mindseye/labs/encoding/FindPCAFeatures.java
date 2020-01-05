@@ -22,19 +22,22 @@ package com.simiacryptus.mindseye.labs.encoding;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.test.PCAUtil;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefStream;
 import org.apache.commons.math3.linear.RealMatrix;
 
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-abstract @com.simiacryptus.ref.lang.RefAware
+abstract @RefAware
 class FindPCAFeatures extends FindFeatureSpace {
 
   public FindPCAFeatures(final NotebookOutput log, final int inputBands) {
     super(log, inputBands);
   }
 
-  protected abstract com.simiacryptus.ref.wrappers.RefStream<Tensor[]> getFeatures();
+  protected abstract RefStream<Tensor[]> getFeatures();
 
   @Nonnull
   @Override
@@ -48,7 +51,7 @@ class FindPCAFeatures extends FindFeatureSpace {
 
   protected double[] findBandBias() {
     final int outputBands = getFeatures().findAny().get()[1].getDimensions()[2];
-    return com.simiacryptus.ref.wrappers.RefIntStream.range(0, outputBands).parallel().mapToDouble(b -> {
+    return RefIntStream.range(0, outputBands).parallel().mapToDouble(b -> {
       return getFeatures().mapToDouble(tensor -> {
         return tensor[1].coordStream(false).filter((c) -> c.getCoords()[2] == b).mapToDouble((c) -> tensor[1].get(c))
             .average().getAsDouble();
@@ -57,7 +60,7 @@ class FindPCAFeatures extends FindFeatureSpace {
   }
 
   protected Tensor[] findFeatureSpace(@Nonnull final NotebookOutput log,
-                                      @Nonnull final Supplier<com.simiacryptus.ref.wrappers.RefStream<Tensor[]>> featureVectors, final int components) {
+                                      @Nonnull final Supplier<RefStream<Tensor[]>> featureVectors, final int components) {
     return log.eval(() -> {
       final int column = 1;
       @Nonnull final Tensor[] prototype = featureVectors.get().findAny().get();
