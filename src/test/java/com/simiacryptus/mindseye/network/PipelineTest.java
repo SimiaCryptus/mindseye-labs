@@ -33,6 +33,7 @@ import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefString;
 import com.simiacryptus.util.Util;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
@@ -103,7 +104,7 @@ class PipelineTest extends ReferenceCountingBase {
       workingSpec.add(l);
       @Nonnull final Layer networkHead = buildNetwork(workingSpec.toArray(new Layer[]{}));
       graphviz(log, networkHead);
-      test(log, networkHead, String.format("Pipeline Network apply %d Layers", layerIndex++), getInputDims());
+      test(log, networkHead, RefString.format("Pipeline Network apply %d Layers", layerIndex++), getInputDims());
     }
   }
 

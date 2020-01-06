@@ -228,7 +228,7 @@ class MnistTestBase extends NotebookReportBase {
         row.put("Image", log.png(labeledObject.data.toGrayImage(), labeledObject.label));
         row.put("Prediction",
             RefArrays.stream(predictionList).limit(3)
-                .mapToObj(i -> String.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
+                .mapToObj(i -> RefString.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
                 .reduce((a, b) -> a + ", " + b).get());
         return row;
       }).filter(x -> null != x).limit(10).forEach(table::putRow);

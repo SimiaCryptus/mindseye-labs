@@ -203,7 +203,7 @@ class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
     for (int i = 0; i < alphaState.size(); i++) {
       final double[] betaBuffer = betaState.get(i);
       final double[] alphaBuffer = alphaState.get(i);
-      System.arraycopy(alphaBuffer, 0, betaBuffer, 0, alphaBuffer.length);
+      com.simiacryptus.ref.wrappers.RefSystem.arraycopy(alphaBuffer, 0, betaBuffer, 0, alphaBuffer.length);
     }
   }
 
