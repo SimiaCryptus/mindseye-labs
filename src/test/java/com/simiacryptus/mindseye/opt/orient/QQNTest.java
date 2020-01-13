@@ -35,8 +35,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @RefAware
-class QQNTest extends MnistTestBase {
+public class QQNTest extends MnistTestBase {
 
   @Nonnull
   @Override
@@ -44,26 +43,24 @@ class QQNTest extends MnistTestBase {
     return QQN.class;
   }
 
-  public static @SuppressWarnings("unused")
-  QQNTest[] addRefs(QQNTest[] array) {
+  public static @SuppressWarnings("unused") QQNTest[] addRefs(QQNTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(QQNTest::addRef).toArray((x) -> new QQNTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  QQNTest[][] addRefs(QQNTest[][] array) {
+  public static @SuppressWarnings("unused") QQNTest[][] addRefs(QQNTest[][] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(QQNTest::addRefs)
-        .toArray((x) -> new QQNTest[x][]);
+    return Arrays.stream(array).filter((x) -> x != null).map(QQNTest::addRefs).toArray((x) -> new QQNTest[x][]);
   }
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
-      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull
+      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       //return new IterativeTrainer(new SampledArrayTrainable(trainingData, supervisedNetwork, 10000))
       @Nonnull
       ValidatingTrainer trainer = new ValidatingTrainer(
@@ -74,13 +71,10 @@ class QQNTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  QQNTest addRef() {
+  public @Override @SuppressWarnings("unused") QQNTest addRef() {
     return (QQNTest) super.addRef();
   }
 }

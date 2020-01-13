@@ -41,15 +41,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public @RefAware
-class TextbookOptimizers extends OptimizerComparison {
+public class TextbookOptimizers extends OptimizerComparison {
 
   @Nonnull
   public static OptimizationStrategy conjugate_gradient_descent = (log, trainingSubject, validationSubject,
-                                                                   monitor) -> {
+      monitor) -> {
     log.p("Optimized via the Conjugate Gradient Descent method:");
     return log.eval(() -> {
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
+      @Nonnull
+      final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
           .setMinTrainingSize(Integer.MAX_VALUE).setMonitor(monitor);
       trainer.getRegimen().get(0).setOrientation(new GradientDescent())
           .setLineSearchFactory(name -> new QuadraticSearch().setRelativeTolerance(1e-5));
@@ -60,7 +60,8 @@ class TextbookOptimizers extends OptimizerComparison {
   public static OptimizationStrategy limited_memory_bfgs = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Limited-Memory BFGS method:");
     return log.eval(() -> {
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
+      @Nonnull
+      final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
           .setMinTrainingSize(Integer.MAX_VALUE).setMonitor(monitor);
       trainer.getRegimen().get(0).setOrientation(new LBFGS()).setLineSearchFactory(
           name -> new ArmijoWolfeSearch().setAlpha(name.toString().contains("LBFGS") ? 1.0 : 1e-6));
@@ -71,7 +72,8 @@ class TextbookOptimizers extends OptimizerComparison {
   public static OptimizationStrategy orthantwise_quasi_newton = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Orthantwise Quasi-Newton search method:");
     return log.eval(() -> {
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
+      @Nonnull
+      final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
           .setMinTrainingSize(Integer.MAX_VALUE).setMonitor(monitor);
       trainer.getRegimen().get(0).setOrientation(new OwlQn())
           .setLineSearchFactory(name -> new ArmijoWolfeSearch().setAlpha(name.toString().contains("OWL") ? 1.0 : 1e-6));
@@ -83,7 +85,8 @@ class TextbookOptimizers extends OptimizerComparison {
     log.p("Optimized via the Stochastic Gradient Descent method:");
     return log.eval(() -> {
       final double rate = 0.05;
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
+      @Nonnull
+      final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
           .setMinTrainingSize(Integer.MAX_VALUE).setMaxEpochIterations(100).setMonitor(monitor);
       trainer.getRegimen().get(0).setOrientation(new GradientDescent())
           .setLineSearchFactory(name -> new StaticLearningRate(rate));
@@ -92,11 +95,12 @@ class TextbookOptimizers extends OptimizerComparison {
   };
   @Nonnull
   public static OptimizationStrategy stochastic_gradient_descent = (log, trainingSubject, validationSubject,
-                                                                    monitor) -> {
+      monitor) -> {
     log.p("Optimized via the Stochastic Gradient Descent method apply momentum and adaptve learning rate:");
     return log.eval(() -> {
       final double carryOver = 0.5;
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
+      @Nonnull
+      final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
           .setMaxEpochIterations(100).setMonitor(monitor);
       trainer.getRegimen().get(0).setOrientation(new MomentumStrategy(new GradientDescent()).setCarryOver(carryOver))
           .setLineSearchFactory(name -> new ArmijoWolfeSearch());
@@ -108,16 +112,14 @@ class TextbookOptimizers extends OptimizerComparison {
     super(MnistTests.fwd_conv_1, MnistTests.rev_conv_1, new MnistProblemData());
   }
 
-  public static @SuppressWarnings("unused")
-  TextbookOptimizers[] addRefs(TextbookOptimizers[] array) {
+  public static @SuppressWarnings("unused") TextbookOptimizers[] addRefs(TextbookOptimizers[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(TextbookOptimizers::addRef)
         .toArray((x) -> new TextbookOptimizers[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  TextbookOptimizers[][] addRefs(TextbookOptimizers[][] array) {
+  public static @SuppressWarnings("unused") TextbookOptimizers[][] addRefs(TextbookOptimizers[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(TextbookOptimizers::addRefs)
@@ -126,22 +128,27 @@ class TextbookOptimizers extends OptimizerComparison {
 
   @Override
   public void compare(@Nonnull final NotebookOutput log,
-                      @Nonnull final Function<OptimizationStrategy, List<StepRecord>> test) {
+      @Nonnull final Function<OptimizationStrategy, List<StepRecord>> test) {
     log.h1("Textbook Optimizer Comparison");
     log.h2("GD");
-    @Nonnull final ProblemRun gd = new ProblemRun("GD", test.apply(TextbookOptimizers.simple_gradient_descent), Color.BLACK,
+    @Nonnull
+    final ProblemRun gd = new ProblemRun("GD", test.apply(TextbookOptimizers.simple_gradient_descent), Color.BLACK,
         ProblemRun.PlotType.Line);
     log.h2("SGD");
-    @Nonnull final ProblemRun sgd = new ProblemRun("SGD", test.apply(TextbookOptimizers.stochastic_gradient_descent),
+    @Nonnull
+    final ProblemRun sgd = new ProblemRun("SGD", test.apply(TextbookOptimizers.stochastic_gradient_descent),
         Color.GREEN, ProblemRun.PlotType.Line);
     log.h2("CGD");
-    @Nonnull final ProblemRun cgd = new ProblemRun("CjGD", test.apply(TextbookOptimizers.conjugate_gradient_descent), Color.BLUE,
+    @Nonnull
+    final ProblemRun cgd = new ProblemRun("CjGD", test.apply(TextbookOptimizers.conjugate_gradient_descent), Color.BLUE,
         ProblemRun.PlotType.Line);
     log.h2("L-BFGS");
-    @Nonnull final ProblemRun lbfgs = new ProblemRun("L-BFGS", test.apply(TextbookOptimizers.limited_memory_bfgs), Color.MAGENTA,
+    @Nonnull
+    final ProblemRun lbfgs = new ProblemRun("L-BFGS", test.apply(TextbookOptimizers.limited_memory_bfgs), Color.MAGENTA,
         ProblemRun.PlotType.Line);
     log.h2("OWL-QN");
-    @Nonnull final ProblemRun owlqn = new ProblemRun("OWL-QN", test.apply(TextbookOptimizers.orthantwise_quasi_newton),
+    @Nonnull
+    final ProblemRun owlqn = new ProblemRun("OWL-QN", test.apply(TextbookOptimizers.orthantwise_quasi_newton),
         Color.ORANGE, ProblemRun.PlotType.Line);
     log.h2("Comparison");
     log.eval(() -> {
@@ -152,13 +159,10 @@ class TextbookOptimizers extends OptimizerComparison {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  TextbookOptimizers addRef() {
+  public @Override @SuppressWarnings("unused") TextbookOptimizers addRef() {
     return (TextbookOptimizers) super.addRef();
   }
 }

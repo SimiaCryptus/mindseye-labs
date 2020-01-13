@@ -22,6 +22,7 @@ package com.simiacryptus.mindseye.test.integration;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.util.test.LabeledObject;
 
@@ -30,8 +31,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Random;
 
-public @RefAware
-class SupplementedProblemData implements ImageProblemData {
+public class SupplementedProblemData implements ImageProblemData {
 
   private final int expansion = 10;
   private final ImageProblemData inner;
@@ -42,12 +42,12 @@ class SupplementedProblemData implements ImageProblemData {
   }
 
   public static void printSample(@Nonnull final NotebookOutput log, final Tensor[][] expanded, final int size) {
-    @Nonnull final RefArrayList<Tensor[]> list = new RefArrayList<>(
-        RefArrays.asList(expanded));
+    @Nonnull
+    final RefArrayList<Tensor[]> list = new RefArrayList<>(RefArrays.asList(expanded));
     RefCollections.shuffle(list);
-    log.p("Expanded Training Data Sample: " + list.stream().limit(size).map(x -> {
+    log.p("Expanded Training Data Sample: " + RefUtil.get(list.stream().limit(size).map(x -> {
       return log.png(x[0].toGrayImage(), "");
-    }).reduce((a, b) -> a + b).get());
+    }).reduce((a, b) -> a + b)));
   }
 
   @Nullable

@@ -46,8 +46,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @RefAware
-class AutoencoderNetwork extends ReferenceCountingBase {
+public class AutoencoderNetwork extends ReferenceCountingBase {
 
   @Nonnull
   private final PipelineNetwork decoder;
@@ -166,16 +165,14 @@ class AutoencoderNetwork extends ReferenceCountingBase {
     return new AutoencoderNetwork.Builder(outerSize, innerSize);
   }
 
-  public static @SuppressWarnings("unused")
-  AutoencoderNetwork[] addRefs(AutoencoderNetwork[] array) {
+  public static @SuppressWarnings("unused") AutoencoderNetwork[] addRefs(AutoencoderNetwork[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AutoencoderNetwork::addRef)
         .toArray((x) -> new AutoencoderNetwork[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  AutoencoderNetwork[][] addRefs(AutoencoderNetwork[][] array) {
+  public static @SuppressWarnings("unused") AutoencoderNetwork[][] addRefs(AutoencoderNetwork[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AutoencoderNetwork::addRefs)
@@ -185,7 +182,7 @@ class AutoencoderNetwork extends ReferenceCountingBase {
   public TensorList encode(@Nonnull final TensorList data) {
     Layer layer = encoder.getLayer();
     TensorList tensorList = layer
-        .eval(ConstantResult.batchResultArray(data.stream().map(x -> new Tensor[]{x}).toArray(i -> new Tensor[i][])))
+        .eval(ConstantResult.batchResultArray(data.stream().map(x -> new Tensor[] { x }).toArray(i -> new Tensor[i][])))
         .getData();
     layer.freeRef();
     return tensorList;
@@ -202,14 +199,14 @@ class AutoencoderNetwork extends ReferenceCountingBase {
       @Nonnull
       @Override
       public SimpleLossNetwork getTrainingNetwork() {
-        @Nonnull final PipelineNetwork student = new PipelineNetwork();
+        @Nonnull
+        final PipelineNetwork student = new PipelineNetwork();
         student.add(encoder);
         student.add(decoder);
         return new SimpleLossNetwork(student, new MeanSqLossLayer());
       }
 
-      public @SuppressWarnings("unused")
-      void _free() {
+      public @SuppressWarnings("unused") void _free() {
       }
 
       @Nonnull
@@ -235,18 +232,14 @@ class AutoencoderNetwork extends ReferenceCountingBase {
     encodedNoise.setValue(networkParameters.getDropout());
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  AutoencoderNetwork addRef() {
+  public @Override @SuppressWarnings("unused") AutoencoderNetwork addRef() {
     return (AutoencoderNetwork) super.addRef();
   }
 
-  public static @RefAware
-  class Builder {
+  public static class Builder {
 
     private final int[] innerSize;
     private final int[] outerSize;
@@ -325,8 +318,7 @@ class AutoencoderNetwork extends ReferenceCountingBase {
     }
   }
 
-  public static @RefAware
-  class RecursiveBuilder extends ReferenceCountingBase {
+  public static class RecursiveBuilder extends ReferenceCountingBase {
 
     private final RefList<int[]> dimensions = new RefArrayList<>();
     private final RefList<AutoencoderNetwork> layers = new RefArrayList<>();
@@ -339,7 +331,8 @@ class AutoencoderNetwork extends ReferenceCountingBase {
 
     @Nonnull
     public Layer getDecoder() {
-      @Nonnull final PipelineNetwork network = new PipelineNetwork();
+      @Nonnull
+      final PipelineNetwork network = new PipelineNetwork();
       for (int i = layers.size() - 1; i >= 0; i--) {
         network.add(layers.get(i).getDecoder());
       }
@@ -348,7 +341,8 @@ class AutoencoderNetwork extends ReferenceCountingBase {
 
     @Nonnull
     public Layer getEncoder() {
-      @Nonnull final PipelineNetwork network = new PipelineNetwork();
+      @Nonnull
+      final PipelineNetwork network = new PipelineNetwork();
       for (int i = 0; i < layers.size(); i++) {
         network.add(layers.get(i).getEncoder());
       }
@@ -362,7 +356,8 @@ class AutoencoderNetwork extends ReferenceCountingBase {
 
     @Nonnull
     public Layer echo() {
-      @Nonnull final PipelineNetwork network = new PipelineNetwork();
+      @Nonnull
+      final PipelineNetwork network = new PipelineNetwork();
       network.add(getEncoder());
       network.add(getDecoder());
       return network;
@@ -375,9 +370,10 @@ class AutoencoderNetwork extends ReferenceCountingBase {
 
     @Nonnull
     public AutoencoderNetwork growLayer(final int pretrainingSize, final int pretrainingMinutes,
-                                        final int pretrainIterations, final int[] dims) {
+        final int pretrainIterations, final int[] dims) {
       trainingMode();
-      @Nonnull final AutoencoderNetwork newLayer = configure(
+      @Nonnull
+      final AutoencoderNetwork newLayer = configure(
           AutoencoderNetwork.newLayer(dimensions.get(dimensions.size() - 1), dims)).build();
 
       final TensorList data = representations.get(representations.size() - 1);
@@ -385,10 +381,11 @@ class AutoencoderNetwork extends ReferenceCountingBase {
       layers.add(newLayer);
 
       if (pretrainingSize > 0 && pretrainIterations > 0 && pretrainingMinutes > 0) {
-        @Nonnull final RefArrayList<Tensor> list = new RefArrayList<>(
-            data.stream().collect(RefCollectors.toList()));
+        @Nonnull
+        final RefArrayList<Tensor> list = new RefArrayList<>(data.stream().collect(RefCollectors.toList()));
         RefCollections.shuffle(list);
-        @Nonnull final Tensor[] pretrainingSet = list.subList(0, pretrainingSize).toArray(new Tensor[]{});
+        @Nonnull
+        final Tensor[] pretrainingSet = list.subList(0, pretrainingSize).toArray(new Tensor[] {});
         configure(newLayer.train()).setMaxIterations(pretrainIterations).setTimeoutMinutes(pretrainingMinutes)
             .run(new TensorArray(pretrainingSet));
       }
@@ -414,14 +411,14 @@ class AutoencoderNetwork extends ReferenceCountingBase {
         @Nonnull
         @Override
         public SimpleLossNetwork getTrainingNetwork() {
-          @Nonnull final PipelineNetwork student = new PipelineNetwork();
+          @Nonnull
+          final PipelineNetwork student = new PipelineNetwork();
           student.add(getEncoder());
           student.add(getDecoder());
           return new SimpleLossNetwork(student, new MeanSqLossLayer());
         }
 
-        public @SuppressWarnings("unused")
-        void _free() {
+        public @SuppressWarnings("unused") void _free() {
         }
 
         @Nonnull
@@ -452,8 +449,7 @@ class AutoencoderNetwork extends ReferenceCountingBase {
     }
   }
 
-  public abstract static @RefAware
-  class TrainingParameters extends ReferenceCountingBase {
+  public abstract static class TrainingParameters extends ReferenceCountingBase {
     private double endFitness = Double.NEGATIVE_INFINITY;
     private double l1normalization = 0.0;
     private double l2normalization = 0.0;
@@ -559,8 +555,7 @@ class AutoencoderNetwork extends ReferenceCountingBase {
     @Nonnull
     public abstract SimpleLossNetwork getTrainingNetwork();
 
-    public static @SuppressWarnings("unused")
-    TrainingParameters[] addRefs(TrainingParameters[] array) {
+    public static @SuppressWarnings("unused") TrainingParameters[] addRefs(TrainingParameters[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(TrainingParameters::addRef)
@@ -568,16 +563,21 @@ class AutoencoderNetwork extends ReferenceCountingBase {
     }
 
     public void run(@Nonnull final TensorList data) {
-      @Nonnull final SimpleLossNetwork trainingNetwork = getTrainingNetwork();
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(
-          data.stream().map(x -> new Tensor[]{x, x}).toArray(i -> new Tensor[i][]), trainingNetwork,
+      @Nonnull
+      final SimpleLossNetwork trainingNetwork = getTrainingNetwork();
+      @Nonnull
+      final Trainable trainable = new SampledArrayTrainable(
+          data.stream().map(x -> new Tensor[] { x, x }).toArray(i -> new Tensor[i][]), trainingNetwork,
           getSampleSize());
-      @Nonnull final L12Normalizer normalized = new ConstL12Normalizer(trainable).setFactor_L1(getL1normalization())
+      @Nonnull
+      final L12Normalizer normalized = new ConstL12Normalizer(trainable).setFactor_L1(getL1normalization())
           .setFactor_L2(getL2normalization());
-      @Nonnull final IterativeTrainer trainer = new IterativeTrainer(normalized);
+      @Nonnull
+      final IterativeTrainer trainer = new IterativeTrainer(normalized);
       trainer.setOrientation(getOrient());
       trainer.setLineSearchFactory((s) -> getStep());
-      @Nullable final TrainingMonitor monitor = getMonitor();
+      @Nullable
+      final TrainingMonitor monitor = getMonitor();
       trainer.setMonitor(wrap(monitor));
       trainer.setTimeout(getTimeoutMinutes(), TimeUnit.MINUTES);
       trainer.setTerminateThreshold(getEndFitness());
@@ -585,13 +585,10 @@ class AutoencoderNetwork extends ReferenceCountingBase {
       trainer.run();
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    TrainingParameters addRef() {
+    public @Override @SuppressWarnings("unused") TrainingParameters addRef() {
       return (TrainingParameters) super.addRef();
     }
 

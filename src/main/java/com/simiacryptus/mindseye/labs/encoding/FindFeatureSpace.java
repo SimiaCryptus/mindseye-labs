@@ -24,8 +24,7 @@ import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
 
-public abstract @RefAware
-class FindFeatureSpace {
+public abstract class FindFeatureSpace {
   public final int inputBands;
   public final NotebookOutput log;
 

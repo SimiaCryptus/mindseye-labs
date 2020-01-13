@@ -37,8 +37,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @RefAware
-class L1NormalizationTest extends MnistTestBase {
+public class L1NormalizationTest extends MnistTestBase {
 
   @Nonnull
   @Override
@@ -46,16 +45,14 @@ class L1NormalizationTest extends MnistTestBase {
     return L12Normalizer.class;
   }
 
-  public static @SuppressWarnings("unused")
-  L1NormalizationTest[] addRefs(L1NormalizationTest[] array) {
+  public static @SuppressWarnings("unused") L1NormalizationTest[] addRefs(L1NormalizationTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationTest::addRef)
         .toArray((x) -> new L1NormalizationTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  L1NormalizationTest[][] addRefs(L1NormalizationTest[][] array) {
+  public static @SuppressWarnings("unused") L1NormalizationTest[][] addRefs(L1NormalizationTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationTest::addRefs)
@@ -64,18 +61,19 @@ class L1NormalizationTest extends MnistTestBase {
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
-      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull final Trainable trainable = new L12Normalizer(new SampledArrayTrainable(trainingData, supervisedNetwork, 1000)) {
+      @Nonnull
+      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull
+      final Trainable trainable = new L12Normalizer(new SampledArrayTrainable(trainingData, supervisedNetwork, 1000)) {
         @NotNull
         @Override
         public Layer getLayer() {
           return inner.getLayer();
         }
 
-        public @SuppressWarnings("unused")
-        void _free() {
+        public @SuppressWarnings("unused") void _free() {
         }
 
         @Override
@@ -93,13 +91,10 @@ class L1NormalizationTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  L1NormalizationTest addRef() {
+  public @Override @SuppressWarnings("unused") L1NormalizationTest addRef() {
     return (L1NormalizationTest) super.addRef();
   }
 }

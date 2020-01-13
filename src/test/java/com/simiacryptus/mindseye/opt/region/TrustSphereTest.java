@@ -36,8 +36,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @RefAware
-class TrustSphereTest extends MnistTestBase {
+public class TrustSphereTest extends MnistTestBase {
 
   @Nonnull
   @Override
@@ -45,16 +44,14 @@ class TrustSphereTest extends MnistTestBase {
     return AdaptiveTrustSphere.class;
   }
 
-  public static @SuppressWarnings("unused")
-  TrustSphereTest[] addRefs(TrustSphereTest[] array) {
+  public static @SuppressWarnings("unused") TrustSphereTest[] addRefs(TrustSphereTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(TrustSphereTest::addRef)
         .toArray((x) -> new TrustSphereTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  TrustSphereTest[][] addRefs(TrustSphereTest[][] array) {
+  public static @SuppressWarnings("unused") TrustSphereTest[][] addRefs(TrustSphereTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(TrustSphereTest::addRefs)
@@ -63,18 +60,20 @@ class TrustSphereTest extends MnistTestBase {
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
-      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 10000);
-      @Nonnull final TrustRegionStrategy trustRegionStrategy = new TrustRegionStrategy() {
+      @Nonnull
+      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull
+      final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 10000);
+      @Nonnull
+      final TrustRegionStrategy trustRegionStrategy = new TrustRegionStrategy() {
         @Override
         public TrustRegion getRegionPolicy(final Layer layer) {
           return new AdaptiveTrustSphere();
         }
 
-        public @SuppressWarnings("unused")
-        void _free() {
+        public @SuppressWarnings("unused") void _free() {
         }
       };
       //.setOrientation(new ValidatingOrientationWrapper(trustRegionStrategy))
@@ -84,13 +83,10 @@ class TrustSphereTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  TrustSphereTest addRef() {
+  public @Override @SuppressWarnings("unused") TrustSphereTest addRef() {
     return (TrustSphereTest) super.addRef();
   }
 }

@@ -45,8 +45,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public @RefAware
-class PolynomialNetwork extends DAGNetwork {
+public class PolynomialNetwork extends DAGNetwork {
 
   protected final int[] inputDims;
   protected final int[] outputDims;
@@ -64,8 +63,7 @@ class PolynomialNetwork extends DAGNetwork {
     this.outputDims = outputDims;
   }
 
-  protected PolynomialNetwork(@Nonnull final JsonObject json,
-                              Map<CharSequence, byte[]> rs) {
+  protected PolynomialNetwork(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     head = getNodeById(UUID.fromString(json.get("head").getAsString()));
     RefMap<UUID, Layer> layersById = getLayersById();
@@ -93,12 +91,14 @@ class PolynomialNetwork extends DAGNetwork {
           }
           reset();
           final DAGNode input = getInput(0);
-          @Nonnull final RefArrayList<DAGNode> terms = new RefArrayList<>();
+          @Nonnull
+          final RefArrayList<DAGNode> terms = new RefArrayList<>();
           terms.add(add(alpha, add(alphaBias, input)));
-          for (@Nonnull final Correcton c : corrections) {
+          for (@Nonnull
+          final Correcton c : corrections) {
             terms.add(c.add(input));
           }
-          head = terms.size() == 1 ? terms.get(0) : add(newProductLayer(), terms.toArray(new DAGNode[]{}));
+          head = terms.size() == 1 ? terms.get(0) : add(newProductLayer(), terms.toArray(new DAGNode[] {}));
         }
       }
     }
@@ -106,16 +106,17 @@ class PolynomialNetwork extends DAGNetwork {
     return head;
   }
 
-  public static PolynomialNetwork fromJson(@Nonnull final JsonObject json,
-                                           Map<CharSequence, byte[]> rs) {
+  public static PolynomialNetwork fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new PolynomialNetwork(json, rs);
   }
 
   @Nonnull
   public static int[] toIntArray(@Nonnull final JsonArray dims) {
-    @Nonnull final int[] x = new int[dims.size()];
+    @Nonnull
+    final int[] x = new int[dims.size()];
     int j = 0;
-    for (@Nonnull final Iterator<JsonElement> i = dims.iterator(); i.hasNext(); ) {
+    for (@Nonnull
+    final Iterator<JsonElement> i = dims.iterator(); i.hasNext();) {
       x[j++] = i.next().getAsInt();
     }
     return x;
@@ -123,23 +124,22 @@ class PolynomialNetwork extends DAGNetwork {
 
   @Nonnull
   public static JsonArray toJson(@Nonnull final int[] dims) {
-    @Nonnull final JsonArray array = new JsonArray();
+    @Nonnull
+    final JsonArray array = new JsonArray();
     for (final int i : dims) {
       array.add(new JsonPrimitive(i));
     }
     return array;
   }
 
-  public static @SuppressWarnings("unused")
-  PolynomialNetwork[] addRefs(PolynomialNetwork[] array) {
+  public static @SuppressWarnings("unused") PolynomialNetwork[] addRefs(PolynomialNetwork[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(PolynomialNetwork::addRef)
         .toArray((x) -> new PolynomialNetwork[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  PolynomialNetwork[][] addRefs(PolynomialNetwork[][] array) {
+  public static @SuppressWarnings("unused") PolynomialNetwork[][] addRefs(PolynomialNetwork[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(PolynomialNetwork::addRefs)
@@ -159,10 +159,10 @@ class PolynomialNetwork extends DAGNetwork {
   }
 
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     assertConsistent();
-    @Nullable final UUID head = getHeadId();
+    @Nullable
+    final UUID head = getHeadId();
     final JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("head", head.toString());
     if (null != alpha) {
@@ -173,8 +173,10 @@ class PolynomialNetwork extends DAGNetwork {
     }
     json.add("inputDims", PolynomialNetwork.toJson(inputDims));
     json.add("outputDims", PolynomialNetwork.toJson(outputDims));
-    @Nonnull final JsonArray elements = new JsonArray();
-    for (@Nonnull final Correcton c : corrections) {
+    @Nonnull
+    final JsonArray elements = new JsonArray();
+    for (@Nonnull
+    final Correcton c : corrections) {
       elements.add(c.getJson());
     }
     json.add("corrections", elements);
@@ -202,14 +204,11 @@ class PolynomialNetwork extends DAGNetwork {
     return new FullyConnectedLayer(inputDims, outputDims).set(() -> weight * (Math.random() - 1));
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  PolynomialNetwork addRef() {
+  public @Override @SuppressWarnings("unused") PolynomialNetwork addRef() {
     return (PolynomialNetwork) super.addRef();
   }
 
-  public static @RefAware
-  class Correcton extends ReferenceCountingBase {
+  public static class Correcton extends ReferenceCountingBase {
     public final Layer bias;
     public final Layer factor;
     public final double power;
@@ -232,32 +231,28 @@ class PolynomialNetwork extends DAGNetwork {
 
     @Nonnull
     public JsonObject getJson() {
-      @Nonnull final JsonObject json = new JsonObject();
+      @Nonnull
+      final JsonObject json = new JsonObject();
       json.addProperty("bias", bias.getId().toString());
       json.addProperty("factor", factor.getId().toString());
       json.addProperty("power", power);
       return json;
     }
 
-    public static @SuppressWarnings("unused")
-    Correcton[] addRefs(Correcton[] array) {
+    public static @SuppressWarnings("unused") Correcton[] addRefs(Correcton[] array) {
       if (array == null)
         return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Correcton::addRef)
-          .toArray((x) -> new Correcton[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Correcton::addRef).toArray((x) -> new Correcton[x]);
     }
 
     public DAGNode add(final DAGNode input) {
       return parent.add(parent.newNthPowerLayer(power), parent.add(bias, parent.add(factor, input)));
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    Correcton addRef() {
+    public @Override @SuppressWarnings("unused") Correcton addRef() {
       return (Correcton) super.addRef();
     }
   }

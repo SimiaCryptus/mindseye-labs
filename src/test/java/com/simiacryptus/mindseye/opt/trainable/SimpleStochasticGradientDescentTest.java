@@ -36,8 +36,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @RefAware
-class SimpleStochasticGradientDescentTest extends MnistTestBase {
+public class SimpleStochasticGradientDescentTest extends MnistTestBase {
 
   @Nonnull
   @Override
@@ -45,8 +44,7 @@ class SimpleStochasticGradientDescentTest extends MnistTestBase {
     return SampledArrayTrainable.class;
   }
 
-  public static @SuppressWarnings("unused")
-  SimpleStochasticGradientDescentTest[] addRefs(
+  public static @SuppressWarnings("unused") SimpleStochasticGradientDescentTest[] addRefs(
       SimpleStochasticGradientDescentTest[] array) {
     if (array == null)
       return null;
@@ -54,8 +52,7 @@ class SimpleStochasticGradientDescentTest extends MnistTestBase {
         .toArray((x) -> new SimpleStochasticGradientDescentTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  SimpleStochasticGradientDescentTest[][] addRefs(
+  public static @SuppressWarnings("unused") SimpleStochasticGradientDescentTest[][] addRefs(
       SimpleStochasticGradientDescentTest[][] array) {
     if (array == null)
       return null;
@@ -65,27 +62,26 @@ class SimpleStochasticGradientDescentTest extends MnistTestBase {
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.p(
         "Training a model involves a few different components. First, our model is combined mapCoords a loss function. "
             + "Then we take that model and combine it mapCoords our training data to define a trainable object. "
             + "Finally, we use a simple iterative scheme to refine the weights of our model. "
             + "The final output is the last output value of the loss function when evaluating the last batch.");
     log.eval(() -> {
-      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 10000);
+      @Nonnull
+      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull
+      final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 10000);
       return new IterativeTrainer(trainable).setMonitor(monitor).setOrientation(new GradientDescent())
           .setTimeout(5, TimeUnit.MINUTES).setMaxIterations(500).run();
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  SimpleStochasticGradientDescentTest addRef() {
+  public @Override @SuppressWarnings("unused") SimpleStochasticGradientDescentTest addRef() {
     return (SimpleStochasticGradientDescentTest) super.addRef();
   }
 }

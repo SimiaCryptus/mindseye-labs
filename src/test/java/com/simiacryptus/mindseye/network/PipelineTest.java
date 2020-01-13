@@ -44,8 +44,7 @@ import org.junit.Test;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract @RefAware
-class PipelineTest extends ReferenceCountingBase {
+public abstract class PipelineTest extends ReferenceCountingBase {
 
   final RefList<Layer> pipeline;
 
@@ -62,8 +61,10 @@ class PipelineTest extends ReferenceCountingBase {
 
   @Nonnull
   public Layer buildNetwork(@Nonnull final Layer... layers) {
-    @Nonnull final PipelineNetwork network = new PipelineNetwork(1);
-    for (@Nonnull final Layer layer : layers) {
+    @Nonnull
+    final PipelineNetwork network = new PipelineNetwork(1);
+    for (@Nonnull
+    final Layer layer : layers) {
       network.add(layer.copy());
     }
     return network;
@@ -84,25 +85,26 @@ class PipelineTest extends ReferenceCountingBase {
   }
 
   public Tensor[] randomize(@Nonnull final int[][] inputDims) {
-    return RefArrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random))
-        .toArray(i -> new Tensor[i]);
+    return RefArrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random)).toArray(i -> new Tensor[i]);
   }
 
   @Test
   public void test() throws Throwable {
     try (@Nonnull
-         NotebookOutput log = MarkdownNotebookOutput
+    NotebookOutput log = MarkdownNotebookOutput
         .get(NotebookReportBase.getTestReportLocation(((Object) this).getClass(), "reports/_reports"))) {
       test(log);
     }
   }
 
   public void test(@Nonnull final NotebookOutput log) {
-    @Nonnull final RefArrayList<Layer> workingSpec = new RefArrayList<>();
+    @Nonnull
+    final RefArrayList<Layer> workingSpec = new RefArrayList<>();
     int layerIndex = 0;
     for (final Layer l : pipeline) {
       workingSpec.add(l);
-      @Nonnull final Layer networkHead = buildNetwork(workingSpec.toArray(new Layer[]{}));
+      @Nonnull
+      final Layer networkHead = buildNetwork(workingSpec.toArray(new Layer[] {}));
       graphviz(log, networkHead);
       test(log, networkHead, RefString.format("Pipeline Network apply %d Layers", layerIndex++), getInputDims());
     }
@@ -110,13 +112,13 @@ class PipelineTest extends ReferenceCountingBase {
 
   @Nullable
   public TrainingTester.ComponentResult test(@Nonnull final NotebookOutput log, @Nonnull final Layer layer,
-                                             final String header, @Nonnull final int[]... inputDims) {
-    @Nonnull final Layer component = layer.copy();
+      final String header, @Nonnull final int[]... inputDims) {
+    @Nonnull
+    final Layer component = layer.copy();
     final Tensor[] randomize = randomize(inputDims);
     new SerializationTest().test(log, component, randomize);
     return new TrainingTester() {
-      public @SuppressWarnings("unused")
-      void _free() {
+      public @SuppressWarnings("unused") void _free() {
       }
 
       @Override

@@ -33,8 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract @RefAware
-class OptimizerComparison extends NotebookReportBase {
+public abstract class OptimizerComparison extends NotebookReportBase {
 
   protected ImageProblemData data;
   protected FwdNetworkFactory fwdFactory;
@@ -42,7 +41,7 @@ class OptimizerComparison extends NotebookReportBase {
   protected int timeoutMinutes = 10;
 
   public OptimizerComparison(final FwdNetworkFactory fwdFactory, final RevNetworkFactory revFactory,
-                             final ImageProblemData data) {
+      final ImageProblemData data) {
     this.fwdFactory = fwdFactory;
     this.revFactory = revFactory;
     this.data = data;
@@ -70,16 +69,14 @@ class OptimizerComparison extends NotebookReportBase {
     return this;
   }
 
-  public static @SuppressWarnings("unused")
-  OptimizerComparison[] addRefs(OptimizerComparison[] array) {
+  public static @SuppressWarnings("unused") OptimizerComparison[] addRefs(OptimizerComparison[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(OptimizerComparison::addRef)
         .toArray((x) -> new OptimizerComparison[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  OptimizerComparison[][] addRefs(OptimizerComparison[][] array) {
+  public static @SuppressWarnings("unused") OptimizerComparison[][] addRefs(OptimizerComparison[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(OptimizerComparison::addRefs)
@@ -98,8 +95,7 @@ class OptimizerComparison extends NotebookReportBase {
     });
   }
 
-  public abstract void compare(NotebookOutput log,
-                               Function<OptimizationStrategy, List<StepRecord>> test);
+  public abstract void compare(NotebookOutput log, Function<OptimizationStrategy, List<StepRecord>> test);
 
   @Test
   @Category(TestCategories.Report.class)
@@ -114,13 +110,10 @@ class OptimizerComparison extends NotebookReportBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  OptimizerComparison addRef() {
+  public @Override @SuppressWarnings("unused") OptimizerComparison addRef() {
     return (OptimizerComparison) super.addRef();
   }
 }

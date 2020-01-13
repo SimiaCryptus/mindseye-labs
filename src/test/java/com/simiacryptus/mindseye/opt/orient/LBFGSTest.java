@@ -36,8 +36,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @RefAware
-class LBFGSTest extends MnistTestBase {
+public class LBFGSTest extends MnistTestBase {
 
   @Nonnull
   @Override
@@ -45,27 +44,24 @@ class LBFGSTest extends MnistTestBase {
     return LBFGS.class;
   }
 
-  public static @SuppressWarnings("unused")
-  LBFGSTest[] addRefs(LBFGSTest[] array) {
+  public static @SuppressWarnings("unused") LBFGSTest[] addRefs(LBFGSTest[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRef)
-        .toArray((x) -> new LBFGSTest[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRef).toArray((x) -> new LBFGSTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  LBFGSTest[][] addRefs(LBFGSTest[][] array) {
+  public static @SuppressWarnings("unused") LBFGSTest[][] addRefs(LBFGSTest[][] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRefs)
-        .toArray((x) -> new LBFGSTest[x][]);
+    return Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRefs).toArray((x) -> new LBFGSTest[x][]);
   }
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
-      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull
+      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       @Nonnull
       ValidatingTrainer trainer = new ValidatingTrainer(
           new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 10000),
@@ -79,13 +75,10 @@ class LBFGSTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  LBFGSTest addRef() {
+  public @Override @SuppressWarnings("unused") LBFGSTest addRef() {
     return (LBFGSTest) super.addRef();
   }
 }

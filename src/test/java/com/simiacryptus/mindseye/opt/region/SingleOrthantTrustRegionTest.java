@@ -36,8 +36,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @RefAware
-class SingleOrthantTrustRegionTest extends MnistTestBase {
+public class SingleOrthantTrustRegionTest extends MnistTestBase {
 
   @Nonnull
   @Override
@@ -45,8 +44,7 @@ class SingleOrthantTrustRegionTest extends MnistTestBase {
     return SingleOrthant.class;
   }
 
-  public static @SuppressWarnings("unused")
-  SingleOrthantTrustRegionTest[] addRefs(
+  public static @SuppressWarnings("unused") SingleOrthantTrustRegionTest[] addRefs(
       SingleOrthantTrustRegionTest[] array) {
     if (array == null)
       return null;
@@ -54,8 +52,7 @@ class SingleOrthantTrustRegionTest extends MnistTestBase {
         .toArray((x) -> new SingleOrthantTrustRegionTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  SingleOrthantTrustRegionTest[][] addRefs(
+  public static @SuppressWarnings("unused") SingleOrthantTrustRegionTest[][] addRefs(
       SingleOrthantTrustRegionTest[][] array) {
     if (array == null)
       return null;
@@ -65,18 +62,20 @@ class SingleOrthantTrustRegionTest extends MnistTestBase {
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
-      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 10000);
-      @Nonnull final TrustRegionStrategy trustRegionStrategy = new TrustRegionStrategy() {
+      @Nonnull
+      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull
+      final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 10000);
+      @Nonnull
+      final TrustRegionStrategy trustRegionStrategy = new TrustRegionStrategy() {
         @Override
         public TrustRegion getRegionPolicy(final Layer layer) {
           return new SingleOrthant();
         }
 
-        public @SuppressWarnings("unused")
-        void _free() {
+        public @SuppressWarnings("unused") void _free() {
         }
       };
       //.setOrientation(new ValidatingOrientationWrapper(trustRegionStrategy))
@@ -86,13 +85,10 @@ class SingleOrthantTrustRegionTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  SingleOrthantTrustRegionTest addRef() {
+  public @Override @SuppressWarnings("unused") SingleOrthantTrustRegionTest addRef() {
     return (SingleOrthantTrustRegionTest) super.addRef();
   }
 }

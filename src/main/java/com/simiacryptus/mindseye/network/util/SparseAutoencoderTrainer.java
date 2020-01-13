@@ -32,8 +32,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 @SuppressWarnings("serial")
-public @RefAware
-class SparseAutoencoderTrainer extends SupervisedNetwork {
+public class SparseAutoencoderTrainer extends SupervisedNetwork {
 
   public final DAGNode decoder;
   public final DAGNode encoder;
@@ -60,29 +59,24 @@ class SparseAutoencoderTrainer extends SupervisedNetwork {
     return sumFitnessLayer;
   }
 
-  public static @SuppressWarnings("unused")
-  SparseAutoencoderTrainer[] addRefs(SparseAutoencoderTrainer[] array) {
+  public static @SuppressWarnings("unused") SparseAutoencoderTrainer[] addRefs(SparseAutoencoderTrainer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SparseAutoencoderTrainer::addRef)
         .toArray((x) -> new SparseAutoencoderTrainer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  SparseAutoencoderTrainer[][] addRefs(SparseAutoencoderTrainer[][] array) {
+  public static @SuppressWarnings("unused") SparseAutoencoderTrainer[][] addRefs(SparseAutoencoderTrainer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SparseAutoencoderTrainer::addRefs)
         .toArray((x) -> new SparseAutoencoderTrainer[x][]);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  SparseAutoencoderTrainer addRef() {
+  public @Override @SuppressWarnings("unused") SparseAutoencoderTrainer addRef() {
     return (SparseAutoencoderTrainer) super.addRef();
   }
 }

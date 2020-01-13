@@ -33,8 +33,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public abstract @RefAware
-class AllTrainingTests extends NotebookReportBase {
+public abstract class AllTrainingTests extends NotebookReportBase {
   protected final FwdNetworkFactory fwdFactory;
   protected final OptimizationStrategy optimizationStrategy;
   protected final RevNetworkFactory revFactory;
@@ -42,7 +41,7 @@ class AllTrainingTests extends NotebookReportBase {
   protected int batchSize = 1000;
 
   public AllTrainingTests(final FwdNetworkFactory fwdFactory, final RevNetworkFactory revFactory,
-                          final OptimizationStrategy optimizationStrategy) {
+      final OptimizationStrategy optimizationStrategy) {
     this.fwdFactory = fwdFactory;
     this.revFactory = revFactory;
     this.optimizationStrategy = optimizationStrategy;
@@ -54,16 +53,14 @@ class AllTrainingTests extends NotebookReportBase {
   @Nonnull
   public abstract CharSequence getDatasetName();
 
-  public static @SuppressWarnings("unused")
-  AllTrainingTests[] addRefs(AllTrainingTests[] array) {
+  public static @SuppressWarnings("unused") AllTrainingTests[] addRefs(AllTrainingTests[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AllTrainingTests::addRef)
         .toArray((x) -> new AllTrainingTests[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  AllTrainingTests[][] addRefs(AllTrainingTests[][] array) {
+  public static @SuppressWarnings("unused") AllTrainingTests[][] addRefs(AllTrainingTests[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AllTrainingTests::addRefs)
@@ -124,13 +121,10 @@ class AllTrainingTests extends NotebookReportBase {
     log.p("_Optimization Strategy Javadoc_: " + optimizationStrategy_javadoc);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  AllTrainingTests addRef() {
+  public @Override @SuppressWarnings("unused") AllTrainingTests addRef() {
     return (AllTrainingTests) super.addRef();
   }
 

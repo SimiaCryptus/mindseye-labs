@@ -46,14 +46,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public @RefAware
-class Research extends OptimizerComparison {
+public class Research extends OptimizerComparison {
 
   @Nonnull
   public static OptimizationStrategy recursive_subspace = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Recursive Subspace method:");
     return log.eval(() -> {
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject).setMonitor(monitor);
+      @Nonnull
+      final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject).setMonitor(monitor);
       trainer.getRegimen().get(0).setOrientation(new RecursiveSubspace() {
         @Override
         public void train(@NotNull TrainingMonitor monitor, Layer subspace) {
@@ -61,8 +61,7 @@ class Research extends OptimizerComparison {
           super.train(monitor, subspace);
         }
 
-        public @SuppressWarnings("unused")
-        void _free() {
+        public @SuppressWarnings("unused") void _free() {
         }
       }).setLineSearchFactory(name -> new StaticLearningRate(1.0));
       return trainer;
@@ -72,14 +71,15 @@ class Research extends OptimizerComparison {
   public static OptimizationStrategy recursive_subspace_2 = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Recursive Subspace method:");
     return log.eval(() -> {
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject).setMonitor(monitor);
+      @Nonnull
+      final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject).setMonitor(monitor);
       trainer.getRegimen().get(0).setOrientation(new RecursiveSubspace() {
         @Override
         public void train(@NotNull TrainingMonitor monitor, Layer subspace) {
           //new SingleDerivativeTester(1e-3,1e-4).apply(subspace, new Tensor[]{new Tensor()});
           @Nonnull
           ArrayTrainable trainable = new ArrayTrainable(new BasicTrainable(subspace),
-              new Tensor[][]{{new Tensor()}});
+              new Tensor[][] { { new Tensor() } });
           new IterativeTrainer(trainable).setOrientation(new QQN()).setLineSearchFactory(n -> new QuadraticSearch())
               .setMonitor(new TrainingMonitor() {
                 @Override
@@ -89,8 +89,7 @@ class Research extends OptimizerComparison {
               }).setMaxIterations(getIterations()).setIterationsPerSample(getIterations()).run();
         }
 
-        public @SuppressWarnings("unused")
-        void _free() {
+        public @SuppressWarnings("unused") void _free() {
         }
       }).setLineSearchFactory(name -> new StaticLearningRate(1.0));
       return trainer;
@@ -101,7 +100,8 @@ class Research extends OptimizerComparison {
   public static OptimizationStrategy quadratic_quasi_newton = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Quadratic Quasi-Newton method:");
     return log.eval(() -> {
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject).setMonitor(monitor);
+      @Nonnull
+      final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject).setMonitor(monitor);
       trainer.getRegimen().get(0).setOrientation(new QQN()).setLineSearchFactory(name -> new QuadraticSearch()
           .setCurrentRate(name.toString().contains("QQN") ? 1.0 : 1e-6).setRelativeTolerance(2e-1));
       return trainer;
@@ -112,7 +112,8 @@ class Research extends OptimizerComparison {
   public static OptimizationStrategy limited_memory_bfgs = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Limited-Memory BFGS method:");
     return log.eval(() -> {
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
+      @Nonnull
+      final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
           .setMinTrainingSize(Integer.MAX_VALUE).setMonitor(monitor);
       trainer.getRegimen().get(0).setOrientation(new LBFGS()).setLineSearchFactory(
           name -> new QuadraticSearch().setCurrentRate(name.toString().contains("LBFGS") ? 1.0 : 1e-6));
@@ -124,55 +125,57 @@ class Research extends OptimizerComparison {
     super(MnistTests.fwd_conv_1, MnistTests.rev_conv_1, new MnistProblemData());
   }
 
-  public static @SuppressWarnings("unused")
-  Research[] addRefs(Research[] array) {
+  public static @SuppressWarnings("unused") Research[] addRefs(Research[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(Research::addRef)
-        .toArray((x) -> new Research[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(Research::addRef).toArray((x) -> new Research[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  Research[][] addRefs(Research[][] array) {
+  public static @SuppressWarnings("unused") Research[][] addRefs(Research[][] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(Research::addRefs)
-        .toArray((x) -> new Research[x][]);
+    return Arrays.stream(array).filter((x) -> x != null).map(Research::addRefs).toArray((x) -> new Research[x][]);
   }
 
   @Override
   public void compare(@Nonnull final NotebookOutput log,
-                      @Nonnull final Function<OptimizationStrategy, List<StepRecord>> test) {
+      @Nonnull final Function<OptimizationStrategy, List<StepRecord>> test) {
     log.h1("Research Optimizer Comparison");
 
     log.h2("Recursive Subspace (Un-Normalized)");
     fwdFactory = MnistTests.fwd_conv_1;
-    @Nonnull final ProblemRun subspace_1 = new ProblemRun("SS", test.apply(Research.recursive_subspace), Color.LIGHT_GRAY,
+    @Nonnull
+    final ProblemRun subspace_1 = new ProblemRun("SS", test.apply(Research.recursive_subspace), Color.LIGHT_GRAY,
         ProblemRun.PlotType.Line);
 
     log.h2("Recursive Subspace (Un-Normalized)");
     fwdFactory = MnistTests.fwd_conv_1;
-    @Nonnull final ProblemRun subspace_2 = new ProblemRun("SS+QQN", test.apply(Research.recursive_subspace_2), Color.RED,
+    @Nonnull
+    final ProblemRun subspace_2 = new ProblemRun("SS+QQN", test.apply(Research.recursive_subspace_2), Color.RED,
         ProblemRun.PlotType.Line);
 
     log.h2("QQN (Normalized)");
     fwdFactory = MnistTests.fwd_conv_1_n;
-    @Nonnull final ProblemRun qqn1 = new ProblemRun("QQN", test.apply(Research.quadratic_quasi_newton), Color.DARK_GRAY,
+    @Nonnull
+    final ProblemRun qqn1 = new ProblemRun("QQN", test.apply(Research.quadratic_quasi_newton), Color.DARK_GRAY,
         ProblemRun.PlotType.Line);
 
     log.h2("L-BFGS (Strong Line Search) (Normalized)");
     fwdFactory = MnistTests.fwd_conv_1_n;
-    @Nonnull final ProblemRun lbfgs_2 = new ProblemRun("LB-2", test.apply(Research.limited_memory_bfgs), Color.MAGENTA,
+    @Nonnull
+    final ProblemRun lbfgs_2 = new ProblemRun("LB-2", test.apply(Research.limited_memory_bfgs), Color.MAGENTA,
         ProblemRun.PlotType.Line);
 
     log.h2("L-BFGS (Normalized)");
     fwdFactory = MnistTests.fwd_conv_1_n;
-    @Nonnull final ProblemRun lbfgs_1 = new ProblemRun("LB-1", test.apply(TextbookOptimizers.limited_memory_bfgs), Color.GREEN,
+    @Nonnull
+    final ProblemRun lbfgs_1 = new ProblemRun("LB-1", test.apply(TextbookOptimizers.limited_memory_bfgs), Color.GREEN,
         ProblemRun.PlotType.Line);
 
     log.h2("L-BFGS-0 (Un-Normalized)");
     fwdFactory = MnistTests.fwd_conv_1;
-    @Nonnull final ProblemRun rawlbfgs = new ProblemRun("LBFGS-0", test.apply(TextbookOptimizers.limited_memory_bfgs),
+    @Nonnull
+    final ProblemRun rawlbfgs = new ProblemRun("LBFGS-0", test.apply(TextbookOptimizers.limited_memory_bfgs),
         Color.CYAN, ProblemRun.PlotType.Line);
 
     log.h2("Comparison");
@@ -184,13 +187,10 @@ class Research extends OptimizerComparison {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  Research addRef() {
+  public @Override @SuppressWarnings("unused") Research addRef() {
     return (Research) super.addRef();
   }
 

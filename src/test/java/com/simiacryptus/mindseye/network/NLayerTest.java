@@ -44,8 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-public abstract @RefAware
-class NLayerTest {
+public abstract class NLayerTest {
   static {
     SysOutInterceptor.INSTANCE.init();
   }
@@ -65,7 +64,8 @@ class NLayerTest {
 
   @Nonnull
   public Layer buildNetwork(@Nonnull final int[]... dimList) {
-    @Nonnull final PipelineNetwork network = new PipelineNetwork(1);
+    @Nonnull
+    final PipelineNetwork network = new PipelineNetwork(1);
     @Nullable
     int[] last = null;
     for (final int[] dims : dimList) {
@@ -78,8 +78,7 @@ class NLayerTest {
   }
 
   public int[][] concat(final int[] a, @Nonnull final List<int[]> b) {
-    return Stream.concat(Stream.of(a), b.stream())
-        .toArray(i -> new int[i][]);
+    return Stream.concat(Stream.of(a), b.stream()).toArray(i -> new int[i][]);
   }
 
   public void graphviz(@Nonnull final NotebookOutput log, final Layer layer) {
@@ -97,14 +96,13 @@ class NLayerTest {
   }
 
   public Tensor[] randomize(@Nonnull final int[][] inputDims) {
-    return RefArrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random))
-        .toArray(i -> new Tensor[i]);
+    return RefArrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random)).toArray(i -> new Tensor[i]);
   }
 
   @Test
   public void test() throws Throwable {
     try (@Nonnull
-         NotebookOutput log = MarkdownNotebookOutput
+    NotebookOutput log = MarkdownNotebookOutput
         .get(NotebookReportBase.getTestReportLocation(((Object) this).getClass(), reportingFolder))) {
       test(log);
     }
@@ -113,11 +111,14 @@ class NLayerTest {
   public void test(@Nonnull final NotebookOutput log) {
 
     log.h1("%s", getClass().getSimpleName());
-    @Nonnull final int[] inputDims = getInputDims();
-    @Nonnull final ArrayList<int[]> workingSpec = new ArrayList<>();
+    @Nonnull
+    final int[] inputDims = getInputDims();
+    @Nonnull
+    final ArrayList<int[]> workingSpec = new ArrayList<>();
     for (final int[] l : dimList) {
       workingSpec.add(l);
-      @Nonnull final Layer layer = buildNetwork(concat(inputDims, workingSpec));
+      @Nonnull
+      final Layer layer = buildNetwork(concat(inputDims, workingSpec));
       graphviz(log, layer);
       test(log, layer, inputDims);
     }
@@ -125,13 +126,13 @@ class NLayerTest {
 
   @Nullable
   public TrainingTester.ComponentResult test(@Nonnull final NotebookOutput log, @Nonnull final Layer layer,
-                                             @Nonnull final int[]... inputDims) {
-    @Nonnull final Layer component = layer.copy();
+      @Nonnull final int[]... inputDims) {
+    @Nonnull
+    final Layer component = layer.copy();
     final Tensor[] randomize = randomize(inputDims);
     new SerializationTest().test(log, component, randomize);
     return new TrainingTester() {
-      public @SuppressWarnings("unused")
-      void _free() {
+      public @SuppressWarnings("unused") void _free() {
       }
 
       @Override

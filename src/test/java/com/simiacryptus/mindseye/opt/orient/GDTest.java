@@ -35,8 +35,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @RefAware
-class GDTest extends MnistTestBase {
+public class GDTest extends MnistTestBase {
 
   @Nonnull
   @Override
@@ -44,15 +43,13 @@ class GDTest extends MnistTestBase {
     return GradientDescent.class;
   }
 
-  public static @SuppressWarnings("unused")
-  GDTest[] addRefs(GDTest[] array) {
+  public static @SuppressWarnings("unused") GDTest[] addRefs(GDTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(GDTest::addRef).toArray((x) -> new GDTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  GDTest[][] addRefs(GDTest[][] array) {
+  public static @SuppressWarnings("unused") GDTest[][] addRefs(GDTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(GDTest::addRefs).toArray((x) -> new GDTest[x][]);
@@ -60,22 +57,21 @@ class GDTest extends MnistTestBase {
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
-      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
+      @Nonnull
+      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull
+      final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
       return new IterativeTrainer(trainable).setMonitor(monitor).setOrientation(new GradientDescent())
           .setTimeout(5, TimeUnit.MINUTES).setMaxIterations(500).run();
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  GDTest addRef() {
+  public @Override @SuppressWarnings("unused") GDTest addRef() {
     return (GDTest) super.addRef();
   }
 }

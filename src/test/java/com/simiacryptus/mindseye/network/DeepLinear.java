@@ -29,8 +29,7 @@ import com.simiacryptus.util.Util;
 
 import javax.annotation.Nonnull;
 
-public abstract @RefAware
-class DeepLinear extends NLayerTest {
+public abstract class DeepLinear extends NLayerTest {
 
   public DeepLinear(final int[]... dimList) {
     super(dimList);
@@ -44,7 +43,7 @@ class DeepLinear extends NLayerTest {
   @Nonnull
   @Override
   public int[] getInputDims() {
-    return new int[]{5, 5, 3};
+    return new int[] { 5, 5, 3 };
   }
 
   @Override
@@ -59,18 +58,16 @@ class DeepLinear extends NLayerTest {
     return 0.1 * Math.round(1000.0 * (Util.R.get().nextDouble() - 0.5)) / 500.0;
   }
 
-  public static @RefAware
-  class NarrowingPipeline extends DeepLinear {
+  public static class NarrowingPipeline extends DeepLinear {
     public NarrowingPipeline() {
-      super(new int[]{4, 4, 2}, new int[]{3, 3, 1}, new int[]{2, 2, 1}, new int[]{2, 2, 1});
+      super(new int[] { 4, 4, 2 }, new int[] { 3, 3, 1 }, new int[] { 2, 2, 1 }, new int[] { 2, 2, 1 });
     }
 
   }
 
-  public static @RefAware
-  class SigmoidPipeline extends DeepLinear {
+  public static class SigmoidPipeline extends DeepLinear {
     public SigmoidPipeline() {
-      super(new int[]{10}, new int[]{10}, new int[]{10}, new int[]{10});
+      super(new int[] { 10 }, new int[] { 10 }, new int[] { 10 }, new int[] { 10 });
     }
 
     @Nonnull
@@ -81,10 +78,9 @@ class DeepLinear extends NLayerTest {
 
   }
 
-  public static @RefAware
-  class UniformPipeline extends DeepLinear {
+  public static class UniformPipeline extends DeepLinear {
     public UniformPipeline() {
-      super(new int[]{10}, new int[]{10}, new int[]{10}, new int[]{10});
+      super(new int[] { 10 }, new int[] { 10 }, new int[] { 10 }, new int[] { 10 });
     }
 
   }

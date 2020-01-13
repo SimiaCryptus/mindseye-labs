@@ -37,8 +37,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public @RefAware
-class L2NormalizationTest extends MnistTestBase {
+public class L2NormalizationTest extends MnistTestBase {
 
   @Nonnull
   @Override
@@ -46,16 +45,14 @@ class L2NormalizationTest extends MnistTestBase {
     return L12Normalizer.class;
   }
 
-  public static @SuppressWarnings("unused")
-  L2NormalizationTest[] addRefs(L2NormalizationTest[] array) {
+  public static @SuppressWarnings("unused") L2NormalizationTest[] addRefs(L2NormalizationTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(L2NormalizationTest::addRef)
         .toArray((x) -> new L2NormalizationTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  L2NormalizationTest[][] addRefs(L2NormalizationTest[][] array) {
+  public static @SuppressWarnings("unused") L2NormalizationTest[][] addRefs(L2NormalizationTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(L2NormalizationTest::addRefs)
@@ -64,23 +61,24 @@ class L2NormalizationTest extends MnistTestBase {
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.p(
         "Training a model involves a few different components. First, our model is combined mapCoords a loss function. "
             + "Then we take that model and combine it mapCoords our training data to define a trainable object. "
             + "Finally, we use a simple iterative scheme to refine the weights of our model. "
             + "The final output is the last output value of the loss function when evaluating the last batch.");
     log.eval(() -> {
-      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull final Trainable trainable = new L12Normalizer(new SampledArrayTrainable(trainingData, supervisedNetwork, 1000)) {
+      @Nonnull
+      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull
+      final Trainable trainable = new L12Normalizer(new SampledArrayTrainable(trainingData, supervisedNetwork, 1000)) {
         @NotNull
         @Override
         public Layer getLayer() {
           return inner.getLayer();
         }
 
-        public @SuppressWarnings("unused")
-        void _free() {
+        public @SuppressWarnings("unused") void _free() {
         }
 
         @Override
@@ -98,13 +96,10 @@ class L2NormalizationTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  L2NormalizationTest addRef() {
+  public @Override @SuppressWarnings("unused") L2NormalizationTest addRef() {
     return (L2NormalizationTest) super.addRef();
   }
 }
