@@ -26,20 +26,27 @@ import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
 import com.simiacryptus.mindseye.layers.java.SumReducerLayer;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.SupervisedNetwork;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 @SuppressWarnings("serial")
 public class SparseAutoencoderTrainer extends SupervisedNetwork {
 
+  @Nullable
   public final DAGNode decoder;
+  @Nullable
   public final DAGNode encoder;
+  @Nullable
   public final DAGNode loss;
+  @Nullable
   public final DAGNode sparsity;
+  @Nullable
   public final DAGNode sparsityThrottleLayer;
+  @Nullable
   public final DAGNode sumFitnessLayer;
+  @Nullable
   public final DAGNode sumSparsityLayer;
 
   public SparseAutoencoderTrainer(@Nonnull final Layer encoder, @Nonnull final Layer decoder) {
@@ -55,28 +62,37 @@ public class SparseAutoencoderTrainer extends SupervisedNetwork {
 
   @Override
   public DAGNode getHead() {
+    assert sumFitnessLayer != null;
     sumFitnessLayer.addRef();
     return sumFitnessLayer;
   }
 
-  public static @SuppressWarnings("unused") SparseAutoencoderTrainer[] addRefs(SparseAutoencoderTrainer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SparseAutoencoderTrainer[] addRefs(@Nullable SparseAutoencoderTrainer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SparseAutoencoderTrainer::addRef)
         .toArray((x) -> new SparseAutoencoderTrainer[x]);
   }
 
-  public static @SuppressWarnings("unused") SparseAutoencoderTrainer[][] addRefs(SparseAutoencoderTrainer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SparseAutoencoderTrainer[][] addRefs(@Nullable SparseAutoencoderTrainer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SparseAutoencoderTrainer::addRefs)
         .toArray((x) -> new SparseAutoencoderTrainer[x][]);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SparseAutoencoderTrainer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SparseAutoencoderTrainer addRef() {
     return (SparseAutoencoderTrainer) super.addRef();
   }
 }

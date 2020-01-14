@@ -29,9 +29,9 @@ import com.simiacryptus.mindseye.opt.IterativeTrainer;
 import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -43,13 +43,17 @@ public class MomentumTest extends MnistTestBase {
     return MomentumStrategy.class;
   }
 
-  public static @SuppressWarnings("unused") MomentumTest[] addRefs(MomentumTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  MomentumTest[] addRefs(@Nullable MomentumTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MomentumTest::addRef).toArray((x) -> new MomentumTest[x]);
   }
 
-  public static @SuppressWarnings("unused") MomentumTest[][] addRefs(MomentumTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  MomentumTest[][] addRefs(@Nullable MomentumTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MomentumTest::addRefs)
@@ -58,12 +62,10 @@ public class MomentumTest extends MnistTestBase {
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
-      @Nonnull
-      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull
-      final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
+      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
       return new IterativeTrainer(trainable).setMonitor(monitor)
           .setOrientation(
               new ValidatingOrientationWrapper(new MomentumStrategy(new GradientDescent()).setCarryOver(0.8)))
@@ -71,10 +73,14 @@ public class MomentumTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") MomentumTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  MomentumTest addRef() {
     return (MomentumTest) super.addRef();
   }
 }

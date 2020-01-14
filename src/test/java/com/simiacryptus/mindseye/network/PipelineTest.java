@@ -28,7 +28,6 @@ import com.simiacryptus.mindseye.test.unit.SerializationTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
 import com.simiacryptus.notebook.MarkdownNotebookOutput;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
@@ -38,7 +37,6 @@ import com.simiacryptus.util.Util;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Graph;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import javax.annotation.Nonnull;
@@ -61,10 +59,8 @@ public abstract class PipelineTest extends ReferenceCountingBase {
 
   @Nonnull
   public Layer buildNetwork(@Nonnull final Layer... layers) {
-    @Nonnull
-    final PipelineNetwork network = new PipelineNetwork(1);
-    for (@Nonnull
-    final Layer layer : layers) {
+    @Nonnull final PipelineNetwork network = new PipelineNetwork(1);
+    for (@Nonnull final Layer layer : layers) {
       network.add(layer.copy());
     }
     return network;
@@ -84,6 +80,7 @@ public abstract class PipelineTest extends ReferenceCountingBase {
     return Math.round(1000.0 * (Util.R.get().nextDouble() - 0.5)) / 250.0;
   }
 
+  @Nonnull
   public Tensor[] randomize(@Nonnull final int[][] inputDims) {
     return RefArrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random)).toArray(i -> new Tensor[i]);
   }
@@ -91,20 +88,18 @@ public abstract class PipelineTest extends ReferenceCountingBase {
   @Test
   public void test() throws Throwable {
     try (@Nonnull
-    NotebookOutput log = MarkdownNotebookOutput
+         NotebookOutput log = MarkdownNotebookOutput
         .get(NotebookReportBase.getTestReportLocation(((Object) this).getClass(), "reports/_reports"))) {
       test(log);
     }
   }
 
   public void test(@Nonnull final NotebookOutput log) {
-    @Nonnull
-    final RefArrayList<Layer> workingSpec = new RefArrayList<>();
+    @Nonnull final RefArrayList<Layer> workingSpec = new RefArrayList<>();
     int layerIndex = 0;
     for (final Layer l : pipeline) {
       workingSpec.add(l);
-      @Nonnull
-      final Layer networkHead = buildNetwork(workingSpec.toArray(new Layer[] {}));
+      @Nonnull final Layer networkHead = buildNetwork(workingSpec.toArray(new Layer[]{}));
       graphviz(log, networkHead);
       test(log, networkHead, RefString.format("Pipeline Network apply %d Layers", layerIndex++), getInputDims());
     }
@@ -112,20 +107,21 @@ public abstract class PipelineTest extends ReferenceCountingBase {
 
   @Nullable
   public TrainingTester.ComponentResult test(@Nonnull final NotebookOutput log, @Nonnull final Layer layer,
-      final String header, @Nonnull final int[]... inputDims) {
-    @Nonnull
-    final Layer component = layer.copy();
+                                             final String header, @Nonnull final int[]... inputDims) {
+    @Nonnull final Layer component = layer.copy();
     final Tensor[] randomize = randomize(inputDims);
     new SerializationTest().test(log, component, randomize);
     return new TrainingTester() {
-      public @SuppressWarnings("unused") void _free() {
+      public @SuppressWarnings("unused")
+      void _free() {
       }
 
       @Override
-      protected void printHeader(@NotNull NotebookOutput log) {
+      protected void printHeader(@Nonnull NotebookOutput log) {
         log.h1(header);
       }
 
+      @Nonnull
       @Override
       protected Layer lossLayer() {
         return new MeanSqLossLayer();

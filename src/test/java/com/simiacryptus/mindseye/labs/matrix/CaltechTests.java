@@ -26,9 +26,9 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.test.data.Caltech101;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 
@@ -38,8 +38,7 @@ public class CaltechTests {
   public static FwdNetworkFactory fwd_conv_1 = (log, features) -> {
     log.p("The png-to-vector network is a single key convolutional:");
     return log.eval(() -> {
-      @Nonnull
-      final PipelineNetwork network = new PipelineNetwork();
+      @Nonnull final PipelineNetwork network = new PipelineNetwork();
 
       @Nonnull
       IntToDoubleFunction weights = i -> 1e-8 * (Math.random() - 0.5);
@@ -68,7 +67,7 @@ public class CaltechTests {
       network.add(new NormalizationMetaLayer()).freeRef();
 
       network.add(new ImgBandBiasLayer(40)).freeRef();
-      network.add(new FullyConnectedLayer(new int[] { 4, 4, 40 }, new int[] { features }).set(weights)).freeRef();
+      network.add(new FullyConnectedLayer(new int[]{4, 4, 40}, new int[]{features}).set(weights)).freeRef();
       network.add(new SoftmaxLayer()).freeRef();
 
       return network;
@@ -79,12 +78,11 @@ public class CaltechTests {
   public static RevNetworkFactory rev_conv_1 = (log, features) -> {
     log.p("The vector-to-png network uses a fully connected key then a single convolutional key:");
     return log.eval(() -> {
-      @Nonnull
-      final PipelineNetwork network = new PipelineNetwork();
+      @Nonnull final PipelineNetwork network = new PipelineNetwork();
 
       @Nonnull
       IntToDoubleFunction weights = i -> 1e-8 * (Math.random() - 0.5);
-      network.add(new FullyConnectedLayer(new int[] { features }, new int[] { 4, 4, 40 }).set(weights)).freeRef();
+      network.add(new FullyConnectedLayer(new int[]{features}, new int[]{4, 4, 40}).set(weights)).freeRef();
       network.add(new ImgBandBiasLayer(40)).freeRef();
       network.add(new NormalizationMetaLayer()).freeRef();
 
@@ -124,7 +122,7 @@ public class CaltechTests {
   public abstract static class All_Caltech_Tests extends AllTrainingTests {
 
     public All_Caltech_Tests(final OptimizationStrategy optimizationStrategy, final RevNetworkFactory revFactory,
-        final FwdNetworkFactory fwdFactory) {
+                             final FwdNetworkFactory fwdFactory) {
       super(fwdFactory, revFactory, optimizationStrategy);
       batchSize = 10;
     }
@@ -153,17 +151,23 @@ public class CaltechTests {
       return Caltech101.class;
     }
 
-    public static @SuppressWarnings("unused") All_Caltech_Tests[] addRefs(All_Caltech_Tests[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    All_Caltech_Tests[] addRefs(@Nullable All_Caltech_Tests[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(All_Caltech_Tests::addRef)
           .toArray((x) -> new All_Caltech_Tests[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") All_Caltech_Tests addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    All_Caltech_Tests addRef() {
       return (All_Caltech_Tests) super.addRef();
     }
 
@@ -174,16 +178,22 @@ public class CaltechTests {
       super(Research.quadratic_quasi_newton, CaltechTests.rev_conv_1, CaltechTests.fwd_conv_1);
     }
 
-    public static @SuppressWarnings("unused") QQN[] addRefs(QQN[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    QQN[] addRefs(@Nullable QQN[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") QQN addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    QQN addRef() {
       return (QQN) super.addRef();
     }
 

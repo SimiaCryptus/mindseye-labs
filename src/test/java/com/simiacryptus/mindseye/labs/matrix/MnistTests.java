@@ -26,9 +26,9 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.test.data.MNIST;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.function.DoubleSupplier;
 
@@ -37,8 +37,7 @@ public class MnistTests {
   public static FwdNetworkFactory fwd_conv_1 = (log, features) -> {
     log.p("The png-to-vector network is a single key convolutional:");
     return log.eval(() -> {
-      @Nonnull
-      final PipelineNetwork network = new PipelineNetwork();
+      @Nonnull final PipelineNetwork network = new PipelineNetwork();
       network.add(new ConvolutionLayer(5, 5, 1, 32).set(i -> 1e-8 * (Math.random() - 0.5)));
       network.add(new ImgBandBiasLayer(32));
       network.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
@@ -46,12 +45,12 @@ public class MnistTests {
       network.add(new ImgBandBiasLayer(64));
       network.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
       network.add(new ReLuActivationLayer());
-      network.add(new FullyConnectedLayer(new int[] { 7, 7, 64 }, new int[] { 1024 })
+      network.add(new FullyConnectedLayer(new int[]{7, 7, 64}, new int[]{1024})
           .set(() -> 0.001 * (Math.random() - 0.45)));
       network.add(new BiasLayer(1024));
       network.add(new ReLuActivationLayer());
       network.add(new DropoutNoiseLayer(0.5));
-      network.add(new FullyConnectedLayer(new int[] { 1024 }, new int[] { features })
+      network.add(new FullyConnectedLayer(new int[]{1024}, new int[]{features})
           .set(() -> 0.001 * (Math.random() - 0.45)));
       network.add(new BiasLayer(features));
       network.add(new SoftmaxLayer());
@@ -63,8 +62,7 @@ public class MnistTests {
   public static FwdNetworkFactory fwd_conv_1_n = (log, features) -> {
     log.p("The png-to-vector network is a single key convolutional:");
     return log.eval(() -> {
-      @Nonnull
-      final PipelineNetwork network = new PipelineNetwork();
+      @Nonnull final PipelineNetwork network = new PipelineNetwork();
       double weight = 1e-3;
 
       network.add(new NormalizationMetaLayer());
@@ -80,12 +78,12 @@ public class MnistTests {
       network.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
       network.add(new ReLuActivationLayer());
       network.add(new NormalizationMetaLayer());
-      network.add(new FullyConnectedLayer(new int[] { 4, 4, 64 }, new int[] { 1024 }).set(init));
+      network.add(new FullyConnectedLayer(new int[]{4, 4, 64}, new int[]{1024}).set(init));
       network.add(new BiasLayer(1024));
       network.add(new ReLuActivationLayer());
       network.add(new NormalizationMetaLayer());
       network.add(new DropoutNoiseLayer(0.5));
-      network.add(new FullyConnectedLayer(new int[] { 1024 }, new int[] { features }).set(init));
+      network.add(new FullyConnectedLayer(new int[]{1024}, new int[]{features}).set(init));
       network.add(new BiasLayer(features));
       network.add(new SoftmaxLayer());
 
@@ -97,10 +95,9 @@ public class MnistTests {
   public static FwdNetworkFactory fwd_linear_1 = (log, features) -> {
     log.p("The png-to-vector network is a single key, fully connected:");
     return log.eval(() -> {
-      @Nonnull
-      final PipelineNetwork network = new PipelineNetwork();
+      @Nonnull final PipelineNetwork network = new PipelineNetwork();
       network.add(new BiasLayer(28, 28, 1));
-      network.add(new FullyConnectedLayer(new int[] { 28, 28, 1 }, new int[] { features })
+      network.add(new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{features})
           .set(() -> 0.001 * (Math.random() - 0.45)));
       network.add(new SoftmaxLayer());
       return network;
@@ -110,14 +107,13 @@ public class MnistTests {
   public static RevNetworkFactory rev_conv_1 = (log, features) -> {
     log.p("The vector-to-png network uses a fully connected key then a single convolutional key:");
     return log.eval(() -> {
-      @Nonnull
-      final PipelineNetwork network = new PipelineNetwork();
+      @Nonnull final PipelineNetwork network = new PipelineNetwork();
       network.add(
-          new FullyConnectedLayer(new int[] { features }, new int[] { 1024 }).set(() -> 0.25 * (Math.random() - 0.5)));
+          new FullyConnectedLayer(new int[]{features}, new int[]{1024}).set(() -> 0.25 * (Math.random() - 0.5)));
       network.add(new DropoutNoiseLayer(0.5));
       network.add(new ReLuActivationLayer());
       network.add(new BiasLayer(1024));
-      network.add(new FullyConnectedLayer(new int[] { 1024 }, new int[] { 4, 4, 64 })
+      network.add(new FullyConnectedLayer(new int[]{1024}, new int[]{4, 4, 64})
           .set(() -> 0.001 * (Math.random() - 0.45)));
       network.add(new ReLuActivationLayer());
 
@@ -138,9 +134,8 @@ public class MnistTests {
   public static RevNetworkFactory rev_linear_1 = (log, features) -> {
     log.p("The vector-to-png network is a single fully connected key:");
     return log.eval(() -> {
-      @Nonnull
-      final PipelineNetwork network = new PipelineNetwork();
-      network.add(new FullyConnectedLayer(new int[] { features }, new int[] { 28, 28, 1 })
+      @Nonnull final PipelineNetwork network = new PipelineNetwork();
+      network.add(new FullyConnectedLayer(new int[]{features}, new int[]{28, 28, 1})
           .set(() -> 0.25 * (Math.random() - 0.5)));
       network.add(new BiasLayer(28, 28, 1));
       return network;
@@ -149,7 +144,7 @@ public class MnistTests {
 
   public abstract static class All_MNIST_Tests extends AllTrainingTests {
     public All_MNIST_Tests(final OptimizationStrategy optimizationStrategy, final RevNetworkFactory revFactory,
-        final FwdNetworkFactory fwdFactory) {
+                           final FwdNetworkFactory fwdFactory) {
       super(fwdFactory, revFactory, optimizationStrategy);
     }
 
@@ -177,17 +172,23 @@ public class MnistTests {
       return MNIST.class;
     }
 
-    public static @SuppressWarnings("unused") All_MNIST_Tests[] addRefs(All_MNIST_Tests[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    All_MNIST_Tests[] addRefs(@Nullable All_MNIST_Tests[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(All_MNIST_Tests::addRef)
           .toArray((x) -> new All_MNIST_Tests[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") All_MNIST_Tests addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    All_MNIST_Tests addRef() {
       return (All_MNIST_Tests) super.addRef();
     }
 
@@ -198,16 +199,22 @@ public class MnistTests {
       super(TextbookOptimizers.orthantwise_quasi_newton, MnistTests.rev_conv_1, MnistTests.fwd_conv_1);
     }
 
-    public static @SuppressWarnings("unused") OWL_QN[] addRefs(OWL_QN[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    OWL_QN[] addRefs(@Nullable OWL_QN[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(OWL_QN::addRef).toArray((x) -> new OWL_QN[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") OWL_QN addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    OWL_QN addRef() {
       return (OWL_QN) super.addRef();
     }
 
@@ -222,16 +229,22 @@ public class MnistTests {
       super(Research.quadratic_quasi_newton, MnistTests.rev_conv_1, MnistTests.fwd_conv_1);
     }
 
-    public static @SuppressWarnings("unused") QQN[] addRefs(QQN[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    QQN[] addRefs(@Nullable QQN[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") QQN addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    QQN addRef() {
       return (QQN) super.addRef();
     }
 
@@ -247,16 +260,22 @@ public class MnistTests {
       super(TextbookOptimizers.stochastic_gradient_descent, MnistTests.rev_linear_1, MnistTests.fwd_linear_1);
     }
 
-    public static @SuppressWarnings("unused") SGD[] addRefs(SGD[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    SGD[] addRefs(@Nullable SGD[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(SGD::addRef).toArray((x) -> new SGD[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") SGD addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    SGD addRef() {
       return (SGD) super.addRef();
     }
 

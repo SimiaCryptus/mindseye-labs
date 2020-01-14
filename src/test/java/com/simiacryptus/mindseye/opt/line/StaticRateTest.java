@@ -30,9 +30,9 @@ import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.orient.GradientDescent;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -44,14 +44,18 @@ public class StaticRateTest extends MnistTestBase {
     return StaticLearningRate.class;
   }
 
-  public static @SuppressWarnings("unused") StaticRateTest[] addRefs(StaticRateTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  StaticRateTest[] addRefs(@Nullable StaticRateTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StaticRateTest::addRef)
         .toArray((x) -> new StaticRateTest[x]);
   }
 
-  public static @SuppressWarnings("unused") StaticRateTest[][] addRefs(StaticRateTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  StaticRateTest[][] addRefs(@Nullable StaticRateTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(StaticRateTest::addRefs)
@@ -60,22 +64,24 @@ public class StaticRateTest extends MnistTestBase {
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
-      @Nonnull
-      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull
-      final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
+      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
       return new IterativeTrainer(trainable).setMonitor(monitor).setOrientation(new GradientDescent())
           .setLineSearchFactory((@Nonnull final CharSequence name) -> new StaticLearningRate(0.001))
           .setTimeout(3, TimeUnit.MINUTES).setMaxIterations(500).run();
     });
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") StaticRateTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  StaticRateTest addRef() {
     return (StaticRateTest) super.addRef();
   }
 }

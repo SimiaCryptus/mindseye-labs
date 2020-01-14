@@ -29,9 +29,9 @@ import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.ValidatingTrainer;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -43,13 +43,17 @@ public class QQNTest extends MnistTestBase {
     return QQN.class;
   }
 
-  public static @SuppressWarnings("unused") QQNTest[] addRefs(QQNTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  QQNTest[] addRefs(@Nullable QQNTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(QQNTest::addRef).toArray((x) -> new QQNTest[x]);
   }
 
-  public static @SuppressWarnings("unused") QQNTest[][] addRefs(QQNTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  QQNTest[][] addRefs(@Nullable QQNTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(QQNTest::addRefs).toArray((x) -> new QQNTest[x][]);
@@ -57,10 +61,9 @@ public class QQNTest extends MnistTestBase {
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
-      @Nonnull
-      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       //return new IterativeTrainer(new SampledArrayTrainable(trainingData, supervisedNetwork, 10000))
       @Nonnull
       ValidatingTrainer trainer = new ValidatingTrainer(
@@ -71,10 +74,14 @@ public class QQNTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") QQNTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  QQNTest addRef() {
     return (QQNTest) super.addRef();
   }
 }

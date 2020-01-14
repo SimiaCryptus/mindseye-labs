@@ -22,9 +22,7 @@ package com.simiacryptus.mindseye.labs.matrix;
 import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.util.test.TestCategories;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,7 +39,7 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   protected int batchSize = 1000;
 
   public AllTrainingTests(final FwdNetworkFactory fwdFactory, final RevNetworkFactory revFactory,
-      final OptimizationStrategy optimizationStrategy) {
+                          final OptimizationStrategy optimizationStrategy) {
     this.fwdFactory = fwdFactory;
     this.revFactory = revFactory;
     this.optimizationStrategy = optimizationStrategy;
@@ -53,14 +51,18 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   @Nonnull
   public abstract CharSequence getDatasetName();
 
-  public static @SuppressWarnings("unused") AllTrainingTests[] addRefs(AllTrainingTests[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AllTrainingTests[] addRefs(@Nullable AllTrainingTests[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AllTrainingTests::addRef)
         .toArray((x) -> new AllTrainingTests[x]);
   }
 
-  public static @SuppressWarnings("unused") AllTrainingTests[][] addRefs(AllTrainingTests[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  AllTrainingTests[][] addRefs(@Nullable AllTrainingTests[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(AllTrainingTests::addRefs)
@@ -108,7 +110,7 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   }
 
   @Override
-  public void printHeader(@NotNull NotebookOutput log) {
+  public void printHeader(@Nonnull NotebookOutput log) {
     @Nullable
     CharSequence fwdFactory_javadoc = printHeader(log, fwdFactory.getClass(), "fwd");
     @Nullable
@@ -121,10 +123,14 @@ public abstract class AllTrainingTests extends NotebookReportBase {
     log.p("_Optimization Strategy Javadoc_: " + optimizationStrategy_javadoc);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") AllTrainingTests addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  AllTrainingTests addRef() {
     return (AllTrainingTests) super.addRef();
   }
 

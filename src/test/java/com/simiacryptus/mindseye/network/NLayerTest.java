@@ -28,7 +28,6 @@ import com.simiacryptus.mindseye.test.unit.SerializationTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
 import com.simiacryptus.notebook.MarkdownNotebookOutput;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.util.Util;
 import com.simiacryptus.util.test.SysOutInterceptor;
@@ -64,8 +63,7 @@ public abstract class NLayerTest {
 
   @Nonnull
   public Layer buildNetwork(@Nonnull final int[]... dimList) {
-    @Nonnull
-    final PipelineNetwork network = new PipelineNetwork(1);
+    @Nonnull final PipelineNetwork network = new PipelineNetwork(1);
     @Nullable
     int[] last = null;
     for (final int[] dims : dimList) {
@@ -77,6 +75,7 @@ public abstract class NLayerTest {
     return network;
   }
 
+  @Nonnull
   public int[][] concat(final int[] a, @Nonnull final List<int[]> b) {
     return Stream.concat(Stream.of(a), b.stream()).toArray(i -> new int[i][]);
   }
@@ -95,6 +94,7 @@ public abstract class NLayerTest {
     return Math.round(1000.0 * (Util.R.get().nextDouble() - 0.5)) / 250.0;
   }
 
+  @Nonnull
   public Tensor[] randomize(@Nonnull final int[][] inputDims) {
     return RefArrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random)).toArray(i -> new Tensor[i]);
   }
@@ -102,7 +102,7 @@ public abstract class NLayerTest {
   @Test
   public void test() throws Throwable {
     try (@Nonnull
-    NotebookOutput log = MarkdownNotebookOutput
+         NotebookOutput log = MarkdownNotebookOutput
         .get(NotebookReportBase.getTestReportLocation(((Object) this).getClass(), reportingFolder))) {
       test(log);
     }
@@ -111,14 +111,11 @@ public abstract class NLayerTest {
   public void test(@Nonnull final NotebookOutput log) {
 
     log.h1("%s", getClass().getSimpleName());
-    @Nonnull
-    final int[] inputDims = getInputDims();
-    @Nonnull
-    final ArrayList<int[]> workingSpec = new ArrayList<>();
+    @Nonnull final int[] inputDims = getInputDims();
+    @Nonnull final ArrayList<int[]> workingSpec = new ArrayList<>();
     for (final int[] l : dimList) {
       workingSpec.add(l);
-      @Nonnull
-      final Layer layer = buildNetwork(concat(inputDims, workingSpec));
+      @Nonnull final Layer layer = buildNetwork(concat(inputDims, workingSpec));
       graphviz(log, layer);
       test(log, layer, inputDims);
     }
@@ -126,15 +123,16 @@ public abstract class NLayerTest {
 
   @Nullable
   public TrainingTester.ComponentResult test(@Nonnull final NotebookOutput log, @Nonnull final Layer layer,
-      @Nonnull final int[]... inputDims) {
-    @Nonnull
-    final Layer component = layer.copy();
+                                             @Nonnull final int[]... inputDims) {
+    @Nonnull final Layer component = layer.copy();
     final Tensor[] randomize = randomize(inputDims);
     new SerializationTest().test(log, component, randomize);
     return new TrainingTester() {
-      public @SuppressWarnings("unused") void _free() {
+      public @SuppressWarnings("unused")
+      void _free() {
       }
 
+      @Nonnull
       @Override
       protected Layer lossLayer() {
         return new MeanSqLossLayer();

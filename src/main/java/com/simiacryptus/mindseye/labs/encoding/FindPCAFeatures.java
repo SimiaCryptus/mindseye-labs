@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.labs.encoding;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.test.PCAUtil;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefIntStream;
 import com.simiacryptus.ref.wrappers.RefStream;
@@ -37,6 +36,7 @@ abstract class FindPCAFeatures extends FindFeatureSpace {
     super(log, inputBands);
   }
 
+  @Nonnull
   protected abstract RefStream<Tensor[]> getFeatures();
 
   @Nonnull
@@ -44,7 +44,7 @@ abstract class FindPCAFeatures extends FindFeatureSpace {
   public FindFeatureSpace invoke() {
     double[] averages = findBandBias();
     Tensor[] vectors = findFeatureSpace(log, () -> getFeatures().map(tensor -> {
-      return new Tensor[] { tensor[0], tensor[1].mapCoords((c) -> tensor[1].get(c) - averages[c.getCoords()[2]]) };
+      return new Tensor[]{tensor[0], tensor[1].mapCoords((c) -> tensor[1].get(c) - averages[c.getCoords()[2]])};
     }), inputBands);
     return this;
   }
@@ -60,13 +60,11 @@ abstract class FindPCAFeatures extends FindFeatureSpace {
   }
 
   protected Tensor[] findFeatureSpace(@Nonnull final NotebookOutput log,
-      @Nonnull final Supplier<RefStream<Tensor[]>> featureVectors, final int components) {
+                                      @Nonnull final Supplier<RefStream<Tensor[]>> featureVectors, final int components) {
     return log.eval(() -> {
       final int column = 1;
-      @Nonnull
-      final Tensor[] prototype = RefUtil.get(featureVectors.get().findAny());
-      @Nonnull
-      final int[] dimensions = prototype[column].getDimensions();
+      @Nonnull final Tensor[] prototype = RefUtil.get(featureVectors.get().findAny());
+      @Nonnull final int[] dimensions = prototype[column].getDimensions();
       RealMatrix covariance = PCAUtil.getCovariance(() -> featureVectors.get().map(x -> x[column].getData()));
       return PCAUtil.pcaFeatures(covariance, components, dimensions, -1);
     });

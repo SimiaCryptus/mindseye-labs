@@ -24,7 +24,6 @@ import com.simiacryptus.mindseye.layers.java.BiasLayer;
 import com.simiacryptus.mindseye.layers.java.FullyConnectedLayer;
 import com.simiacryptus.mindseye.layers.java.ReLuActivationLayer;
 import com.simiacryptus.mindseye.layers.java.SigmoidActivationLayer;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.util.Util;
 
 import javax.annotation.Nonnull;
@@ -43,7 +42,7 @@ public abstract class DeepLinear extends NLayerTest {
   @Nonnull
   @Override
   public int[] getInputDims() {
-    return new int[] { 5, 5, 3 };
+    return new int[]{5, 5, 3};
   }
 
   @Override
@@ -60,14 +59,14 @@ public abstract class DeepLinear extends NLayerTest {
 
   public static class NarrowingPipeline extends DeepLinear {
     public NarrowingPipeline() {
-      super(new int[] { 4, 4, 2 }, new int[] { 3, 3, 1 }, new int[] { 2, 2, 1 }, new int[] { 2, 2, 1 });
+      super(new int[]{4, 4, 2}, new int[]{3, 3, 1}, new int[]{2, 2, 1}, new int[]{2, 2, 1});
     }
 
   }
 
   public static class SigmoidPipeline extends DeepLinear {
     public SigmoidPipeline() {
-      super(new int[] { 10 }, new int[] { 10 }, new int[] { 10 }, new int[] { 10 });
+      super(new int[]{10}, new int[]{10}, new int[]{10}, new int[]{10});
     }
 
     @Nonnull
@@ -80,7 +79,7 @@ public abstract class DeepLinear extends NLayerTest {
 
   public static class UniformPipeline extends DeepLinear {
     public UniformPipeline() {
-      super(new int[] { 10 }, new int[] { 10 }, new int[] { 10 }, new int[] { 10 });
+      super(new int[]{10}, new int[]{10}, new int[]{10}, new int[]{10});
     }
 
   }

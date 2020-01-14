@@ -23,12 +23,12 @@ import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.StepRecord;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.util.test.TestCategories;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -41,7 +41,7 @@ public abstract class OptimizerComparison extends NotebookReportBase {
   protected int timeoutMinutes = 10;
 
   public OptimizerComparison(final FwdNetworkFactory fwdFactory, final RevNetworkFactory revFactory,
-      final ImageProblemData data) {
+                             final ImageProblemData data) {
     this.fwdFactory = fwdFactory;
     this.revFactory = revFactory;
     this.data = data;
@@ -69,14 +69,18 @@ public abstract class OptimizerComparison extends NotebookReportBase {
     return this;
   }
 
-  public static @SuppressWarnings("unused") OptimizerComparison[] addRefs(OptimizerComparison[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  OptimizerComparison[] addRefs(@Nullable OptimizerComparison[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(OptimizerComparison::addRef)
         .toArray((x) -> new OptimizerComparison[x]);
   }
 
-  public static @SuppressWarnings("unused") OptimizerComparison[][] addRefs(OptimizerComparison[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  OptimizerComparison[][] addRefs(@Nullable OptimizerComparison[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(OptimizerComparison::addRefs)
@@ -110,10 +114,14 @@ public abstract class OptimizerComparison extends NotebookReportBase {
     });
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") OptimizerComparison addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  OptimizerComparison addRef() {
     return (OptimizerComparison) super.addRef();
   }
 }

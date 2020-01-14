@@ -21,13 +21,11 @@ package com.simiacryptus.mindseye.test.integration;
 
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.util.test.LabeledObject;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Random;
 
@@ -42,19 +40,19 @@ public class SupplementedProblemData implements ImageProblemData {
   }
 
   public static void printSample(@Nonnull final NotebookOutput log, final Tensor[][] expanded, final int size) {
-    @Nonnull
-    final RefArrayList<Tensor[]> list = new RefArrayList<>(RefArrays.asList(expanded));
+    @Nonnull final RefArrayList<Tensor[]> list = new RefArrayList<>(RefArrays.asList(expanded));
     RefCollections.shuffle(list);
     log.p("Expanded Training Data Sample: " + RefUtil.get(list.stream().limit(size).map(x -> {
       return log.png(x[0].toGrayImage(), "");
     }).reduce((a, b) -> a + b)));
   }
 
-  @Nullable
+  @Nonnull
   protected static Tensor addNoise(@Nonnull final Tensor tensor) {
     return tensor.mapParallel((v) -> Math.random() < 0.9 ? v : v + Math.random() * 100);
   }
 
+  @Nonnull
   protected static Tensor translate(final int dx, final int dy, @Nonnull final Tensor tensor) {
     final int sx = tensor.getDimensions()[0];
     final int sy = tensor.getDimensions()[1];
@@ -71,6 +69,7 @@ public class SupplementedProblemData implements ImageProblemData {
     }).toArray(), tensor.getDimensions());
   }
 
+  @Nonnull
   @Override
   public RefStream<LabeledObject<Tensor>> trainingData() throws IOException {
     return inner.trainingData().flatMap(labeledObject -> {

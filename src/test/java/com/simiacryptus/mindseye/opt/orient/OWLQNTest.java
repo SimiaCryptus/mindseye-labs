@@ -29,9 +29,9 @@ import com.simiacryptus.mindseye.opt.IterativeTrainer;
 import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -43,13 +43,17 @@ public class OWLQNTest extends MnistTestBase {
     return OwlQn.class;
   }
 
-  public static @SuppressWarnings("unused") OWLQNTest[] addRefs(OWLQNTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  OWLQNTest[] addRefs(@Nullable OWLQNTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(OWLQNTest::addRef).toArray((x) -> new OWLQNTest[x]);
   }
 
-  public static @SuppressWarnings("unused") OWLQNTest[][] addRefs(OWLQNTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  OWLQNTest[][] addRefs(@Nullable OWLQNTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(OWLQNTest::addRefs).toArray((x) -> new OWLQNTest[x][]);
@@ -57,22 +61,24 @@ public class OWLQNTest extends MnistTestBase {
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
-      @Nonnull
-      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull
-      final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 10000);
+      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 10000);
       return new IterativeTrainer(trainable).setIterationsPerSample(100).setMonitor(monitor)
           .setOrientation(new ValidatingOrientationWrapper(new OwlQn())).setTimeout(5, TimeUnit.MINUTES)
           .setMaxIterations(500).run();
     });
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") OWLQNTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  OWLQNTest addRef() {
     return (OWLQNTest) super.addRef();
   }
 }

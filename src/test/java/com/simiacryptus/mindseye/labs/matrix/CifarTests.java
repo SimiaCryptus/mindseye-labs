@@ -29,9 +29,9 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.test.data.CIFAR10;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public class CifarTests {
@@ -40,13 +40,12 @@ public class CifarTests {
   public static FwdNetworkFactory fwd_conv_1 = (log, features) -> {
     log.p("The png-to-vector network is a single key convolutional:");
     return log.eval(() -> {
-      @Nonnull
-      final PipelineNetwork network = new PipelineNetwork();
+      @Nonnull final PipelineNetwork network = new PipelineNetwork();
       network.add(new ConvolutionLayer(3, 3, 3, 5).set(i -> 1e-8 * (Math.random() - 0.5)));
       network.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
       network.add(new ReLuActivationLayer());
       network.add(new BiasLayer(16, 16, 5));
-      network.add(new FullyConnectedLayer(new int[] { 16, 16, 5 }, new int[] { features })
+      network.add(new FullyConnectedLayer(new int[]{16, 16, 5}, new int[]{features})
           .set(() -> 0.001 * (Math.random() - 0.45)));
       network.add(new SoftmaxLayer());
       return network;
@@ -56,10 +55,9 @@ public class CifarTests {
   public static FwdNetworkFactory fwd_linear_1 = (log, features) -> {
     log.p("The png-to-vector network is a single key, fully connected:");
     return log.eval(() -> {
-      @Nonnull
-      final PipelineNetwork network = new PipelineNetwork();
+      @Nonnull final PipelineNetwork network = new PipelineNetwork();
       network.add(new BiasLayer(32, 32, 3));
-      network.add(new FullyConnectedLayer(new int[] { 32, 32, 3 }, new int[] { features })
+      network.add(new FullyConnectedLayer(new int[]{32, 32, 3}, new int[]{features})
           .set(() -> 0.001 * (Math.random() - 0.45)));
       network.add(new SoftmaxLayer());
       return network;
@@ -69,9 +67,8 @@ public class CifarTests {
   public static RevNetworkFactory rev_conv_1 = (log, features) -> {
     log.p("The vector-to-png network uses a fully connected key then a single convolutional key:");
     return log.eval(() -> {
-      @Nonnull
-      final PipelineNetwork network = new PipelineNetwork();
-      network.add(new FullyConnectedLayer(new int[] { features }, new int[] { 32, 32, 5 })
+      @Nonnull final PipelineNetwork network = new PipelineNetwork();
+      network.add(new FullyConnectedLayer(new int[]{features}, new int[]{32, 32, 5})
           .set(() -> 0.25 * (Math.random() - 0.5)));
       network.add(new ReLuActivationLayer());
       network.add(new ConvolutionLayer(3, 3, 5, 3).set(i -> 1e-8 * (Math.random() - 0.5)));
@@ -84,9 +81,8 @@ public class CifarTests {
   public static RevNetworkFactory rev_linear_1 = (log, features) -> {
     log.p("The vector-to-png network is a single fully connected key:");
     return log.eval(() -> {
-      @Nonnull
-      final PipelineNetwork network = new PipelineNetwork();
-      network.add(new FullyConnectedLayer(new int[] { features }, new int[] { 32, 32, 3 })
+      @Nonnull final PipelineNetwork network = new PipelineNetwork();
+      network.add(new FullyConnectedLayer(new int[]{features}, new int[]{32, 32, 3})
           .set(() -> 0.25 * (Math.random() - 0.5)));
       network.add(new BiasLayer(32, 32, 3));
       return network;
@@ -95,7 +91,7 @@ public class CifarTests {
 
   public abstract static class All_CIFAR_Tests extends AllTrainingTests {
     public All_CIFAR_Tests(final OptimizationStrategy optimizationStrategy, final RevNetworkFactory revFactory,
-        final FwdNetworkFactory fwdFactory) {
+                           final FwdNetworkFactory fwdFactory) {
       super(fwdFactory, revFactory, optimizationStrategy);
     }
 
@@ -123,17 +119,23 @@ public class CifarTests {
       return CIFAR10.class;
     }
 
-    public static @SuppressWarnings("unused") All_CIFAR_Tests[] addRefs(All_CIFAR_Tests[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    All_CIFAR_Tests[] addRefs(@Nullable All_CIFAR_Tests[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(All_CIFAR_Tests::addRef)
           .toArray((x) -> new All_CIFAR_Tests[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") All_CIFAR_Tests addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    All_CIFAR_Tests addRef() {
       return (All_CIFAR_Tests) super.addRef();
     }
   }
@@ -143,16 +145,22 @@ public class CifarTests {
       super(TextbookOptimizers.orthantwise_quasi_newton, CifarTests.rev_conv_1, CifarTests.fwd_conv_1);
     }
 
-    public static @SuppressWarnings("unused") OWL_QN[] addRefs(OWL_QN[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    OWL_QN[] addRefs(@Nullable OWL_QN[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(OWL_QN::addRef).toArray((x) -> new OWL_QN[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") OWL_QN addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    OWL_QN addRef() {
       return (OWL_QN) super.addRef();
     }
 
@@ -167,16 +175,22 @@ public class CifarTests {
       super(Research.quadratic_quasi_newton, CifarTests.rev_conv_1, CifarTests.fwd_conv_1);
     }
 
-    public static @SuppressWarnings("unused") QQN[] addRefs(QQN[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    QQN[] addRefs(@Nullable QQN[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") QQN addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    QQN addRef() {
       return (QQN) super.addRef();
     }
 
@@ -192,16 +206,22 @@ public class CifarTests {
       super(TextbookOptimizers.stochastic_gradient_descent, CifarTests.rev_linear_1, CifarTests.fwd_linear_1);
     }
 
-    public static @SuppressWarnings("unused") SGD[] addRefs(SGD[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    SGD[] addRefs(@Nullable SGD[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(SGD::addRef).toArray((x) -> new SGD[x]);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") SGD addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    SGD addRef() {
       return (SGD) super.addRef();
     }
 

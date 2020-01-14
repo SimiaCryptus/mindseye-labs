@@ -30,9 +30,9 @@ import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.ValidatingTrainer;
 import com.simiacryptus.mindseye.opt.line.QuadraticSearch;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -44,13 +44,17 @@ public class LBFGSTest extends MnistTestBase {
     return LBFGS.class;
   }
 
-  public static @SuppressWarnings("unused") LBFGSTest[] addRefs(LBFGSTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  LBFGSTest[] addRefs(@Nullable LBFGSTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRef).toArray((x) -> new LBFGSTest[x]);
   }
 
-  public static @SuppressWarnings("unused") LBFGSTest[][] addRefs(LBFGSTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  LBFGSTest[][] addRefs(@Nullable LBFGSTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRefs).toArray((x) -> new LBFGSTest[x][]);
@@ -58,10 +62,9 @@ public class LBFGSTest extends MnistTestBase {
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
-      @Nonnull
-      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       @Nonnull
       ValidatingTrainer trainer = new ValidatingTrainer(
           new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 10000),
@@ -75,10 +78,14 @@ public class LBFGSTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") LBFGSTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  LBFGSTest addRef() {
     return (LBFGSTest) super.addRef();
   }
 }

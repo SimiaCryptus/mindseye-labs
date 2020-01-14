@@ -30,10 +30,9 @@ import com.simiacryptus.mindseye.opt.IterativeTrainer;
 import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -45,14 +44,18 @@ public class L1NormalizationTest extends MnistTestBase {
     return L12Normalizer.class;
   }
 
-  public static @SuppressWarnings("unused") L1NormalizationTest[] addRefs(L1NormalizationTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  L1NormalizationTest[] addRefs(@Nullable L1NormalizationTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationTest::addRef)
         .toArray((x) -> new L1NormalizationTest[x]);
   }
 
-  public static @SuppressWarnings("unused") L1NormalizationTest[][] addRefs(L1NormalizationTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  L1NormalizationTest[][] addRefs(@Nullable L1NormalizationTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationTest::addRefs)
@@ -61,19 +64,19 @@ public class L1NormalizationTest extends MnistTestBase {
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
-      @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
+                    @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
-      @Nonnull
-      final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull
-      final Trainable trainable = new L12Normalizer(new SampledArrayTrainable(trainingData, supervisedNetwork, 1000)) {
-        @NotNull
+      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
+      @Nonnull final Trainable trainable = new L12Normalizer(new SampledArrayTrainable(trainingData, supervisedNetwork, 1000)) {
+        @Nonnull
         @Override
         public Layer getLayer() {
+          assert inner != null;
           return inner.getLayer();
         }
 
-        public @SuppressWarnings("unused") void _free() {
+        public @SuppressWarnings("unused")
+        void _free() {
         }
 
         @Override
@@ -91,10 +94,14 @@ public class L1NormalizationTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") L1NormalizationTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  L1NormalizationTest addRef() {
     return (L1NormalizationTest) super.addRef();
   }
 }
