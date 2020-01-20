@@ -30,6 +30,7 @@ import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.orient.TrustRegionStrategy;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,10 +57,7 @@ public class LinearSumConstraintTest extends MnistTestBase {
   @Nullable
   public static @SuppressWarnings("unused")
   LinearSumConstraintTest[][] addRefs(@Nullable LinearSumConstraintTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LinearSumConstraintTest::addRefs)
-        .toArray((x) -> new LinearSumConstraintTest[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Override
@@ -80,9 +78,19 @@ public class LinearSumConstraintTest extends MnistTestBase {
         }
       };
       //.setOrientation(new ValidatingOrientationWrapper(trustRegionStrategy))
-      return new IterativeTrainer(trainable).setIterationsPerSample(100).setMonitor(monitor)
-          //.setOrientation(new ValidatingOrientationWrapper(trustRegionStrategy))
-          .setOrientation(trustRegionStrategy).setTimeout(3, TimeUnit.MINUTES).setMaxIterations(500).run();
+      IterativeTrainer iterativeTrainer = new IterativeTrainer(trainable);
+      iterativeTrainer.setIterationsPerSample(100);
+      IterativeTrainer iterativeTrainer2 = iterativeTrainer.addRef();
+      iterativeTrainer2.setMonitor(monitor);
+      IterativeTrainer iterativeTrainer3 = iterativeTrainer2.addRef();
+      iterativeTrainer3.setOrientation(trustRegionStrategy);
+      //.setOrientation(new ValidatingOrientationWrapper(trustRegionStrategy))
+      IterativeTrainer iterativeTrainer4 = iterativeTrainer3.addRef();
+      iterativeTrainer4.setTimeout(3, TimeUnit.MINUTES);
+      IterativeTrainer iterativeTrainer1 = iterativeTrainer4.addRef();
+      iterativeTrainer1.setMaxIterations(500);
+      //.setOrientation(new ValidatingOrientationWrapper(trustRegionStrategy))
+      return iterativeTrainer1.addRef().run();
     });
   }
 

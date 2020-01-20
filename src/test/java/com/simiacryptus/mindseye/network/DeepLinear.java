@@ -47,7 +47,9 @@ public abstract class DeepLinear extends NLayerTest {
 
   @Override
   public void addLayer(@Nonnull final PipelineNetwork network, @Nonnull final int[] in, @Nonnull final int[] dims) {
-    network.add(new FullyConnectedLayer(in, dims).set(this::random)).freeRef();
+    FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(in, dims);
+    fullyConnectedLayer.set(this::random);
+    network.add(fullyConnectedLayer.addRef()).freeRef();
     network.add(new BiasLayer(dims)).freeRef();
     network.add(getActivation()).freeRef();
   }
@@ -61,7 +63,6 @@ public abstract class DeepLinear extends NLayerTest {
     public NarrowingPipeline() {
       super(new int[]{4, 4, 2}, new int[]{3, 3, 1}, new int[]{2, 2, 1}, new int[]{2, 2, 1});
     }
-
   }
 
   public static class SigmoidPipeline extends DeepLinear {
@@ -74,14 +75,12 @@ public abstract class DeepLinear extends NLayerTest {
     public Layer getActivation() {
       return new SigmoidActivationLayer();
     }
-
   }
 
   public static class UniformPipeline extends DeepLinear {
     public UniformPipeline() {
       super(new int[]{10}, new int[]{10}, new int[]{10}, new int[]{10});
     }
-
   }
 
 }

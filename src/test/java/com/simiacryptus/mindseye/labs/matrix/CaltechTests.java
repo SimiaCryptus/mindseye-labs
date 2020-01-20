@@ -26,6 +26,7 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.test.data.Caltech101;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,32 +43,54 @@ public class CaltechTests {
 
       @Nonnull
       IntToDoubleFunction weights = i -> 1e-8 * (Math.random() - 0.5);
-      network.add(new ConvolutionLayer(3, 3, 3, 10).set(weights)).freeRef();
-      network.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max)).freeRef();
+      ConvolutionLayer convolutionLayer3 = new ConvolutionLayer(3, 3, 3, 10);
+      convolutionLayer3.set(weights);
+      network.add(convolutionLayer3.addRef()).freeRef();
+      PoolingLayer poolingLayer3 = new PoolingLayer();
+      poolingLayer3.setMode(PoolingLayer.PoolingMode.Max);
+      network.add(poolingLayer3.addRef()).freeRef();
       network.add(new ReLuActivationLayer()).freeRef();
       network.add(new ImgCropLayer(126, 126)).freeRef();
       network.add(new NormalizationMetaLayer()).freeRef();
 
-      network.add(new ConvolutionLayer(3, 3, 10, 20).set(weights)).freeRef();
-      network.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max)).freeRef();
+      ConvolutionLayer convolutionLayer2 = new ConvolutionLayer(3, 3, 10, 20);
+      convolutionLayer2.set(weights);
+      network.add(convolutionLayer2.addRef()).freeRef();
+      PoolingLayer poolingLayer2 = new PoolingLayer();
+      poolingLayer2.setMode(PoolingLayer.PoolingMode.Max);
+      network.add(poolingLayer2.addRef()).freeRef();
       network.add(new ReLuActivationLayer()).freeRef();
       network.add(new ImgCropLayer(62, 62)).freeRef();
       network.add(new NormalizationMetaLayer()).freeRef();
 
-      network.add(new ConvolutionLayer(5, 5, 20, 30).set(weights)).freeRef();
-      network.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max)).freeRef();
+      ConvolutionLayer convolutionLayer1 = new ConvolutionLayer(5, 5, 20, 30);
+      convolutionLayer1.set(weights);
+      network.add(convolutionLayer1.addRef()).freeRef();
+      PoolingLayer poolingLayer1 = new PoolingLayer();
+      poolingLayer1.setMode(PoolingLayer.PoolingMode.Max);
+      network.add(poolingLayer1.addRef()).freeRef();
       network.add(new ReLuActivationLayer()).freeRef();
       network.add(new ImgCropLayer(18, 18)).freeRef();
       network.add(new NormalizationMetaLayer()).freeRef();
 
-      network.add(new ConvolutionLayer(3, 3, 30, 40).set(weights)).freeRef();
-      network.add(new PoolingLayer().setWindowX(4).setWindowY(4).setMode(PoolingLayer.PoolingMode.Avg)).freeRef();
+      ConvolutionLayer convolutionLayer = new ConvolutionLayer(3, 3, 30, 40);
+      convolutionLayer.set(weights);
+      network.add(convolutionLayer.addRef()).freeRef();
+      PoolingLayer poolingLayer4 = new PoolingLayer();
+      poolingLayer4.setWindowX(4);
+      PoolingLayer poolingLayer5 = poolingLayer4.addRef();
+      poolingLayer5.setWindowY(4);
+      PoolingLayer poolingLayer = poolingLayer5.addRef();
+      poolingLayer.setMode(PoolingLayer.PoolingMode.Avg);
+      network.add(poolingLayer.addRef()).freeRef();
       network.add(new ReLuActivationLayer()).freeRef();
       network.add(new ImgCropLayer(4, 4)).freeRef();
       network.add(new NormalizationMetaLayer()).freeRef();
 
       network.add(new ImgBandBiasLayer(40)).freeRef();
-      network.add(new FullyConnectedLayer(new int[]{4, 4, 40}, new int[]{features}).set(weights)).freeRef();
+      FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(new int[]{4, 4, 40}, new int[]{features});
+      fullyConnectedLayer.set(weights);
+      network.add(fullyConnectedLayer.addRef()).freeRef();
       network.add(new SoftmaxLayer()).freeRef();
 
       return network;
@@ -82,36 +105,50 @@ public class CaltechTests {
 
       @Nonnull
       IntToDoubleFunction weights = i -> 1e-8 * (Math.random() - 0.5);
-      network.add(new FullyConnectedLayer(new int[]{features}, new int[]{4, 4, 40}).set(weights)).freeRef();
+      FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(new int[]{features}, new int[]{4, 4, 40});
+      fullyConnectedLayer.set(weights);
+      network.add(fullyConnectedLayer.addRef()).freeRef();
       network.add(new ImgBandBiasLayer(40)).freeRef();
       network.add(new NormalizationMetaLayer()).freeRef();
 
-      network.add(new ConvolutionLayer(3, 3, 40, 160).set(weights)).freeRef();
+      ConvolutionLayer convolutionLayer5 = new ConvolutionLayer(3, 3, 40, 160);
+      convolutionLayer5.set(weights);
+      network.add(convolutionLayer5.addRef()).freeRef();
       network.add(new ImgReshapeLayer(2, 2, true)).freeRef(); // 8x8x40
       network.add(new ReLuActivationLayer()).freeRef();
       network.add(new NormalizationMetaLayer()).freeRef();
 
-      network.add(new ConvolutionLayer(3, 3, 40, 160).set(weights)).freeRef();
+      ConvolutionLayer convolutionLayer4 = new ConvolutionLayer(3, 3, 40, 160);
+      convolutionLayer4.set(weights);
+      network.add(convolutionLayer4.addRef()).freeRef();
       network.add(new ImgReshapeLayer(2, 2, true)).freeRef(); // 16x16x40
       network.add(new ReLuActivationLayer()).freeRef();
       network.add(new NormalizationMetaLayer()).freeRef();
 
-      network.add(new ConvolutionLayer(3, 3, 40, 160).set(weights)).freeRef();
+      ConvolutionLayer convolutionLayer3 = new ConvolutionLayer(3, 3, 40, 160);
+      convolutionLayer3.set(weights);
+      network.add(convolutionLayer3.addRef()).freeRef();
       network.add(new ImgReshapeLayer(2, 2, true)).freeRef(); // 32x32x40
       network.add(new ReLuActivationLayer()).freeRef();
       network.add(new NormalizationMetaLayer()).freeRef();
 
-      network.add(new ConvolutionLayer(3, 3, 40, 160).set(weights)).freeRef();
+      ConvolutionLayer convolutionLayer2 = new ConvolutionLayer(3, 3, 40, 160);
+      convolutionLayer2.set(weights);
+      network.add(convolutionLayer2.addRef()).freeRef();
       network.add(new ImgReshapeLayer(2, 2, true)).freeRef(); // 64x64x40
       network.add(new ReLuActivationLayer()).freeRef();
       network.add(new NormalizationMetaLayer()).freeRef();
 
-      network.add(new ConvolutionLayer(3, 3, 40, 160).set(weights)).freeRef();
+      ConvolutionLayer convolutionLayer1 = new ConvolutionLayer(3, 3, 40, 160);
+      convolutionLayer1.set(weights);
+      network.add(convolutionLayer1.addRef()).freeRef();
       network.add(new ImgReshapeLayer(2, 2, true)).freeRef(); // 128x128x40
       network.add(new ReLuActivationLayer()).freeRef();
       network.add(new NormalizationMetaLayer()).freeRef();
 
-      network.add(new ConvolutionLayer(3, 3, 40, 12).set(weights)).freeRef();
+      ConvolutionLayer convolutionLayer = new ConvolutionLayer(3, 3, 40, 12);
+      convolutionLayer.set(weights);
+      network.add(convolutionLayer.addRef()).freeRef();
       network.add(new ImgReshapeLayer(2, 2, true)).freeRef(); // 256x256x3
       network.add(new ReLuActivationLayer()).freeRef();
 
@@ -170,7 +207,6 @@ public class CaltechTests {
     All_Caltech_Tests addRef() {
       return (All_Caltech_Tests) super.addRef();
     }
-
   }
 
   public static class QQN extends All_Caltech_Tests {
@@ -181,9 +217,7 @@ public class CaltechTests {
     @Nullable
     public static @SuppressWarnings("unused")
     QQN[] addRefs(@Nullable QQN[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
+      return RefUtil.addRefs(array);
     }
 
     public @SuppressWarnings("unused")
@@ -201,7 +235,6 @@ public class CaltechTests {
     protected void intro(@Nonnull final NotebookOutput log) {
       log.p("");
     }
-
   }
 
 }

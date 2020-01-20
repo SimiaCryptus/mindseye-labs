@@ -29,6 +29,7 @@ import com.simiacryptus.mindseye.opt.IterativeTrainer;
 import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefCollections;
@@ -59,10 +60,7 @@ public class SimpleGradientDescentTest extends MnistTestBase {
   @Nullable
   public static @SuppressWarnings("unused")
   SimpleGradientDescentTest[][] addRefs(@Nullable SimpleGradientDescentTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SimpleGradientDescentTest::addRefs)
-        .toArray((x) -> new SimpleGradientDescentTest[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Override
@@ -80,7 +78,13 @@ public class SimpleGradientDescentTest extends MnistTestBase {
       RefCollections.shuffle(trainingList);
       @Nonnull final Tensor[][] randomSelection = trainingList.subList(0, 10000).toArray(new Tensor[][]{});
       @Nonnull final Trainable trainable = new ArrayTrainable(randomSelection, supervisedNetwork);
-      return new IterativeTrainer(trainable).setMonitor(monitor).setTimeout(3, TimeUnit.MINUTES).setMaxIterations(500)
+      IterativeTrainer iterativeTrainer1 = new IterativeTrainer(trainable);
+      iterativeTrainer1.setMonitor(monitor);
+      IterativeTrainer iterativeTrainer2 = iterativeTrainer1.addRef();
+      iterativeTrainer2.setTimeout(3, TimeUnit.MINUTES);
+      IterativeTrainer iterativeTrainer = iterativeTrainer2.addRef();
+      iterativeTrainer.setMaxIterations(500);
+      return iterativeTrainer.addRef()
           .run();
     });
   }

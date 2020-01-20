@@ -30,6 +30,7 @@ import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.orient.GradientDescent;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,10 +59,7 @@ public class SimpleStochasticGradientDescentTest extends MnistTestBase {
   public static @SuppressWarnings("unused")
   SimpleStochasticGradientDescentTest[][] addRefs(
       @Nullable SimpleStochasticGradientDescentTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SimpleStochasticGradientDescentTest::addRefs)
-        .toArray((x) -> new SimpleStochasticGradientDescentTest[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Override
@@ -75,8 +73,15 @@ public class SimpleStochasticGradientDescentTest extends MnistTestBase {
     log.eval(() -> {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 10000);
-      return new IterativeTrainer(trainable).setMonitor(monitor).setOrientation(new GradientDescent())
-          .setTimeout(5, TimeUnit.MINUTES).setMaxIterations(500).run();
+      IterativeTrainer iterativeTrainer1 = new IterativeTrainer(trainable);
+      iterativeTrainer1.setMonitor(monitor);
+      IterativeTrainer iterativeTrainer2 = iterativeTrainer1.addRef();
+      iterativeTrainer2.setOrientation(new GradientDescent());
+      IterativeTrainer iterativeTrainer3 = iterativeTrainer2.addRef();
+      iterativeTrainer3.setTimeout(5, TimeUnit.MINUTES);
+      IterativeTrainer iterativeTrainer = iterativeTrainer3.addRef();
+      iterativeTrainer.setMaxIterations(500);
+      return iterativeTrainer.addRef().run();
     });
   }
 

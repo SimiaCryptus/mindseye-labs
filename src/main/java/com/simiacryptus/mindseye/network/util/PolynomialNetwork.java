@@ -31,6 +31,7 @@ import com.simiacryptus.mindseye.layers.java.NthPowerActivationLayer;
 import com.simiacryptus.mindseye.layers.java.ProductInputsLayer;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -142,10 +143,7 @@ public class PolynomialNetwork extends DAGNetwork {
   @Nullable
   public static @SuppressWarnings("unused")
   PolynomialNetwork[][] addRefs(@Nullable PolynomialNetwork[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(PolynomialNetwork::addRefs)
-        .toArray((x) -> new PolynomialNetwork[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Override
@@ -190,12 +188,16 @@ public class PolynomialNetwork extends DAGNetwork {
 
   @Nonnull
   public Layer newBias(final int[] dims, final double weight) {
-    return new BiasLayer(dims).setWeights(i -> weight);
+    BiasLayer biasLayer = new BiasLayer(dims);
+    biasLayer.setWeights(i -> weight);
+    return biasLayer.addRef();
   }
 
   @Nonnull
   public Layer newNthPowerLayer(final double power) {
-    return new NthPowerActivationLayer().setPower(power);
+    NthPowerActivationLayer nthPowerActivationLayer = new NthPowerActivationLayer();
+    nthPowerActivationLayer.setPower(power);
+    return nthPowerActivationLayer.addRef();
   }
 
   @Nonnull
@@ -205,7 +207,9 @@ public class PolynomialNetwork extends DAGNetwork {
 
   @Nonnull
   public Layer newSynapse(final double weight) {
-    return new FullyConnectedLayer(inputDims, outputDims).set(() -> weight * (Math.random() - 1));
+    FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(inputDims, outputDims);
+    fullyConnectedLayer.set(() -> weight * (Math.random() - 1));
+    return fullyConnectedLayer.addRef();
   }
 
   @Nonnull
@@ -252,9 +256,7 @@ public class PolynomialNetwork extends DAGNetwork {
     @Nullable
     public static @SuppressWarnings("unused")
     Correcton[] addRefs(@Nullable Correcton[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Correcton::addRef).toArray((x) -> new Correcton[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nullable

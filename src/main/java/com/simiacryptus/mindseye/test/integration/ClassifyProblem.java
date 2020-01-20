@@ -153,7 +153,10 @@ public class ClassifyProblem implements Problem {
         new SampledArrayTrainable(trainingData, supervisedNetwork, initialSampleSize, getBatchSize()),
         new ArrayTrainable(trainingData, supervisedNetwork, getBatchSize()), monitor);
     log.run(() -> {
-      trainer.setTimeout(timeoutMinutes, TimeUnit.MINUTES).setMaxIterations(10000).run();
+      trainer.setTimeout(timeoutMinutes, TimeUnit.MINUTES);
+      ValidatingTrainer validatingTrainer = trainer.addRef();
+      validatingTrainer.setMaxIterations(10000);
+      validatingTrainer.addRef().run();
     });
     if (!history.isEmpty()) {
       log.eval(() -> {

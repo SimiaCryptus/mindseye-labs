@@ -30,6 +30,7 @@ import com.simiacryptus.mindseye.opt.IterativeTrainer;
 import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,10 +57,7 @@ public class L2NormalizationTest extends MnistTestBase {
   @Nullable
   public static @SuppressWarnings("unused")
   L2NormalizationTest[][] addRefs(@Nullable L2NormalizationTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(L2NormalizationTest::addRefs)
-        .toArray((x) -> new L2NormalizationTest[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Override
@@ -94,7 +92,13 @@ public class L2NormalizationTest extends MnistTestBase {
           return 1e4;
         }
       };
-      return new IterativeTrainer(trainable).setMonitor(monitor).setTimeout(3, TimeUnit.MINUTES).setMaxIterations(500)
+      IterativeTrainer iterativeTrainer1 = new IterativeTrainer(trainable);
+      iterativeTrainer1.setMonitor(monitor);
+      IterativeTrainer iterativeTrainer2 = iterativeTrainer1.addRef();
+      iterativeTrainer2.setTimeout(3, TimeUnit.MINUTES);
+      IterativeTrainer iterativeTrainer = iterativeTrainer2.addRef();
+      iterativeTrainer.setMaxIterations(500);
+      return iterativeTrainer.addRef()
           .run();
     });
   }

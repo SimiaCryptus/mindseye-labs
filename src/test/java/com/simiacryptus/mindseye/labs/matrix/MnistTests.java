@@ -26,6 +26,7 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.test.data.MNIST;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,20 +39,30 @@ public class MnistTests {
     log.p("The png-to-vector network is a single key convolutional:");
     return log.eval(() -> {
       @Nonnull final PipelineNetwork network = new PipelineNetwork();
-      network.add(new ConvolutionLayer(5, 5, 1, 32).set(i -> 1e-8 * (Math.random() - 0.5)));
+      ConvolutionLayer convolutionLayer1 = new ConvolutionLayer(5, 5, 1, 32);
+      convolutionLayer1.set(i1 -> 1e-8 * (Math.random() - 0.5));
+      network.add(convolutionLayer1.addRef());
       network.add(new ImgBandBiasLayer(32));
-      network.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
-      network.add(new ConvolutionLayer(5, 5, 32, 64).set(i -> 1e-8 * (Math.random() - 0.5)));
+      PoolingLayer poolingLayer1 = new PoolingLayer();
+      poolingLayer1.setMode(PoolingLayer.PoolingMode.Max);
+      network.add(poolingLayer1.addRef());
+      ConvolutionLayer convolutionLayer = new ConvolutionLayer(5, 5, 32, 64);
+      convolutionLayer.set(i -> 1e-8 * (Math.random() - 0.5));
+      network.add(convolutionLayer.addRef());
       network.add(new ImgBandBiasLayer(64));
-      network.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
+      PoolingLayer poolingLayer = new PoolingLayer();
+      poolingLayer.setMode(PoolingLayer.PoolingMode.Max);
+      network.add(poolingLayer.addRef());
       network.add(new ReLuActivationLayer());
-      network.add(new FullyConnectedLayer(new int[]{7, 7, 64}, new int[]{1024})
-          .set(() -> 0.001 * (Math.random() - 0.45)));
+      FullyConnectedLayer fullyConnectedLayer1 = new FullyConnectedLayer(new int[]{7, 7, 64}, new int[]{1024});
+      fullyConnectedLayer1.set(() -> 0.001 * (Math.random() - 0.45));
+      network.add(fullyConnectedLayer1.addRef());
       network.add(new BiasLayer(1024));
       network.add(new ReLuActivationLayer());
       network.add(new DropoutNoiseLayer(0.5));
-      network.add(new FullyConnectedLayer(new int[]{1024}, new int[]{features})
-          .set(() -> 0.001 * (Math.random() - 0.45)));
+      FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(new int[]{1024}, new int[]{features});
+      fullyConnectedLayer.set(() -> 0.001 * (Math.random() - 0.45));
+      network.add(fullyConnectedLayer.addRef());
       network.add(new BiasLayer(features));
       network.add(new SoftmaxLayer());
       return network;
@@ -72,18 +83,26 @@ public class MnistTests {
       network.add(new ConvolutionLayer(5, 5, 1, 32).set(init));
       network.add(new ImgBandBiasLayer(32));
       network.add(new NormalizationMetaLayer());
-      network.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
+      PoolingLayer poolingLayer1 = new PoolingLayer();
+      poolingLayer1.setMode(PoolingLayer.PoolingMode.Max);
+      network.add(poolingLayer1.addRef());
       network.add(new ConvolutionLayer(5, 5, 32, 64).set(init));
       network.add(new ImgBandBiasLayer(64));
-      network.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
+      PoolingLayer poolingLayer = new PoolingLayer();
+      poolingLayer.setMode(PoolingLayer.PoolingMode.Max);
+      network.add(poolingLayer.addRef());
       network.add(new ReLuActivationLayer());
       network.add(new NormalizationMetaLayer());
-      network.add(new FullyConnectedLayer(new int[]{4, 4, 64}, new int[]{1024}).set(init));
+      FullyConnectedLayer fullyConnectedLayer1 = new FullyConnectedLayer(new int[]{4, 4, 64}, new int[]{1024});
+      fullyConnectedLayer1.set(init);
+      network.add(fullyConnectedLayer1.addRef());
       network.add(new BiasLayer(1024));
       network.add(new ReLuActivationLayer());
       network.add(new NormalizationMetaLayer());
       network.add(new DropoutNoiseLayer(0.5));
-      network.add(new FullyConnectedLayer(new int[]{1024}, new int[]{features}).set(init));
+      FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(new int[]{1024}, new int[]{features});
+      fullyConnectedLayer.set(init);
+      network.add(fullyConnectedLayer.addRef());
       network.add(new BiasLayer(features));
       network.add(new SoftmaxLayer());
 
@@ -97,8 +116,9 @@ public class MnistTests {
     return log.eval(() -> {
       @Nonnull final PipelineNetwork network = new PipelineNetwork();
       network.add(new BiasLayer(28, 28, 1));
-      network.add(new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{features})
-          .set(() -> 0.001 * (Math.random() - 0.45)));
+      FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{features});
+      fullyConnectedLayer.set(() -> 0.001 * (Math.random() - 0.45));
+      network.add(fullyConnectedLayer.addRef());
       network.add(new SoftmaxLayer());
       return network;
     });
@@ -108,24 +128,35 @@ public class MnistTests {
     log.p("The vector-to-png network uses a fully connected key then a single convolutional key:");
     return log.eval(() -> {
       @Nonnull final PipelineNetwork network = new PipelineNetwork();
+      FullyConnectedLayer fullyConnectedLayer1 = new FullyConnectedLayer(new int[]{features}, new int[]{1024});
+      fullyConnectedLayer1.set(() -> 0.25 * (Math.random() - 0.5));
       network.add(
-          new FullyConnectedLayer(new int[]{features}, new int[]{1024}).set(() -> 0.25 * (Math.random() - 0.5)));
+          fullyConnectedLayer1.addRef());
       network.add(new DropoutNoiseLayer(0.5));
       network.add(new ReLuActivationLayer());
       network.add(new BiasLayer(1024));
-      network.add(new FullyConnectedLayer(new int[]{1024}, new int[]{4, 4, 64})
-          .set(() -> 0.001 * (Math.random() - 0.45)));
+      FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(new int[]{1024}, new int[]{4, 4, 64});
+      fullyConnectedLayer.set(() -> 0.001 * (Math.random() - 0.45));
+      network.add(fullyConnectedLayer.addRef());
       network.add(new ReLuActivationLayer());
 
-      network.add(new ConvolutionLayer(1, 1, 64, 4 * 64).set(i -> 1e-8 * (Math.random() - 0.5)));
+      ConvolutionLayer convolutionLayer3 = new ConvolutionLayer(1, 1, 64, 4 * 64);
+      convolutionLayer3.set(i3 -> 1e-8 * (Math.random() - 0.5));
+      network.add(convolutionLayer3.addRef());
       network.add(new ImgReshapeLayer(2, 2, true));
       network.add(new ImgBandBiasLayer(64));
-      network.add(new ConvolutionLayer(5, 5, 64, 32).set(i -> 1e-8 * (Math.random() - 0.5)));
+      ConvolutionLayer convolutionLayer2 = new ConvolutionLayer(5, 5, 64, 32);
+      convolutionLayer2.set(i2 -> 1e-8 * (Math.random() - 0.5));
+      network.add(convolutionLayer2.addRef());
 
-      network.add(new ConvolutionLayer(1, 1, 32, 4 * 32).set(i -> 1e-8 * (Math.random() - 0.5)));
+      ConvolutionLayer convolutionLayer1 = new ConvolutionLayer(1, 1, 32, 4 * 32);
+      convolutionLayer1.set(i1 -> 1e-8 * (Math.random() - 0.5));
+      network.add(convolutionLayer1.addRef());
       network.add(new ImgReshapeLayer(2, 2, true));
       network.add(new ImgBandBiasLayer(32));
-      network.add(new ConvolutionLayer(5, 5, 32, 1).set(i -> 1e-8 * (Math.random() - 0.5)));
+      ConvolutionLayer convolutionLayer = new ConvolutionLayer(5, 5, 32, 1);
+      convolutionLayer.set(i -> 1e-8 * (Math.random() - 0.5));
+      network.add(convolutionLayer.addRef());
 
       return network;
     });
@@ -135,8 +166,9 @@ public class MnistTests {
     log.p("The vector-to-png network is a single fully connected key:");
     return log.eval(() -> {
       @Nonnull final PipelineNetwork network = new PipelineNetwork();
-      network.add(new FullyConnectedLayer(new int[]{features}, new int[]{28, 28, 1})
-          .set(() -> 0.25 * (Math.random() - 0.5)));
+      FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(new int[]{features}, new int[]{28, 28, 1});
+      fullyConnectedLayer.set(() -> 0.25 * (Math.random() - 0.5));
+      network.add(fullyConnectedLayer.addRef());
       network.add(new BiasLayer(28, 28, 1));
       return network;
     });
@@ -191,7 +223,6 @@ public class MnistTests {
     All_MNIST_Tests addRef() {
       return (All_MNIST_Tests) super.addRef();
     }
-
   }
 
   public static class OWL_QN extends All_MNIST_Tests {
@@ -202,9 +233,7 @@ public class MnistTests {
     @Nullable
     public static @SuppressWarnings("unused")
     OWL_QN[] addRefs(@Nullable OWL_QN[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(OWL_QN::addRef).toArray((x) -> new OWL_QN[x]);
+      return RefUtil.addRefs(array);
     }
 
     public @SuppressWarnings("unused")
@@ -232,9 +261,7 @@ public class MnistTests {
     @Nullable
     public static @SuppressWarnings("unused")
     QQN[] addRefs(@Nullable QQN[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
+      return RefUtil.addRefs(array);
     }
 
     public @SuppressWarnings("unused")
@@ -252,7 +279,6 @@ public class MnistTests {
     protected void intro(@Nonnull final NotebookOutput log) {
       log.p("");
     }
-
   }
 
   public static class SGD extends All_MNIST_Tests {
@@ -263,9 +289,7 @@ public class MnistTests {
     @Nullable
     public static @SuppressWarnings("unused")
     SGD[] addRefs(@Nullable SGD[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(SGD::addRef).toArray((x) -> new SGD[x]);
+      return RefUtil.addRefs(array);
     }
 
     public @SuppressWarnings("unused")

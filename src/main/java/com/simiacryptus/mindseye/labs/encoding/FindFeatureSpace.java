@@ -30,7 +30,6 @@ public abstract class FindFeatureSpace {
   public FindFeatureSpace(NotebookOutput log, int inputBands) {
     this.log = log;
     this.inputBands = inputBands;
-
   }
 
   @Nonnull

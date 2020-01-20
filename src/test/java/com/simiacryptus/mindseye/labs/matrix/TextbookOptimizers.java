@@ -23,16 +23,14 @@ import com.simiacryptus.mindseye.opt.ValidatingTrainer;
 import com.simiacryptus.mindseye.opt.line.ArmijoWolfeSearch;
 import com.simiacryptus.mindseye.opt.line.QuadraticSearch;
 import com.simiacryptus.mindseye.opt.line.StaticLearningRate;
-import com.simiacryptus.mindseye.opt.orient.GradientDescent;
-import com.simiacryptus.mindseye.opt.orient.LBFGS;
-import com.simiacryptus.mindseye.opt.orient.MomentumStrategy;
-import com.simiacryptus.mindseye.opt.orient.OwlQn;
+import com.simiacryptus.mindseye.opt.orient.*;
 import com.simiacryptus.mindseye.test.ProblemRun;
 import com.simiacryptus.mindseye.test.StepRecord;
 import com.simiacryptus.mindseye.test.TestUtil;
 import com.simiacryptus.mindseye.test.integration.MnistProblemData;
 import com.simiacryptus.mindseye.test.integration.OptimizationStrategy;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,33 +46,39 @@ public class TextbookOptimizers extends OptimizerComparison {
                                                                    monitor) -> {
     log.p("Optimized via the Conjugate Gradient Descent method:");
     return log.eval(() -> {
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
-          .setMinTrainingSize(Integer.MAX_VALUE).setMonitor(monitor);
-      trainer.getRegimen().get(0).setOrientation(new GradientDescent())
-          .setLineSearchFactory(name -> new QuadraticSearch().setRelativeTolerance(1e-5));
-      return trainer;
+      ValidatingTrainer validatingTrainer = new ValidatingTrainer(trainingSubject, validationSubject);
+      validatingTrainer.setMinTrainingSize(Integer.MAX_VALUE);
+      validatingTrainer.setMonitor(monitor);
+      ValidatingTrainer.TrainingPhase trainingPhase = validatingTrainer.getRegimen().get(0);
+      trainingPhase.setOrientation(new GradientDescent());
+      trainingPhase.setLineSearchFactory(name -> new QuadraticSearch().setRelativeTolerance(1e-5));
+      return validatingTrainer;
     });
   };
   @Nonnull
   public static OptimizationStrategy limited_memory_bfgs = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Limited-Memory BFGS method:");
     return log.eval(() -> {
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
-          .setMinTrainingSize(Integer.MAX_VALUE).setMonitor(monitor);
-      trainer.getRegimen().get(0).setOrientation(new LBFGS()).setLineSearchFactory(
-          name -> new ArmijoWolfeSearch().setAlpha(name.toString().contains("LBFGS") ? 1.0 : 1e-6));
-      return trainer;
+      ValidatingTrainer validatingTrainer = new ValidatingTrainer(trainingSubject, validationSubject);
+      validatingTrainer.setMinTrainingSize(Integer.MAX_VALUE);
+      validatingTrainer.setMonitor(monitor);
+      ValidatingTrainer.TrainingPhase trainingPhase = validatingTrainer.getRegimen().get(0);
+      trainingPhase.setOrientation(new LBFGS());
+      trainingPhase.setLineSearchFactory(name -> new ArmijoWolfeSearch().setAlpha(name.toString().contains("LBFGS") ? 1.0 : 1e-6));
+      return validatingTrainer;
     });
   };
   @Nonnull
   public static OptimizationStrategy orthantwise_quasi_newton = (log, trainingSubject, validationSubject, monitor) -> {
     log.p("Optimized via the Orthantwise Quasi-Newton search method:");
     return log.eval(() -> {
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
-          .setMinTrainingSize(Integer.MAX_VALUE).setMonitor(monitor);
-      trainer.getRegimen().get(0).setOrientation(new OwlQn())
-          .setLineSearchFactory(name -> new ArmijoWolfeSearch().setAlpha(name.toString().contains("OWL") ? 1.0 : 1e-6));
-      return trainer;
+      ValidatingTrainer validatingTrainer = new ValidatingTrainer(trainingSubject, validationSubject);
+      validatingTrainer.setMinTrainingSize(Integer.MAX_VALUE);
+      validatingTrainer.setMonitor(monitor);
+      ValidatingTrainer.TrainingPhase trainingPhase = validatingTrainer.getRegimen().get(0);
+      trainingPhase.setOrientation(new OwlQn());
+      trainingPhase.setLineSearchFactory(name -> new ArmijoWolfeSearch().setAlpha(name.toString().contains("OWL") ? 1.0 : 1e-6));
+      return validatingTrainer;
     });
   };
   @Nonnull
@@ -82,11 +86,14 @@ public class TextbookOptimizers extends OptimizerComparison {
     log.p("Optimized via the Stochastic Gradient Descent method:");
     return log.eval(() -> {
       final double rate = 0.05;
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
-          .setMinTrainingSize(Integer.MAX_VALUE).setMaxEpochIterations(100).setMonitor(monitor);
-      trainer.getRegimen().get(0).setOrientation(new GradientDescent())
-          .setLineSearchFactory(name -> new StaticLearningRate(rate));
-      return trainer;
+      ValidatingTrainer validatingTrainer1 = new ValidatingTrainer(trainingSubject, validationSubject);
+      validatingTrainer1.setMinTrainingSize(Integer.MAX_VALUE);
+      validatingTrainer1.setMaxEpochIterations(100);
+      validatingTrainer1.setMonitor(monitor);
+      ValidatingTrainer.TrainingPhase trainingPhase = validatingTrainer1.getRegimen().get(0);
+      trainingPhase.setOrientation(new GradientDescent());
+      trainingPhase.setLineSearchFactory(name -> new StaticLearningRate(rate));
+      return validatingTrainer1;
     });
   };
   @Nonnull
@@ -95,11 +102,15 @@ public class TextbookOptimizers extends OptimizerComparison {
     log.p("Optimized via the Stochastic Gradient Descent method apply momentum and adaptve learning rate:");
     return log.eval(() -> {
       final double carryOver = 0.5;
-      @Nonnull final ValidatingTrainer trainer = new ValidatingTrainer(trainingSubject, validationSubject)
-          .setMaxEpochIterations(100).setMonitor(monitor);
-      trainer.getRegimen().get(0).setOrientation(new MomentumStrategy(new GradientDescent()).setCarryOver(carryOver))
-          .setLineSearchFactory(name -> new ArmijoWolfeSearch());
-      return trainer;
+      ValidatingTrainer validatingTrainer = new ValidatingTrainer(trainingSubject, validationSubject);
+      validatingTrainer.setMaxEpochIterations(100);
+      validatingTrainer.setMonitor(monitor);
+      ValidatingTrainer.TrainingPhase trainingPhase = validatingTrainer.getRegimen().get(0);
+      MomentumStrategy momentumStrategy = new MomentumStrategy(new GradientDescent());
+      momentumStrategy.setCarryOver(carryOver);
+      trainingPhase.setOrientation(momentumStrategy.addRef());
+      trainingPhase.setLineSearchFactory(name -> new ArmijoWolfeSearch());
+      return validatingTrainer;
     });
   };
 
@@ -119,10 +130,7 @@ public class TextbookOptimizers extends OptimizerComparison {
   @Nullable
   public static @SuppressWarnings("unused")
   TextbookOptimizers[][] addRefs(@Nullable TextbookOptimizers[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TextbookOptimizers::addRefs)
-        .toArray((x) -> new TextbookOptimizers[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Override

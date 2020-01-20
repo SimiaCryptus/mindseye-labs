@@ -34,6 +34,7 @@ import com.simiacryptus.mindseye.opt.line.ArmijoWolfeSearch;
 import com.simiacryptus.mindseye.opt.line.LineSearchStrategy;
 import com.simiacryptus.mindseye.opt.orient.LBFGS;
 import com.simiacryptus.mindseye.opt.orient.OrientationStrategy;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefCollections;
@@ -78,17 +79,29 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
     outerSize = networkParameters.getOuterSize();
     innerSize = networkParameters.getInnerSize();
 
-    inputNoise = new GaussianNoiseLayer().setValue(networkParameters.getNoise());
+    GaussianNoiseLayer gaussianNoiseLayer = new GaussianNoiseLayer();
+    gaussianNoiseLayer.setValue(networkParameters.getNoise());
+    inputNoise = gaussianNoiseLayer.addRef();
     encoderSynapse = new FullyConnectedLayer(outerSize, innerSize);
     encoderSynapse.initSpacial(networkParameters.getInitRadius(), networkParameters.getInitStiffness(),
         networkParameters.getInitPeak());
-    encoderBias = new BiasLayer(innerSize).setWeights(i -> 0.0);
-    encoderActivation = (ReLuActivationLayer) new ReLuActivationLayer().freeze();
-    encodedNoise = new DropoutNoiseLayer().setValue(networkParameters.getDropout());
+    BiasLayer biasLayer1 = new BiasLayer(innerSize);
+    biasLayer1.setWeights(i1 -> 0.0);
+    encoderBias = biasLayer1.addRef();
+    Layer layer1 = new ReLuActivationLayer();
+    layer1.freeze();
+    encoderActivation = (ReLuActivationLayer) layer1.addRef();
+    DropoutNoiseLayer dropoutNoiseLayer = new DropoutNoiseLayer();
+    dropoutNoiseLayer.setValue(networkParameters.getDropout());
+    encodedNoise = dropoutNoiseLayer.addRef();
     decoderSynapse = encoderSynapse.getTranspose();
     decoderSynapsePlaceholder = new VariableLayer(decoderSynapse);
-    decoderBias = new BiasLayer(outerSize).setWeights(i -> 0.0);
-    decoderActivation = (ReLuActivationLayer) new ReLuActivationLayer().freeze();
+    BiasLayer biasLayer = new BiasLayer(outerSize);
+    biasLayer.setWeights(i -> 0.0);
+    decoderBias = biasLayer.addRef();
+    Layer layer = new ReLuActivationLayer();
+    layer.freeze();
+    decoderActivation = (ReLuActivationLayer) layer.addRef();
 
     encoder = new PipelineNetwork();
     encoder.add(inputNoise);
@@ -177,15 +190,12 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
   @Nullable
   public static @SuppressWarnings("unused")
   AutoencoderNetwork[][] addRefs(@Nullable AutoencoderNetwork[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AutoencoderNetwork::addRefs)
-        .toArray((x) -> new AutoencoderNetwork[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Nullable
   public TensorList encode(@Nonnull final TensorList data) {
-    Layer layer = encoder.getLayer();
+    Layer layer = encoder.addRef();
     TensorList tensorList = layer
         .eval(ConstantResult.batchResultArray(data.stream().map(x -> new Tensor[]{x}).toArray(i -> new Tensor[i][])))
         .getData();
@@ -195,7 +205,9 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
 
   public void runMode() {
     inputNoise.setValue(0.0);
+    this.addRef();
     encodedNoise.setValue(0.0);
+    this.addRef();
   }
 
   @Nonnull
@@ -234,7 +246,9 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
 
   public void trainingMode() {
     inputNoise.setValue(networkParameters.getNoise());
+    this.addRef();
     encodedNoise.setValue(networkParameters.getDropout());
+    this.addRef();
   }
 
   public @SuppressWarnings("unused")
@@ -394,6 +408,7 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       }
       newLayer.decoderSynapse = ((FullyConnectedLayer) newLayer.decoderSynapse).getTranspose();
       newLayer.decoderSynapsePlaceholder.setInner(newLayer.decoderSynapse);
+      this.addRef();
       configure(newLayer.train()).run(data);
 
       runMode();
@@ -459,7 +474,16 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
     private int maxIterations = Integer.MAX_VALUE;
     @Nullable
     private TrainingMonitor monitor = null;
-    private OrientationStrategy<?> orient = new LBFGS().setMinHistory(5).setMaxHistory(35);
+    private OrientationStrategy<?> orient;
+
+    {
+      LBFGS lbfgs1 = new LBFGS();
+      lbfgs1.setMinHistory(5);
+      LBFGS lbfgs = lbfgs1.addRef();
+      lbfgs.setMaxHistory(35);
+      orient = lbfgs.addRef();
+    }
+
     private int sampleSize = Integer.MAX_VALUE;
     private LineSearchStrategy step = new ArmijoWolfeSearch().setC2(0.9).setAlpha(1e-4);
     private int timeoutMinutes = 10;
@@ -572,16 +596,25 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       @Nonnull final Trainable trainable = new SampledArrayTrainable(
           data.stream().map(x -> new Tensor[]{x, x}).toArray(i -> new Tensor[i][]), trainingNetwork,
           getSampleSize());
-      @Nonnull final L12Normalizer normalized = new ConstL12Normalizer(trainable).setFactor_L1(getL1normalization())
-          .setFactor_L2(getL2normalization());
+      ConstL12Normalizer constL12Normalizer = new ConstL12Normalizer(trainable);
+      constL12Normalizer.setFactor_L1(getL1normalization());
+      ConstL12Normalizer constL12Normalizer1 = constL12Normalizer.addRef();
+      constL12Normalizer1.setFactor_L2(getL2normalization());
+      @Nonnull final L12Normalizer normalized = constL12Normalizer1.addRef();
       @Nonnull final IterativeTrainer trainer = new IterativeTrainer(normalized);
       trainer.setOrientation(getOrient());
+      this.addRef();
       trainer.setLineSearchFactory((s) -> getStep());
+      this.addRef();
       @Nullable final TrainingMonitor monitor = getMonitor();
       trainer.setMonitor(wrap(monitor));
+      this.addRef();
       trainer.setTimeout(getTimeoutMinutes(), TimeUnit.MINUTES);
+      this.addRef();
       trainer.setTerminateThreshold(getEndFitness());
+      this.addRef();
       trainer.setMaxIterations(maxIterations);
+      this.addRef();
       trainer.run();
     }
 

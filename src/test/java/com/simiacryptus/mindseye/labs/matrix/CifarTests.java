@@ -29,6 +29,7 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.test.data.CIFAR10;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,12 +42,17 @@ public class CifarTests {
     log.p("The png-to-vector network is a single key convolutional:");
     return log.eval(() -> {
       @Nonnull final PipelineNetwork network = new PipelineNetwork();
-      network.add(new ConvolutionLayer(3, 3, 3, 5).set(i -> 1e-8 * (Math.random() - 0.5)));
-      network.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
+      ConvolutionLayer convolutionLayer = new ConvolutionLayer(3, 3, 3, 5);
+      convolutionLayer.set(i -> 1e-8 * (Math.random() - 0.5));
+      network.add(convolutionLayer.addRef());
+      PoolingLayer poolingLayer = new PoolingLayer();
+      poolingLayer.setMode(PoolingLayer.PoolingMode.Max);
+      network.add(poolingLayer.addRef());
       network.add(new ReLuActivationLayer());
       network.add(new BiasLayer(16, 16, 5));
-      network.add(new FullyConnectedLayer(new int[]{16, 16, 5}, new int[]{features})
-          .set(() -> 0.001 * (Math.random() - 0.45)));
+      FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(new int[]{16, 16, 5}, new int[]{features});
+      fullyConnectedLayer.set(() -> 0.001 * (Math.random() - 0.45));
+      network.add(fullyConnectedLayer.addRef());
       network.add(new SoftmaxLayer());
       return network;
     });
@@ -57,8 +63,9 @@ public class CifarTests {
     return log.eval(() -> {
       @Nonnull final PipelineNetwork network = new PipelineNetwork();
       network.add(new BiasLayer(32, 32, 3));
-      network.add(new FullyConnectedLayer(new int[]{32, 32, 3}, new int[]{features})
-          .set(() -> 0.001 * (Math.random() - 0.45)));
+      FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(new int[]{32, 32, 3}, new int[]{features});
+      fullyConnectedLayer.set(() -> 0.001 * (Math.random() - 0.45));
+      network.add(fullyConnectedLayer.addRef());
       network.add(new SoftmaxLayer());
       return network;
     });
@@ -68,10 +75,13 @@ public class CifarTests {
     log.p("The vector-to-png network uses a fully connected key then a single convolutional key:");
     return log.eval(() -> {
       @Nonnull final PipelineNetwork network = new PipelineNetwork();
-      network.add(new FullyConnectedLayer(new int[]{features}, new int[]{32, 32, 5})
-          .set(() -> 0.25 * (Math.random() - 0.5)));
+      FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(new int[]{features}, new int[]{32, 32, 5});
+      fullyConnectedLayer.set(() -> 0.25 * (Math.random() - 0.5));
+      network.add(fullyConnectedLayer.addRef());
       network.add(new ReLuActivationLayer());
-      network.add(new ConvolutionLayer(3, 3, 5, 3).set(i -> 1e-8 * (Math.random() - 0.5)));
+      ConvolutionLayer convolutionLayer = new ConvolutionLayer(3, 3, 5, 3);
+      convolutionLayer.set(i -> 1e-8 * (Math.random() - 0.5));
+      network.add(convolutionLayer.addRef());
       network.add(new BiasLayer(32, 32, 3));
       network.add(new ReLuActivationLayer());
       return network;
@@ -82,8 +92,9 @@ public class CifarTests {
     log.p("The vector-to-png network is a single fully connected key:");
     return log.eval(() -> {
       @Nonnull final PipelineNetwork network = new PipelineNetwork();
-      network.add(new FullyConnectedLayer(new int[]{features}, new int[]{32, 32, 3})
-          .set(() -> 0.25 * (Math.random() - 0.5)));
+      FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(new int[]{features}, new int[]{32, 32, 3});
+      fullyConnectedLayer.set(() -> 0.25 * (Math.random() - 0.5));
+      network.add(fullyConnectedLayer.addRef());
       network.add(new BiasLayer(32, 32, 3));
       return network;
     });
@@ -148,9 +159,7 @@ public class CifarTests {
     @Nullable
     public static @SuppressWarnings("unused")
     OWL_QN[] addRefs(@Nullable OWL_QN[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(OWL_QN::addRef).toArray((x) -> new OWL_QN[x]);
+      return RefUtil.addRefs(array);
     }
 
     public @SuppressWarnings("unused")
@@ -178,9 +187,7 @@ public class CifarTests {
     @Nullable
     public static @SuppressWarnings("unused")
     QQN[] addRefs(@Nullable QQN[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(QQN::addRef).toArray((x) -> new QQN[x]);
+      return RefUtil.addRefs(array);
     }
 
     public @SuppressWarnings("unused")
@@ -198,7 +205,6 @@ public class CifarTests {
     protected void intro(@Nonnull final NotebookOutput log) {
       log.p("");
     }
-
   }
 
   public static class SGD extends All_CIFAR_Tests {
@@ -209,9 +215,7 @@ public class CifarTests {
     @Nullable
     public static @SuppressWarnings("unused")
     SGD[] addRefs(@Nullable SGD[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(SGD::addRef).toArray((x) -> new SGD[x]);
+      return RefUtil.addRefs(array);
     }
 
     public @SuppressWarnings("unused")

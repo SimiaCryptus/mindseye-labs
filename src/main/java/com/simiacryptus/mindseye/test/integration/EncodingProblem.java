@@ -128,7 +128,9 @@ public class EncodingProblem implements Problem {
     Tensor[][] trainingData;
     try {
       trainingData = data.trainingData().map(labeledObject -> {
-        return new Tensor[]{new Tensor(features).set(this::random), labeledObject.data};
+        Tensor tensor = new Tensor(features);
+        tensor.set(this::random);
+        return new Tensor[]{tensor.addRef(), labeledObject.data};
       }).toArray(i -> new Tensor[i][]);
     } catch (@Nonnull final IOException e) {
       throw new RuntimeException(e);
@@ -144,31 +146,43 @@ public class EncodingProblem implements Problem {
     @Nonnull final PipelineNetwork trainingNetwork = new PipelineNetwork(2);
     @Nullable final DAGNode image = trainingNetwork.add(imageNetwork, trainingNetwork.getInput(0));
     @Nullable final DAGNode softmax = trainingNetwork.add(new SoftmaxLayer(), trainingNetwork.getInput(0));
+    NthPowerActivationLayer nthPowerActivationLayer = new NthPowerActivationLayer();
+    nthPowerActivationLayer.setPower(1.0 / 2.0);
     trainingNetwork.add(new SumInputsLayer(), trainingNetwork.add(new EntropyLossLayer(), softmax, softmax),
-        trainingNetwork.add(new NthPowerActivationLayer().setPower(1.0 / 2.0),
+        trainingNetwork.add(nthPowerActivationLayer.addRef(),
             trainingNetwork.add(new MeanSqLossLayer(), image, trainingNetwork.getInput(1))))
         .freeRef();
     log.h3("Training");
     log.p("We start by training apply a very small population to improve initial convergence performance:");
     TestUtil.instrumentPerformance(trainingNetwork);
     @Nonnull final Tensor[][] primingData = RefArrays.copyOfRange(trainingData, 0, 1000);
+    SampledArrayTrainable sampledArrayTrainable1 = new SampledArrayTrainable(primingData, trainingNetwork, trainingSize, batchSize);
+    sampledArrayTrainable1.setMinSamples(trainingSize);
+    sampledArrayTrainable1.setMask(true, false);
     @Nonnull final ValidatingTrainer preTrainer = optimizer.train(log,
-        (SampledTrainable) new SampledArrayTrainable(primingData, trainingNetwork, trainingSize, batchSize)
-            .setMinSamples(trainingSize).setMask(true, false),
+        sampledArrayTrainable1.addRef(),
         new ArrayTrainable(primingData, trainingNetwork, batchSize), monitor);
     log.run(() -> {
-      preTrainer.setTimeout(timeoutMinutes / 2, TimeUnit.MINUTES).setMaxIterations(batchSize).run();
+      preTrainer.setTimeout(timeoutMinutes / 2, TimeUnit.MINUTES);
+      ValidatingTrainer validatingTrainer = preTrainer.addRef();
+      validatingTrainer.setMaxIterations(batchSize);
+      validatingTrainer.addRef().run();
     });
     TestUtil.extractPerformance(log, trainingNetwork);
 
     log.p("Then our main training phase:");
     TestUtil.instrumentPerformance(trainingNetwork);
+    SampledArrayTrainable sampledArrayTrainable = new SampledArrayTrainable(trainingData, trainingNetwork, trainingSize, batchSize);
+    sampledArrayTrainable.setMinSamples(trainingSize);
+    sampledArrayTrainable.setMask(true, false);
     @Nonnull final ValidatingTrainer mainTrainer = optimizer.train(log,
-        (SampledTrainable) new SampledArrayTrainable(trainingData, trainingNetwork, trainingSize, batchSize)
-            .setMinSamples(trainingSize).setMask(true, false),
+        sampledArrayTrainable,
         new ArrayTrainable(trainingData, trainingNetwork, batchSize), monitor);
     log.run(() -> {
-      mainTrainer.setTimeout(timeoutMinutes, TimeUnit.MINUTES).setMaxIterations(batchSize).run();
+      mainTrainer.setTimeout(timeoutMinutes, TimeUnit.MINUTES);
+      ValidatingTrainer validatingTrainer = mainTrainer.addRef();
+      validatingTrainer.setMaxIterations(batchSize);
+      validatingTrainer.addRef().run();
     });
     TestUtil.extractPerformance(log, trainingNetwork);
 
@@ -227,7 +241,9 @@ public class EncodingProblem implements Problem {
 
     log.p("Some rendered unit vectors:");
     for (int featureNumber = 0; featureNumber < features; featureNumber++) {
-      @Nonnull final Tensor input = new Tensor(features).set(featureNumber, 1);
+      Tensor tensor1 = new Tensor(features);
+      tensor1.set(featureNumber, 1);
+      @Nonnull final Tensor input = tensor1.addRef();
       @Nullable final Tensor tensor = imageNetwork.eval(input).getData().get(0);
       ImageUtil.renderToImages(tensor, true).forEach(img -> {
         log.out(log.png(img, ""));

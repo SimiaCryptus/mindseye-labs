@@ -22,6 +22,7 @@ package com.simiacryptus.mindseye.labs.matrix;
 import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.util.test.TestCategories;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -63,10 +64,7 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   @Nullable
   public static @SuppressWarnings("unused")
   AllTrainingTests[][] addRefs(@Nullable AllTrainingTests[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AllTrainingTests::addRefs)
-        .toArray((x) -> new AllTrainingTests[x][]);
+    return RefUtil.addRefs(array);
   }
 
   public void autoencoder_test(@Nonnull NotebookOutput log) {

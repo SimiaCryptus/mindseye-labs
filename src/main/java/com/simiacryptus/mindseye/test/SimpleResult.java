@@ -21,11 +21,11 @@ package com.simiacryptus.mindseye.test;
 
 import com.simiacryptus.mindseye.lang.DeltaSet;
 import com.simiacryptus.mindseye.lang.TensorList;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.lang.ReferenceCounting;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.UUID;
 
 public interface SimpleResult extends ReferenceCounting {
@@ -39,24 +39,19 @@ public interface SimpleResult extends ReferenceCounting {
   TensorList getOutput();
 
   @Nullable
-  public static @SuppressWarnings("unused")
+  static @SuppressWarnings("unused")
   SimpleResult[] addRefs(@Nullable SimpleResult[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SimpleResult::addRef).toArray((x) -> new SimpleResult[x]);
+    return RefUtil.addRefs(array);
   }
 
   @Nullable
-  public static @SuppressWarnings("unused")
+  static @SuppressWarnings("unused")
   SimpleResult[][] addRefs(@Nullable SimpleResult[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SimpleResult::addRefs)
-        .toArray((x) -> new SimpleResult[x][]);
+    return RefUtil.addRefs(array);
   }
 
-  public void _free();
+  void _free();
 
   @Nonnull
-  public SimpleResult addRef();
+  SimpleResult addRef();
 }

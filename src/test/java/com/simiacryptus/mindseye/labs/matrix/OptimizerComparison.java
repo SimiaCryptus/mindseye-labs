@@ -23,6 +23,7 @@ import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.StepRecord;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.util.test.TestCategories;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -81,10 +82,7 @@ public abstract class OptimizerComparison extends NotebookReportBase {
   @Nullable
   public static @SuppressWarnings("unused")
   OptimizerComparison[][] addRefs(@Nullable OptimizerComparison[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(OptimizerComparison::addRefs)
-        .toArray((x) -> new OptimizerComparison[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Test

@@ -116,7 +116,9 @@ public class AutoencodingProblem implements Problem {
 
     @Nonnull final PipelineNetwork supervisedNetwork = new PipelineNetwork(1);
     supervisedNetwork.add(fwdNetwork).freeRef();
-    @Nonnull final DropoutNoiseLayer dropoutNoiseLayer = new DropoutNoiseLayer().setValue(dropout);
+    DropoutNoiseLayer dropoutNoiseLayer1 = new DropoutNoiseLayer();
+    dropoutNoiseLayer1.setValue(dropout);
+    @Nonnull final DropoutNoiseLayer dropoutNoiseLayer = dropoutNoiseLayer1.addRef();
     supervisedNetwork.add(dropoutNoiseLayer).freeRef();
     supervisedNetwork.add(revNetwork).freeRef();
     supervisedNetwork.add(new MeanSqLossLayer(), supervisedNetwork.getHead(), supervisedNetwork.getInput(0)).freeRef();
@@ -161,7 +163,10 @@ public class AutoencodingProblem implements Problem {
         new SampledArrayTrainable(trainingData, supervisedNetwork, trainingData.length / 2, batchSize),
         new ArrayTrainable(trainingData, supervisedNetwork, batchSize), monitor);
     log.run(() -> {
-      trainer.setTimeout(timeoutMinutes, TimeUnit.MINUTES).setMaxIterations(10000).run();
+      trainer.setTimeout(timeoutMinutes, TimeUnit.MINUTES);
+      ValidatingTrainer validatingTrainer = trainer.addRef();
+      validatingTrainer.setMaxIterations(10000);
+      validatingTrainer.addRef().run();
     });
     if (!history.isEmpty()) {
       log.eval(() -> {
@@ -199,7 +204,9 @@ public class AutoencodingProblem implements Problem {
 
     log.p("Some rendered unit vectors:");
     for (int featureNumber = 0; featureNumber < features; featureNumber++) {
-      @Nonnull final Tensor input = new Tensor(features).set(featureNumber, 1);
+      Tensor tensor1 = new Tensor(features);
+      tensor1.set(featureNumber, 1);
+      @Nonnull final Tensor input = tensor1.addRef();
       @Nullable final Tensor tensor = revNetwork.eval(input).getData().get(0);
       log.out(log.png(tensor.toImage(), ""));
     }

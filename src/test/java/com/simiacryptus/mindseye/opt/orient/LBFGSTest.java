@@ -32,8 +32,6 @@ import com.simiacryptus.mindseye.opt.line.QuadraticSearch;
 import com.simiacryptus.notebook.NotebookOutput;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class LBFGSTest extends MnistTestBase {
@@ -44,37 +42,29 @@ public class LBFGSTest extends MnistTestBase {
     return LBFGS.class;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  LBFGSTest[] addRefs(@Nullable LBFGSTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRef).toArray((x) -> new LBFGSTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  LBFGSTest[][] addRefs(@Nullable LBFGSTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LBFGSTest::addRefs).toArray((x) -> new LBFGSTest[x][]);
-  }
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
                     @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
     log.eval(() -> {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
-      @Nonnull
-      ValidatingTrainer trainer = new ValidatingTrainer(
+      ValidatingTrainer validatingTrainer1 = new ValidatingTrainer(
           new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 10000),
-          new ArrayTrainable(trainingData, supervisedNetwork).cached()).setMonitor(monitor);
-      trainer.getRegimen().get(0)
-          //.setOrientation(new ValidatingOrientationWrapper(new LBFGS()))
-          .setOrientation(new LBFGS())
-          .setLineSearchFactory(name -> name.toString().contains("LBFGS") ? new QuadraticSearch().setCurrentRate(1.0)
+          new ArrayTrainable(trainingData, supervisedNetwork).cached());
+      validatingTrainer1.setMonitor(monitor);
+      @Nonnull
+      ValidatingTrainer trainer = validatingTrainer1.addRef();
+      //.setOrientation(new ValidatingOrientationWrapper(new LBFGS()))
+      ValidatingTrainer.TrainingPhase trainingPhase = trainer.getRegimen().get(0);
+      trainingPhase.setOrientation(new LBFGS());
+      //.setOrientation(new ValidatingOrientationWrapper(new LBFGS()))
+      trainingPhase.addRef().setLineSearchFactory(name -> name.toString().contains("LBFGS") ? new QuadraticSearch().setCurrentRate(1.0)
               : new QuadraticSearch());
-      return trainer.setTimeout(5, TimeUnit.MINUTES).setMaxIterations(500).run();
+      this.addRef();
+      trainer.setTimeout(5, TimeUnit.MINUTES);
+      ValidatingTrainer validatingTrainer = trainer.addRef();
+      validatingTrainer.setMaxIterations(500);
+      return validatingTrainer.addRef().run();
     });
   }
 

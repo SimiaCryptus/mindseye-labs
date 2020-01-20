@@ -31,8 +31,6 @@ import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.notebook.NotebookOutput;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class GDTest extends MnistTestBase {
@@ -43,21 +41,6 @@ public class GDTest extends MnistTestBase {
     return GradientDescent.class;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  GDTest[] addRefs(@Nullable GDTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(GDTest::addRef).toArray((x) -> new GDTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  GDTest[][] addRefs(@Nullable GDTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(GDTest::addRefs).toArray((x) -> new GDTest[x][]);
-  }
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
@@ -65,8 +48,15 @@ public class GDTest extends MnistTestBase {
     log.eval(() -> {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
-      return new IterativeTrainer(trainable).setMonitor(monitor).setOrientation(new GradientDescent())
-          .setTimeout(5, TimeUnit.MINUTES).setMaxIterations(500).run();
+      IterativeTrainer iterativeTrainer1 = new IterativeTrainer(trainable);
+      iterativeTrainer1.setMonitor(monitor);
+      IterativeTrainer iterativeTrainer2 = iterativeTrainer1.addRef();
+      iterativeTrainer2.setOrientation(new GradientDescent());
+      IterativeTrainer iterativeTrainer3 = iterativeTrainer2.addRef();
+      iterativeTrainer3.setTimeout(5, TimeUnit.MINUTES);
+      IterativeTrainer iterativeTrainer = iterativeTrainer3.addRef();
+      iterativeTrainer.setMaxIterations(500);
+      return iterativeTrainer.addRef().run();
     });
   }
 

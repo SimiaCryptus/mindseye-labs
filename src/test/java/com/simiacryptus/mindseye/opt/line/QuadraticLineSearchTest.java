@@ -30,6 +30,7 @@ import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.orient.GradientDescent;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,10 +57,7 @@ public class QuadraticLineSearchTest extends MnistTestBase {
   @Nullable
   public static @SuppressWarnings("unused")
   QuadraticLineSearchTest[][] addRefs(@Nullable QuadraticLineSearchTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(QuadraticLineSearchTest::addRefs)
-        .toArray((x) -> new QuadraticLineSearchTest[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Override
@@ -68,9 +66,17 @@ public class QuadraticLineSearchTest extends MnistTestBase {
     log.eval(() -> {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
-      return new IterativeTrainer(trainable).setMonitor(monitor).setOrientation(new GradientDescent())
-          .setLineSearchFactory((@Nonnull final CharSequence name) -> new QuadraticSearch())
-          .setTimeout(3, TimeUnit.MINUTES).setMaxIterations(500).run();
+      IterativeTrainer iterativeTrainer2 = new IterativeTrainer(trainable);
+      iterativeTrainer2.setMonitor(monitor);
+      IterativeTrainer iterativeTrainer3 = iterativeTrainer2.addRef();
+      iterativeTrainer3.setOrientation(new GradientDescent());
+      IterativeTrainer iterativeTrainer = iterativeTrainer3.addRef();
+      iterativeTrainer.setLineSearchFactory((@Nonnull final CharSequence name) -> new QuadraticSearch());
+      IterativeTrainer iterativeTrainer4 = iterativeTrainer.addRef();
+      iterativeTrainer4.setTimeout(3, TimeUnit.MINUTES);
+      IterativeTrainer iterativeTrainer1 = iterativeTrainer4.addRef();
+      iterativeTrainer1.setMaxIterations(500);
+      return iterativeTrainer1.addRef().run();
     });
   }
 

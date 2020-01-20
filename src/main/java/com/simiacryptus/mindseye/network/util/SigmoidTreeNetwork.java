@@ -25,6 +25,7 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.java.*;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.ref.wrappers.RefMap;
 import com.simiacryptus.ref.wrappers.RefSystem;
@@ -108,46 +109,82 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
             case Linear:
               assert alphaBias != null;
               assert alpha != null;
-              head = add(alpha.setFrozen(false), add(alphaBias.setFrozen(false), input));
+              alphaBias.setFrozen(false);
+              alpha.setFrozen(false);
+              head = add(alpha.addRef(), add(alphaBias.addRef(), input));
               break;
             case Fuzzy: {
               assert gate != null;
-              final DAGNode gateNode = add(gate.setFrozen(false),
-                  null != gateBias ? add(gateBias.setFrozen(false), input) : input);
+              gateBias.setFrozen(false);
+              gate.setFrozen(false);
+              final DAGNode gateNode = add(gate.addRef(),
+                  null != gateBias ? add(gateBias.addRef(), input) : input);
               assert alphaBias != null;
               assert alpha != null;
-              head = add(new ProductInputsLayer(), add(alpha.setFrozen(false), add(alphaBias.setFrozen(false), input)),
-                  add(new LinearActivationLayer().setScale(2).freeze(),
-                      add(new SigmoidActivationLayer().setBalanced(false), gateNode)));
+              alphaBias.setFrozen(false);
+              alpha.setFrozen(false);
+              LinearActivationLayer linearActivationLayer = new LinearActivationLayer();
+              linearActivationLayer.setScale(2);
+              SigmoidActivationLayer sigmoidActivationLayer = new SigmoidActivationLayer();
+              sigmoidActivationLayer.setBalanced(false);
+              Layer layer = linearActivationLayer.addRef();
+              layer.freeze();
+              head = add(new ProductInputsLayer(), add(alpha.addRef(), add(alphaBias.addRef(), input)),
+                  add(layer.addRef(),
+                      add(sigmoidActivationLayer.addRef(), gateNode)));
               break;
             }
             case Bilinear: {
               assert gate != null;
-              final DAGNode gateNode = add(gate.setFrozen(false),
-                  null != gateBias ? add(gateBias.setFrozen(false), input) : input);
+              gateBias.setFrozen(false);
+              gate.setFrozen(false);
+              final DAGNode gateNode = add(gate.addRef(),
+                  null != gateBias ? add(gateBias.addRef(), input) : input);
               assert betaBias != null;
               assert beta != null;
               assert alphaBias != null;
               assert alpha != null;
+              betaBias.setFrozen(false);
+              beta.setFrozen(false);
+              alphaBias.setFrozen(false);
+              alpha.setFrozen(false);
+              LinearActivationLayer linearActivationLayer = new LinearActivationLayer();
+              linearActivationLayer.setScale(-1);
+              SigmoidActivationLayer sigmoidActivationLayer = new SigmoidActivationLayer();
+              sigmoidActivationLayer.setBalanced(false);
+              SigmoidActivationLayer sigmoidActivationLayer1 = new SigmoidActivationLayer();
+              sigmoidActivationLayer1.setBalanced(false);
+              Layer layer = linearActivationLayer.addRef();
+              layer.freeze();
               head = add(new SumInputsLayer(),
-                  add(new ProductInputsLayer(), add(alpha.setFrozen(false), add(alphaBias.setFrozen(false), input)),
-                      add(new SigmoidActivationLayer().setBalanced(false), gateNode)),
-                  add(new ProductInputsLayer(), add(beta.setFrozen(false), add(betaBias.setFrozen(false), input)),
-                      add(new SigmoidActivationLayer().setBalanced(false),
-                          add(new LinearActivationLayer().setScale(-1).freeze(), gateNode))));
+                  add(new ProductInputsLayer(), add(alpha.addRef(), add(alphaBias.addRef(), input)),
+                      add(sigmoidActivationLayer1.addRef(), gateNode)),
+                  add(new ProductInputsLayer(), add(beta.addRef(), add(betaBias.addRef(), input)),
+                      add(sigmoidActivationLayer.addRef(),
+                          add(layer.addRef(), gateNode))));
               break;
             }
             case Final:
               assert gate != null;
-              final DAGNode gateNode = add(gate.setFrozen(false),
-                  null != gateBias ? add(gateBias.setFrozen(false), input) : input);
+              gateBias.setFrozen(false);
+              gate.setFrozen(false);
+              final DAGNode gateNode = add(gate.addRef(),
+                  null != gateBias ? add(gateBias.addRef(), input) : input);
               assert beta != null;
               assert alpha != null;
+              LinearActivationLayer linearActivationLayer = new LinearActivationLayer();
+              linearActivationLayer.setScale(-1);
+              SigmoidActivationLayer sigmoidActivationLayer = new SigmoidActivationLayer();
+              sigmoidActivationLayer.setBalanced(false);
+              SigmoidActivationLayer sigmoidActivationLayer1 = new SigmoidActivationLayer();
+              sigmoidActivationLayer1.setBalanced(false);
+              Layer layer = linearActivationLayer.addRef();
+              layer.freeze();
               head = add(new SumInputsLayer(),
                   add(new ProductInputsLayer(), add(alpha, input),
-                      add(new SigmoidActivationLayer().setBalanced(false), gateNode)),
-                  add(new ProductInputsLayer(), add(beta, input), add(new SigmoidActivationLayer().setBalanced(false),
-                      add(new LinearActivationLayer().setScale(-1).freeze(), gateNode))));
+                      add(sigmoidActivationLayer1.addRef(), gateNode)),
+                  add(new ProductInputsLayer(), add(beta, input), add(sigmoidActivationLayer.addRef(),
+                      add(layer.addRef(), gateNode))));
               break;
           }
         }
@@ -195,10 +232,7 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
   @Nullable
   public static @SuppressWarnings("unused")
   SigmoidTreeNetwork[][] addRefs(@Nullable SigmoidTreeNetwork[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SigmoidTreeNetwork::addRefs)
-        .toArray((x) -> new SigmoidTreeNetwork[x][]);
+    return RefUtil.addRefs(array);
   }
 
   public void _free() {
@@ -288,9 +322,11 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
         assert alpha != null;
         assert alpha.outputDims != null;
         assert alpha.inputDims != null;
-        beta = new FullyConnectedLayer(alpha.inputDims, alpha.outputDims).set(() -> {
-          return initialFuzzyCoeff * (FastRandom.INSTANCE.random() - 0.5);
-        });
+        FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(alpha.inputDims, alpha.outputDims);
+        fullyConnectedLayer.set(() -> {
+              return initialFuzzyCoeff * (FastRandom.INSTANCE.random() - 0.5);
+            });
+        beta = fullyConnectedLayer.addRef();
         assert alphaBias.bias != null;
         betaBias = new BiasLayer(alphaBias.bias.length());
         copyState(alpha, beta);

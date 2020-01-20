@@ -31,8 +31,6 @@ import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.notebook.NotebookOutput;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class OWLQNTest extends MnistTestBase {
@@ -43,21 +41,6 @@ public class OWLQNTest extends MnistTestBase {
     return OwlQn.class;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  OWLQNTest[] addRefs(@Nullable OWLQNTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(OWLQNTest::addRef).toArray((x) -> new OWLQNTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  OWLQNTest[][] addRefs(@Nullable OWLQNTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(OWLQNTest::addRefs).toArray((x) -> new OWLQNTest[x][]);
-  }
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
@@ -65,9 +48,17 @@ public class OWLQNTest extends MnistTestBase {
     log.eval(() -> {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 10000);
-      return new IterativeTrainer(trainable).setIterationsPerSample(100).setMonitor(monitor)
-          .setOrientation(new ValidatingOrientationWrapper(new OwlQn())).setTimeout(5, TimeUnit.MINUTES)
-          .setMaxIterations(500).run();
+      IterativeTrainer iterativeTrainer = new IterativeTrainer(trainable);
+      iterativeTrainer.setIterationsPerSample(100);
+      IterativeTrainer iterativeTrainer2 = iterativeTrainer.addRef();
+      iterativeTrainer2.setMonitor(monitor);
+      IterativeTrainer iterativeTrainer3 = iterativeTrainer2.addRef();
+      iterativeTrainer3.setOrientation(new ValidatingOrientationWrapper(new OwlQn()));
+      IterativeTrainer iterativeTrainer4 = iterativeTrainer3.addRef();
+      iterativeTrainer4.setTimeout(5, TimeUnit.MINUTES);
+      IterativeTrainer iterativeTrainer1 = iterativeTrainer4.addRef();
+      iterativeTrainer1.setMaxIterations(500);
+      return iterativeTrainer1.addRef().run();
     });
   }
 

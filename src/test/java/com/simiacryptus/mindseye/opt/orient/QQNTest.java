@@ -31,8 +31,6 @@ import com.simiacryptus.mindseye.opt.ValidatingTrainer;
 import com.simiacryptus.notebook.NotebookOutput;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class QQNTest extends MnistTestBase {
@@ -43,21 +41,6 @@ public class QQNTest extends MnistTestBase {
     return QQN.class;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  QQNTest[] addRefs(@Nullable QQNTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(QQNTest::addRef).toArray((x) -> new QQNTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  QQNTest[][] addRefs(@Nullable QQNTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(QQNTest::addRefs).toArray((x) -> new QQNTest[x][]);
-  }
 
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
@@ -65,12 +48,18 @@ public class QQNTest extends MnistTestBase {
     log.eval(() -> {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       //return new IterativeTrainer(new SampledArrayTrainable(trainingData, supervisedNetwork, 10000))
-      @Nonnull
-      ValidatingTrainer trainer = new ValidatingTrainer(
+      ValidatingTrainer validatingTrainer1 = new ValidatingTrainer(
           new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 10000),
-          new ArrayTrainable(trainingData, supervisedNetwork)).setMonitor(monitor);
+          new ArrayTrainable(trainingData, supervisedNetwork));
+      validatingTrainer1.setMonitor(monitor);
+      @Nonnull
+      ValidatingTrainer trainer = validatingTrainer1.addRef();
       trainer.getRegimen().get(0).setOrientation(new QQN());
-      return trainer.setTimeout(5, TimeUnit.MINUTES).setMaxIterations(500).run();
+      this.addRef();
+      trainer.setTimeout(5, TimeUnit.MINUTES);
+      ValidatingTrainer validatingTrainer = trainer.addRef();
+      validatingTrainer.setMaxIterations(500);
+      return validatingTrainer.addRef().run();
     });
   }
 

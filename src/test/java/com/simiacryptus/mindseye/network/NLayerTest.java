@@ -96,7 +96,11 @@ public abstract class NLayerTest {
 
   @Nonnull
   public Tensor[] randomize(@Nonnull final int[][] inputDims) {
-    return RefArrays.stream(inputDims).map(dim -> new Tensor(dim).set(this::random)).toArray(i -> new Tensor[i]);
+    return RefArrays.stream(inputDims).map(dim -> {
+      Tensor tensor = new Tensor(dim);
+      tensor.set(this::random);
+      return tensor.addRef();
+    }).toArray(i -> new Tensor[i]);
   }
 
   @Test

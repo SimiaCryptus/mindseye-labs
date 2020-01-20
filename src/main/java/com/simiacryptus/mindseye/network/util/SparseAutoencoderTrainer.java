@@ -26,6 +26,7 @@ import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
 import com.simiacryptus.mindseye.layers.java.SumReducerLayer;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.SupervisedNetwork;
+import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,7 +57,9 @@ public class SparseAutoencoderTrainer extends SupervisedNetwork {
     loss = add(new MeanSqLossLayer(), this.decoder, getInput(0));
     sparsity = add(new BinaryNoiseLayer(), this.encoder);
     sumSparsityLayer = add(new SumReducerLayer(), sparsity);
-    sparsityThrottleLayer = add(new LinearActivationLayer().setScale(0.5), sumSparsityLayer);
+    LinearActivationLayer linearActivationLayer = new LinearActivationLayer();
+    linearActivationLayer.setScale(0.5);
+    sparsityThrottleLayer = add(linearActivationLayer.addRef(), sumSparsityLayer);
     sumFitnessLayer = add(new SumReducerLayer(), sparsityThrottleLayer, loss);
   }
 
@@ -79,10 +82,7 @@ public class SparseAutoencoderTrainer extends SupervisedNetwork {
   @Nullable
   public static @SuppressWarnings("unused")
   SparseAutoencoderTrainer[][] addRefs(@Nullable SparseAutoencoderTrainer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SparseAutoencoderTrainer::addRefs)
-        .toArray((x) -> new SparseAutoencoderTrainer[x][]);
+    return RefUtil.addRefs(array);
   }
 
   public @SuppressWarnings("unused")

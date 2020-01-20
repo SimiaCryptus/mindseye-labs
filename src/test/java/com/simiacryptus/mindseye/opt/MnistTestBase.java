@@ -73,10 +73,7 @@ public abstract class MnistTestBase extends NotebookReportBase {
   @Nullable
   public static @SuppressWarnings("unused")
   MnistTestBase[][] addRefs(@Nullable MnistTestBase[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MnistTestBase::addRefs)
-        .toArray((x) -> new MnistTestBase[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Test
@@ -102,7 +99,7 @@ public abstract class MnistTestBase extends NotebookReportBase {
   public void addMonitoring(@Nonnull final DAGNetwork network, @Nonnull final MonitoredObject monitoringRoot) {
     network.visitNodes(node -> {
       if (!(node.getLayer() instanceof MonitoringWrapperLayer)) {
-        node.setLayer(new MonitoringWrapperLayer(node.getLayer()).addTo(monitoringRoot));
+        node.setLayer(new MonitoringWrapperLayer(node.getLayer()).addTo2(monitoringRoot));
       }
     });
   }
@@ -114,8 +111,10 @@ public abstract class MnistTestBase extends NotebookReportBase {
     return log.eval(() -> {
       @Nonnull final PipelineNetwork network = new PipelineNetwork();
       network.add(new BiasLayer(28, 28, 1)).freeRef();
+      FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{10});
+      fullyConnectedLayer.set(() -> 0.001 * (Math.random() - 0.45));
       network.add(
-          new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{10}).set(() -> 0.001 * (Math.random() - 0.45)))
+          fullyConnectedLayer.addRef())
           .freeRef();
       network.add(new SoftmaxLayer()).freeRef();
       return network;
@@ -128,6 +127,7 @@ public abstract class MnistTestBase extends NotebookReportBase {
       @Nonnull final Tensor categoryTensor = new Tensor(10);
       final int category = parse(labeledObject.label);
       categoryTensor.set(category, 1);
+      this.addRef();
       return new Tensor[]{labeledObject.data, categoryTensor};
     }).toArray(i -> new Tensor[i][]);
     return tensors;
