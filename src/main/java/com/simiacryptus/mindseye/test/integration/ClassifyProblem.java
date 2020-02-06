@@ -201,7 +201,7 @@ public class ClassifyProblem implements Problem {
           TensorList batchOut = network.eval(new ConstantResult(batchIn)).getData();
           return IntStream.range(0, batchOut.length())
               .mapToObj(i -> toRow(log, batch.get(i), batchOut.get(i).getData()));
-        }).filter(x -> null != x).limit(10).forEach(table::putRow);
+        }).filter(x -> null != x).limit(10).forEach(properties -> table.putRow(properties));
         return table;
       } catch (@Nonnull final IOException e) {
         throw new RuntimeException(e);

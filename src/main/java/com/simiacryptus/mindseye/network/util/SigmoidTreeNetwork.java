@@ -225,8 +225,8 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
   SigmoidTreeNetwork[] addRefs(@Nullable SigmoidTreeNetwork[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SigmoidTreeNetwork::addRef)
-        .toArray((x) -> new SigmoidTreeNetwork[x]);
+    return Arrays.stream(array).filter(x -> x != null).map(sigmoidTreeNetwork -> sigmoidTreeNetwork.addRef())
+        .toArray(x -> new SigmoidTreeNetwork[x]);
   }
 
   @Nullable

@@ -74,15 +74,4 @@ public class MomentumTest extends MnistTestBase {
       return iterativeTrainer.addRef().run();
     });
   }
-
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  MomentumTest addRef() {
-    return (MomentumTest) super.addRef();
-  }
 }

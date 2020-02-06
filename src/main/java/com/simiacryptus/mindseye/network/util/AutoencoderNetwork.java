@@ -183,8 +183,8 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
   AutoencoderNetwork[] addRefs(@Nullable AutoencoderNetwork[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AutoencoderNetwork::addRef)
-        .toArray((x) -> new AutoencoderNetwork[x]);
+    return Arrays.stream(array).filter(x -> x != null).map(autoencoderNetwork -> autoencoderNetwork.addRef())
+        .toArray(x -> new AutoencoderNetwork[x]);
   }
 
   @Nullable
@@ -587,8 +587,8 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
     TrainingParameters[] addRefs(@Nullable TrainingParameters[] array) {
       if (array == null)
         return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(TrainingParameters::addRef)
-          .toArray((x) -> new TrainingParameters[x]);
+      return Arrays.stream(array).filter(x -> x != null).map(trainingParameters -> trainingParameters.addRef())
+          .toArray(x -> new TrainingParameters[x]);
     }
 
     public void run(@Nonnull final TensorList data) {
@@ -604,7 +604,7 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       @Nonnull final IterativeTrainer trainer = new IterativeTrainer(normalized);
       trainer.setOrientation(getOrient());
       this.addRef();
-      trainer.setLineSearchFactory((s) -> getStep());
+      trainer.setLineSearchFactory(s -> getStep());
       this.addRef();
       @Nullable final TrainingMonitor monitor = getMonitor();
       trainer.setMonitor(wrap(monitor));

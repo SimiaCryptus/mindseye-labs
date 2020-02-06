@@ -48,7 +48,7 @@ public abstract class DeepLinear extends NLayerTest {
   @Override
   public void addLayer(@Nonnull final PipelineNetwork network, @Nonnull final int[] in, @Nonnull final int[] dims) {
     FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(in, dims);
-    fullyConnectedLayer.set(this::random);
+    fullyConnectedLayer.set(() -> random());
     network.add(fullyConnectedLayer.addRef()).freeRef();
     network.add(new BiasLayer(dims)).freeRef();
     network.add(getActivation()).freeRef();

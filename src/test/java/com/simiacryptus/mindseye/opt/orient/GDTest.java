@@ -60,14 +60,4 @@ public class GDTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  GDTest addRef() {
-    return (GDTest) super.addRef();
-  }
 }

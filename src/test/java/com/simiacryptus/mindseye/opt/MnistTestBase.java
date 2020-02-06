@@ -61,25 +61,10 @@ public abstract class MnistTestBase extends NotebookReportBase {
     return ReportType.Optimizers;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MnistTestBase[] addRefs(@Nullable MnistTestBase[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MnistTestBase::addRef)
-        .toArray((x) -> new MnistTestBase[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MnistTestBase[][] addRefs(@Nullable MnistTestBase[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Test
   @Category(TestCategories.Report.class)
   public void test() {
-    run(this::run);
+    run(log1 -> run(log1));
   }
 
   public void run(@Nonnull NotebookOutput log) {
@@ -127,7 +112,6 @@ public abstract class MnistTestBase extends NotebookReportBase {
       @Nonnull final Tensor categoryTensor = new Tensor(10);
       final int category = parse(labeledObject.label);
       categoryTensor.set(category, 1);
-      this.addRef();
       return new Tensor[]{labeledObject.data, categoryTensor};
     }).toArray(i -> new Tensor[i][]);
     return tensors;
@@ -139,8 +123,11 @@ public abstract class MnistTestBase extends NotebookReportBase {
 
   public int[] predict(@Nonnull final Layer network, @Nonnull final LabeledObject<Tensor> labeledObject) {
     @Nullable final double[] predictionSignal = network.eval(labeledObject.data).getData().get(0).getData();
-    return RefIntStream.range(0, 10).mapToObj(x -> x).sorted(RefComparator.comparing(i -> -predictionSignal[i]))
-        .mapToInt(x -> x).toArray();
+    return RefIntStream.range(0, 10)
+        .mapToObj(x -> x)
+        .sorted(RefComparator.comparingDouble(i -> -predictionSignal[i]))
+        .mapToInt(x -> x)
+        .toArray();
   }
 
   public void removeMonitoring(@Nonnull final DAGNetwork network) {
@@ -224,7 +211,8 @@ public abstract class MnistTestBase extends NotebookReportBase {
         final int actualCategory = parse(labeledObject.label);
         @Nullable final double[] predictionSignal = network.eval(labeledObject.data).getData().get(0).getData();
         final int[] predictionList = RefIntStream.range(0, 10).mapToObj(x -> x)
-            .sorted(RefComparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x).toArray();
+            .sorted(RefComparator.comparingDouble(i -> -predictionSignal[i]))
+            .mapToInt(x -> x).toArray();
         if (predictionList[0] == actualCategory)
           return null; // We will only examine mispredicted rows
         @Nonnull final RefLinkedHashMap<CharSequence, Object> row = new RefLinkedHashMap<>();
@@ -234,19 +222,9 @@ public abstract class MnistTestBase extends NotebookReportBase {
                 .mapToObj(i -> RefString.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
                 .reduce((a, b) -> a + ", " + b)));
         return row;
-      }).filter(x -> null != x).limit(10).forEach(table::putRow);
+      }).filter(x -> null != x).limit(10).forEach(properties -> table.putRow(properties));
       return table;
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  MnistTestBase addRef() {
-    return (MnistTestBase) super.addRef();
-  }
 }

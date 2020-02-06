@@ -44,7 +44,7 @@ abstract class FindPCAFeatures extends FindFeatureSpace {
   public FindFeatureSpace invoke() {
     double[] averages = findBandBias();
     Tensor[] vectors = findFeatureSpace(log, () -> getFeatures().map(tensor -> {
-      return new Tensor[]{tensor[0], tensor[1].mapCoords((c) -> tensor[1].get(c) - averages[c.getCoords()[2]])};
+      return new Tensor[]{tensor[0], tensor[1].mapCoords(c -> tensor[1].get(c) - averages[c.getCoords()[2]])};
     }), inputBands);
     return this;
   }
@@ -53,7 +53,7 @@ abstract class FindPCAFeatures extends FindFeatureSpace {
     final int outputBands = RefUtil.get(getFeatures().findAny())[1].getDimensions()[2];
     return RefIntStream.range(0, outputBands).parallel().mapToDouble(b -> {
       return getFeatures().mapToDouble(tensor -> {
-        return tensor[1].coordStream(false).filter((c) -> c.getCoords()[2] == b).mapToDouble((c) -> tensor[1].get(c))
+        return tensor[1].coordStream(false).filter(c -> c.getCoords()[2] == b).mapToDouble(c -> tensor[1].get(c))
             .average().getAsDouble();
       }).average().getAsDouble();
     }).toArray();

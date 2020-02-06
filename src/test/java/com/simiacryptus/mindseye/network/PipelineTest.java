@@ -84,7 +84,7 @@ public abstract class PipelineTest extends ReferenceCountingBase {
   public Tensor[] randomize(@Nonnull final int[][] inputDims) {
     return RefArrays.stream(inputDims).map(dim -> {
       Tensor tensor = new Tensor(dim);
-      tensor.set(this::random);
+      tensor.set(() -> random());
       return tensor.addRef();
     }).toArray(i -> new Tensor[i]);
   }

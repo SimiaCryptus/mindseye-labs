@@ -191,15 +191,4 @@ public class Research extends OptimizerComparison {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  Research addRef() {
-    return (Research) super.addRef();
-  }
-
 }

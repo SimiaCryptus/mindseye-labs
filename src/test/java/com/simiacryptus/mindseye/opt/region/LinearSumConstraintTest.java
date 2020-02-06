@@ -50,8 +50,8 @@ public class LinearSumConstraintTest extends MnistTestBase {
   LinearSumConstraintTest[] addRefs(@Nullable LinearSumConstraintTest[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LinearSumConstraintTest::addRef)
-        .toArray((x) -> new LinearSumConstraintTest[x]);
+    return Arrays.stream(array).filter(x -> x != null)
+        .toArray(x -> new LinearSumConstraintTest[x]);
   }
 
   @Nullable
@@ -94,14 +94,4 @@ public class LinearSumConstraintTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  LinearSumConstraintTest addRef() {
-    return (LinearSumConstraintTest) super.addRef();
-  }
 }

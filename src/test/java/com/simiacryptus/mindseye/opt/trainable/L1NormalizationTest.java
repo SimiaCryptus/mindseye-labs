@@ -45,21 +45,6 @@ public class L1NormalizationTest extends MnistTestBase {
     return L12Normalizer.class;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  L1NormalizationTest[] addRefs(@Nullable L1NormalizationTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(L1NormalizationTest::addRef)
-        .toArray((x) -> new L1NormalizationTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  L1NormalizationTest[][] addRefs(@Nullable L1NormalizationTest[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
                     @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
@@ -98,14 +83,5 @@ public class L1NormalizationTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
 
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  L1NormalizationTest addRef() {
-    return (L1NormalizationTest) super.addRef();
-  }
 }

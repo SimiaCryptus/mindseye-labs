@@ -118,21 +118,6 @@ public class TextbookOptimizers extends OptimizerComparison {
     super(MnistTests.fwd_conv_1, MnistTests.rev_conv_1, new MnistProblemData());
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  TextbookOptimizers[] addRefs(@Nullable TextbookOptimizers[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TextbookOptimizers::addRef)
-        .toArray((x) -> new TextbookOptimizers[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  TextbookOptimizers[][] addRefs(@Nullable TextbookOptimizers[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Override
   public void compare(@Nonnull final NotebookOutput log,
                       @Nonnull final Function<OptimizationStrategy, List<StepRecord>> test) {
@@ -161,14 +146,4 @@ public class TextbookOptimizers extends OptimizerComparison {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  TextbookOptimizers addRef() {
-    return (TextbookOptimizers) super.addRef();
-  }
 }

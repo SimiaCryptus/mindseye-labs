@@ -188,25 +188,6 @@ public class CaltechTests {
       return Caltech101.class;
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    All_Caltech_Tests[] addRefs(@Nullable All_Caltech_Tests[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(All_Caltech_Tests::addRef)
-          .toArray((x) -> new All_Caltech_Tests[x]);
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() {
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    All_Caltech_Tests addRef() {
-      return (All_Caltech_Tests) super.addRef();
-    }
   }
 
   public static class QQN extends All_Caltech_Tests {
@@ -218,17 +199,6 @@ public class CaltechTests {
     public static @SuppressWarnings("unused")
     QQN[] addRefs(@Nullable QQN[] array) {
       return RefUtil.addRefs(array);
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() {
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    QQN addRef() {
-      return (QQN) super.addRef();
     }
 
     @Override

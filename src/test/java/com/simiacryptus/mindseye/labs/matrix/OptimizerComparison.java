@@ -70,25 +70,10 @@ public abstract class OptimizerComparison extends NotebookReportBase {
     return this;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  OptimizerComparison[] addRefs(@Nullable OptimizerComparison[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(OptimizerComparison::addRef)
-        .toArray((x) -> new OptimizerComparison[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  OptimizerComparison[][] addRefs(@Nullable OptimizerComparison[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Test
   @Category(TestCategories.Report.class)
   public void classification() {
-    run(this::classification, getClass().getSimpleName(), "Classification");
+    run(log -> classification(log), getClass().getSimpleName(), "Classification");
   }
 
   public void classification(@Nonnull NotebookOutput log) {
@@ -102,7 +87,7 @@ public abstract class OptimizerComparison extends NotebookReportBase {
   @Test
   @Category(TestCategories.Report.class)
   public void encoding() {
-    run(this::encoding, getClass().getSimpleName(), "Encoding");
+    run(log -> encoding(log), getClass().getSimpleName(), "Encoding");
   }
 
   public void encoding(@Nonnull NotebookOutput log) {
@@ -112,14 +97,4 @@ public abstract class OptimizerComparison extends NotebookReportBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  OptimizerComparison addRef() {
-    return (OptimizerComparison) super.addRef();
-  }
 }

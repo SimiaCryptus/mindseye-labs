@@ -51,8 +51,8 @@ public class SingleOrthantTrustRegionTest extends MnistTestBase {
       @Nullable SingleOrthantTrustRegionTest[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SingleOrthantTrustRegionTest::addRef)
-        .toArray((x) -> new SingleOrthantTrustRegionTest[x]);
+    return Arrays.stream(array).filter(x -> x != null)
+        .toArray(x -> new SingleOrthantTrustRegionTest[x]);
   }
 
   @Nullable
@@ -96,14 +96,4 @@ public class SingleOrthantTrustRegionTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  SingleOrthantTrustRegionTest addRef() {
-    return (SingleOrthantTrustRegionTest) super.addRef();
-  }
 }

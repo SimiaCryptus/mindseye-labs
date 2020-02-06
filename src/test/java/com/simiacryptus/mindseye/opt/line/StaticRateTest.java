@@ -50,8 +50,8 @@ public class StaticRateTest extends MnistTestBase {
   StaticRateTest[] addRefs(@Nullable StaticRateTest[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(StaticRateTest::addRef)
-        .toArray((x) -> new StaticRateTest[x]);
+    return Arrays.stream(array).filter(x -> x != null)
+        .toArray(x -> new StaticRateTest[x]);
   }
 
   @Nullable
@@ -80,14 +80,4 @@ public class StaticRateTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  StaticRateTest addRef() {
-    return (StaticRateTest) super.addRef();
-  }
 }

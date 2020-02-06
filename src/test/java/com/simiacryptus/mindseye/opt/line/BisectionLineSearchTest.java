@@ -50,8 +50,8 @@ public class BisectionLineSearchTest extends MnistTestBase {
   BisectionLineSearchTest[] addRefs(@Nullable BisectionLineSearchTest[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BisectionLineSearchTest::addRef)
-        .toArray((x) -> new BisectionLineSearchTest[x]);
+    return Arrays.stream(array).filter(x -> x != null)
+        .toArray(x -> new BisectionLineSearchTest[x]);
   }
 
   @Nullable
@@ -80,14 +80,4 @@ public class BisectionLineSearchTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  BisectionLineSearchTest addRef() {
-    return (BisectionLineSearchTest) super.addRef();
-  }
 }

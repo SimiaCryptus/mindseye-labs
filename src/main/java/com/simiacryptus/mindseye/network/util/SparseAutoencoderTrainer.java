@@ -75,8 +75,8 @@ public class SparseAutoencoderTrainer extends SupervisedNetwork {
   SparseAutoencoderTrainer[] addRefs(@Nullable SparseAutoencoderTrainer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SparseAutoencoderTrainer::addRef)
-        .toArray((x) -> new SparseAutoencoderTrainer[x]);
+    return Arrays.stream(array).filter(x -> x != null).map(sparseAutoencoderTrainer -> sparseAutoencoderTrainer.addRef())
+        .toArray(x -> new SparseAutoencoderTrainer[x]);
   }
 
   @Nullable

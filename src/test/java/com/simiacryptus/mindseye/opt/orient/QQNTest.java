@@ -55,7 +55,6 @@ public class QQNTest extends MnistTestBase {
       @Nonnull
       ValidatingTrainer trainer = validatingTrainer1.addRef();
       trainer.getRegimen().get(0).setOrientation(new QQN());
-      this.addRef();
       trainer.setTimeout(5, TimeUnit.MINUTES);
       ValidatingTrainer validatingTrainer = trainer.addRef();
       validatingTrainer.setMaxIterations(500);
@@ -63,14 +62,4 @@ public class QQNTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  QQNTest addRef() {
-    return (QQNTest) super.addRef();
-  }
 }

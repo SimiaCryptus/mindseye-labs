@@ -129,7 +129,7 @@ public class EncodingProblem implements Problem {
     try {
       trainingData = data.trainingData().map(labeledObject -> {
         Tensor tensor = new Tensor(features);
-        tensor.set(this::random);
+        tensor.set(() -> random());
         return new Tensor[]{tensor.addRef(), labeledObject.data};
       }).toArray(i -> new Tensor[i][]);
     } catch (@Nonnull final IOException e) {
@@ -220,7 +220,7 @@ public class EncodingProblem implements Problem {
         row.put("Source", log.png(tensorArray[1].toImage(), ""));
         row.put("Echo", log.png(predictionSignal.toImage(), ""));
         return row;
-      }).filter(x -> true).limit(10).forEach(table::putRow);
+      }).filter(x -> true).limit(10).forEach(properties -> table.putRow(properties));
       return table;
     });
 

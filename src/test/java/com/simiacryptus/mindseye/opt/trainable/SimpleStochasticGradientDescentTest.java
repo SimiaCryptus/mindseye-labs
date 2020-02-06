@@ -45,23 +45,6 @@ public class SimpleStochasticGradientDescentTest extends MnistTestBase {
     return SampledArrayTrainable.class;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SimpleStochasticGradientDescentTest[] addRefs(
-      @Nullable SimpleStochasticGradientDescentTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SimpleStochasticGradientDescentTest::addRef)
-        .toArray((x) -> new SimpleStochasticGradientDescentTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SimpleStochasticGradientDescentTest[][] addRefs(
-      @Nullable SimpleStochasticGradientDescentTest[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
                     @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
@@ -85,14 +68,5 @@ public class SimpleStochasticGradientDescentTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
 
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  SimpleStochasticGradientDescentTest addRef() {
-    return (SimpleStochasticGradientDescentTest) super.addRef();
-  }
 }

@@ -54,15 +54,6 @@ public abstract class AllTrainingTests extends NotebookReportBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  AllTrainingTests[] addRefs(@Nullable AllTrainingTests[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(AllTrainingTests::addRef)
-        .toArray((x) -> new AllTrainingTests[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
   AllTrainingTests[][] addRefs(@Nullable AllTrainingTests[][] array) {
     return RefUtil.addRefs(array);
   }
@@ -78,13 +69,13 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   @Ignore
   @Category(TestCategories.Report.class)
   public void autoencoder_test() {
-    run(this::autoencoder_test, getClass().getSimpleName(), "Autoencoder");
+    run(log -> autoencoder_test(log), getClass().getSimpleName(), "Autoencoder");
   }
 
   @Test
   @Category(TestCategories.Report.class)
   public void classification_test() {
-    run(this::classification_test, getClass().getSimpleName(), "Classification");
+    run(log -> classification_test(log), getClass().getSimpleName(), "Classification");
   }
 
   public void classification_test(@Nonnull NotebookOutput log) {
@@ -98,7 +89,7 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   @Ignore
   @Category(TestCategories.Report.class)
   public void encoding_test() {
-    run(this::encoding_test, getClass().getSimpleName(), "Encoding");
+    run(log -> encoding_test(log), getClass().getSimpleName(), "Encoding");
   }
 
   public void encoding_test(@Nonnull NotebookOutput log) {
@@ -119,17 +110,6 @@ public abstract class AllTrainingTests extends NotebookReportBase {
     log.p("_Forward Strategy Javadoc_: " + fwdFactory_javadoc);
     log.p("_Reverse Strategy Javadoc_: " + revFactory_javadoc);
     log.p("_Optimization Strategy Javadoc_: " + optimizationStrategy_javadoc);
-  }
-
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  AllTrainingTests addRef() {
-    return (AllTrainingTests) super.addRef();
   }
 
   protected abstract void intro(NotebookOutput log);

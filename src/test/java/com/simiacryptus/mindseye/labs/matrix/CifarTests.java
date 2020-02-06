@@ -130,47 +130,11 @@ public class CifarTests {
       return CIFAR10.class;
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    All_CIFAR_Tests[] addRefs(@Nullable All_CIFAR_Tests[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(All_CIFAR_Tests::addRef)
-          .toArray((x) -> new All_CIFAR_Tests[x]);
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() {
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    All_CIFAR_Tests addRef() {
-      return (All_CIFAR_Tests) super.addRef();
-    }
   }
 
   public static class OWL_QN extends All_CIFAR_Tests {
     public OWL_QN() {
       super(TextbookOptimizers.orthantwise_quasi_newton, CifarTests.rev_conv_1, CifarTests.fwd_conv_1);
-    }
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    OWL_QN[] addRefs(@Nullable OWL_QN[] array) {
-      return RefUtil.addRefs(array);
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() {
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    OWL_QN addRef() {
-      return (OWL_QN) super.addRef();
     }
 
     @Override
@@ -184,23 +148,6 @@ public class CifarTests {
       super(Research.quadratic_quasi_newton, CifarTests.rev_conv_1, CifarTests.fwd_conv_1);
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    QQN[] addRefs(@Nullable QQN[] array) {
-      return RefUtil.addRefs(array);
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() {
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    QQN addRef() {
-      return (QQN) super.addRef();
-    }
-
     @Override
     protected void intro(@Nonnull final NotebookOutput log) {
       log.p("");
@@ -210,23 +157,6 @@ public class CifarTests {
   public static class SGD extends All_CIFAR_Tests {
     public SGD() {
       super(TextbookOptimizers.stochastic_gradient_descent, CifarTests.rev_linear_1, CifarTests.fwd_linear_1);
-    }
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    SGD[] addRefs(@Nullable SGD[] array) {
-      return RefUtil.addRefs(array);
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() {
-    }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    SGD addRef() {
-      return (SGD) super.addRef();
     }
 
     @Override

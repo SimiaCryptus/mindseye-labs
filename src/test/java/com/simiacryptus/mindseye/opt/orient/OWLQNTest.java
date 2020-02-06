@@ -61,15 +61,4 @@ public class OWLQNTest extends MnistTestBase {
       return iterativeTrainer1.addRef().run();
     });
   }
-
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  OWLQNTest addRef() {
-    return (OWLQNTest) super.addRef();
-  }
 }

@@ -61,14 +61,14 @@ public class PCAUtil {
                                      final double power) {
     @Nonnull final EigenDecomposition decomposition = new EigenDecomposition(covariance);
     final int[] orderedVectors = RefIntStream.range(0, components).mapToObj(x -> x)
-        .sorted(RefComparator.comparing(x -> -decomposition.getRealEigenvalue(x))).mapToInt(x -> x).toArray();
+        .sorted(RefComparator.comparingDouble(x -> -decomposition.getRealEigenvalue(x))).mapToInt(x -> x).toArray();
     return RefIntStream.range(0, orderedVectors.length).mapToObj(i -> {
       @Nonnull final Tensor src = new Tensor(decomposition.getEigenvector(orderedVectors[i]).toArray(), featureDimensions)
           .copy();
       return src.scale(1.0 / src.rms())
-          .scale((Math.pow(
+          .scale(Math.pow(
               decomposition.getRealEigenvalue(orderedVectors[i]) / decomposition.getRealEigenvalue(orderedVectors[0]),
-              power)));
+              power));
     }).toArray(i -> new Tensor[i]);
   }
 

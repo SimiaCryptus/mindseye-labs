@@ -50,8 +50,8 @@ public class QuadraticLineSearchTest extends MnistTestBase {
   QuadraticLineSearchTest[] addRefs(@Nullable QuadraticLineSearchTest[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(QuadraticLineSearchTest::addRef)
-        .toArray((x) -> new QuadraticLineSearchTest[x]);
+    return Arrays.stream(array).filter(x -> x != null)
+        .toArray(x -> new QuadraticLineSearchTest[x]);
   }
 
   @Nullable
@@ -80,14 +80,4 @@ public class QuadraticLineSearchTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  QuadraticLineSearchTest addRef() {
-    return (QuadraticLineSearchTest) super.addRef();
-  }
 }

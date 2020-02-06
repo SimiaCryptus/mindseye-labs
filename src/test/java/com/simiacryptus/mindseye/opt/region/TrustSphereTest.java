@@ -45,21 +45,6 @@ public class TrustSphereTest extends MnistTestBase {
     return AdaptiveTrustSphere.class;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  TrustSphereTest[] addRefs(@Nullable TrustSphereTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TrustSphereTest::addRef)
-        .toArray((x) -> new TrustSphereTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  TrustSphereTest[][] addRefs(@Nullable TrustSphereTest[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Override
   public void train(@Nonnull final NotebookOutput log, @Nonnull final Layer network,
                     @Nonnull final Tensor[][] trainingData, final TrainingMonitor monitor) {
@@ -94,14 +79,4 @@ public class TrustSphereTest extends MnistTestBase {
     });
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  TrustSphereTest addRef() {
-    return (TrustSphereTest) super.addRef();
-  }
 }

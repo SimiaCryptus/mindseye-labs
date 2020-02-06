@@ -49,7 +49,7 @@ public class SupplementedProblemData implements ImageProblemData {
 
   @Nonnull
   protected static Tensor addNoise(@Nonnull final Tensor tensor) {
-    return tensor.mapParallel((v) -> Math.random() < 0.9 ? v : v + Math.random() * 100);
+    return tensor.mapParallel(v -> Math.random() < 0.9 ? v : v + Math.random() * 100);
   }
 
   @Nonnull

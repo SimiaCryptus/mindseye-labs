@@ -198,7 +198,7 @@ public class AutoencodingProblem implements Problem {
       @Nonnull final TableOutput table = new TableOutput();
       data.validationData().map(labeledObject -> {
         return toRow(log, labeledObject, echoNetwork.eval(labeledObject.data).getData().get(0).getData());
-      }).filter(x -> true).limit(10).forEach(table::putRow);
+      }).filter(x -> true).limit(10).forEach(properties -> table.putRow(properties));
       return table;
     });
 

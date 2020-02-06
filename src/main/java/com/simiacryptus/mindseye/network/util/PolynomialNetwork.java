@@ -136,8 +136,8 @@ public class PolynomialNetwork extends DAGNetwork {
   PolynomialNetwork[] addRefs(@Nullable PolynomialNetwork[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(PolynomialNetwork::addRef)
-        .toArray((x) -> new PolynomialNetwork[x]);
+    return Arrays.stream(array).filter(x -> x != null).map(polynomialNetwork -> polynomialNetwork.addRef())
+        .toArray(x -> new PolynomialNetwork[x]);
   }
 
   @Nullable
