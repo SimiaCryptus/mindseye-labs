@@ -56,7 +56,6 @@ public class L2NormalizationTest extends MnistTestBase {
     log.eval(() -> {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(network, new EntropyLossLayer());
       @Nonnull final Trainable trainable = new L12Normalizer(new SampledArrayTrainable(trainingData, supervisedNetwork, 1000)) {
-        @Nonnull
         @Override
         public Layer getLayer() {
           assert inner != null;
