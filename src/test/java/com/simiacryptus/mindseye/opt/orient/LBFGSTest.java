@@ -59,7 +59,7 @@ public class LBFGSTest extends MnistTestBase {
       trainingPhase.setOrientation(new LBFGS());
       //.setOrientation(new ValidatingOrientationWrapper(new LBFGS()))
       trainingPhase.addRef().setLineSearchFactory(name -> name.toString().contains("LBFGS") ? new QuadraticSearch().setCurrentRate(1.0)
-              : new QuadraticSearch());
+          : new QuadraticSearch());
       trainer.setTimeout(5, TimeUnit.MINUTES);
       ValidatingTrainer validatingTrainer = trainer.addRef();
       validatingTrainer.setMaxIterations(500);

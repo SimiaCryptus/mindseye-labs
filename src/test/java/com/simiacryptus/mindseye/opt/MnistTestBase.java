@@ -20,7 +20,9 @@
 package com.simiacryptus.mindseye.opt;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.lang.Result;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.mindseye.lang.TensorList;
 import com.simiacryptus.mindseye.layers.MonitoringWrapperLayer;
 import com.simiacryptus.mindseye.layers.java.BiasLayer;
 import com.simiacryptus.mindseye.layers.java.FullyConnectedLayer;
@@ -45,10 +47,8 @@ import smile.plot.PlotCanvas;
 import smile.plot.ScatterPlot;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 public abstract class MnistTestBase extends NotebookReportBase {
   private static final Logger log = LoggerFactory.getLogger(MnistTestBase.class);
@@ -121,10 +121,14 @@ public abstract class MnistTestBase extends NotebookReportBase {
   }
 
   public int[] predict(@Nonnull final Layer network, @Nonnull final LabeledObject<Tensor> labeledObject) {
-    @Nullable final double[] predictionSignal = network.eval(labeledObject.data).getData().get(0).getData();
+    Result eval = network.eval(labeledObject.data);
+    TensorList data = eval.getData();
+    Tensor tensor = data.get(0);
+    data.freeRef();
+    eval.freeRef();
     return RefIntStream.range(0, 10)
         .mapToObj(x -> x)
-        .sorted(RefComparator.comparingDouble(i -> -predictionSignal[i]))
+        .sorted(RefComparator.comparingDouble(i -> -tensor.get(i)))
         .mapToInt(x -> x)
         .toArray();
   }
@@ -208,9 +212,13 @@ public abstract class MnistTestBase extends NotebookReportBase {
       @Nonnull final TableOutput table = new TableOutput();
       MNIST.validationDataStream().map(labeledObject -> {
         final int actualCategory = parse(labeledObject.label);
-        @Nullable final double[] predictionSignal = network.eval(labeledObject.data).getData().get(0).getData();
+        Result eval = network.eval(labeledObject.data);
+        TensorList data = eval.getData();
+        Tensor tensor = data.get(0);
+        data.freeRef();
+        eval.freeRef();
         final int[] predictionList = RefIntStream.range(0, 10).mapToObj(x -> x)
-            .sorted(RefComparator.comparingDouble(i -> -predictionSignal[i]))
+            .sorted(RefComparator.comparingDouble(i -> -tensor.get(i)))
             .mapToInt(x -> x).toArray();
         if (predictionList[0] == actualCategory)
           return null; // We will only examine mispredicted rows
@@ -218,7 +226,7 @@ public abstract class MnistTestBase extends NotebookReportBase {
         row.put("Image", log.png(labeledObject.data.toGrayImage(), labeledObject.label));
         row.put("Prediction",
             RefUtil.get(RefArrays.stream(predictionList).limit(3)
-                .mapToObj(i -> RefString.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
+                .mapToObj(i -> RefString.format("%d (%.1f%%)", i, 100.0 * tensor.get(i)))
                 .reduce((a, b) -> a + ", " + b)));
         return row;
       }).filter(x -> null != x).limit(10).forEach(properties -> table.putRow(properties));

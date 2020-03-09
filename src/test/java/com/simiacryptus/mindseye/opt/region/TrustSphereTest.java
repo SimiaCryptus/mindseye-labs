@@ -30,11 +30,8 @@ import com.simiacryptus.mindseye.opt.MnistTestBase;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.orient.TrustRegionStrategy;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class TrustSphereTest extends MnistTestBase {
@@ -55,6 +52,7 @@ public class TrustSphereTest extends MnistTestBase {
         @Nonnull
         @Override
         public TrustRegion getRegionPolicy(final Layer layer) {
+          if (null != layer) layer.freeRef();
           return new AdaptiveTrustSphere();
         }
 

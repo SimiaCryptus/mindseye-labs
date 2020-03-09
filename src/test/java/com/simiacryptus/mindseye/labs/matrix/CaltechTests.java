@@ -30,7 +30,6 @@ import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 
 public class CaltechTests {
@@ -197,8 +196,8 @@ public class CaltechTests {
 
     @Nullable
     public static @SuppressWarnings("unused")
-    QQN[] addRefs(@Nullable QQN[] array) {
-      return RefUtil.addRefs(array);
+    QQN[] addRef(@Nullable QQN[] array) {
+      return RefUtil.addRef(array);
     }
 
     @Override

@@ -26,11 +26,8 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.test.data.MNIST;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.function.DoubleSupplier;
 
 public class MnistTests {
@@ -80,13 +77,17 @@ public class MnistTests {
       @Nonnull
       DoubleSupplier init = () -> weight * (Math.random() - 0.5);
 
-      network.add(new ConvolutionLayer(5, 5, 1, 32).set(init));
+      ConvolutionLayer convolutionLayer1 = new ConvolutionLayer(5, 5, 1, 32);
+      convolutionLayer1.set(init);
+      network.add(convolutionLayer1);
       network.add(new ImgBandBiasLayer(32));
       network.add(new NormalizationMetaLayer());
       PoolingLayer poolingLayer1 = new PoolingLayer();
       poolingLayer1.setMode(PoolingLayer.PoolingMode.Max);
       network.add(poolingLayer1.addRef());
-      network.add(new ConvolutionLayer(5, 5, 32, 64).set(init));
+      ConvolutionLayer convolutionLayer = new ConvolutionLayer(5, 5, 32, 64);
+      convolutionLayer.set(init);
+      network.add(convolutionLayer);
       network.add(new ImgBandBiasLayer(64));
       PoolingLayer poolingLayer = new PoolingLayer();
       poolingLayer.setMode(PoolingLayer.PoolingMode.Max);

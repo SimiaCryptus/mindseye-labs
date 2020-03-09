@@ -23,19 +23,19 @@ import com.simiacryptus.mindseye.opt.ValidatingTrainer;
 import com.simiacryptus.mindseye.opt.line.ArmijoWolfeSearch;
 import com.simiacryptus.mindseye.opt.line.QuadraticSearch;
 import com.simiacryptus.mindseye.opt.line.StaticLearningRate;
-import com.simiacryptus.mindseye.opt.orient.*;
+import com.simiacryptus.mindseye.opt.orient.GradientDescent;
+import com.simiacryptus.mindseye.opt.orient.LBFGS;
+import com.simiacryptus.mindseye.opt.orient.MomentumStrategy;
+import com.simiacryptus.mindseye.opt.orient.OwlQn;
 import com.simiacryptus.mindseye.test.ProblemRun;
 import com.simiacryptus.mindseye.test.StepRecord;
 import com.simiacryptus.mindseye.test.TestUtil;
 import com.simiacryptus.mindseye.test.integration.MnistProblemData;
 import com.simiacryptus.mindseye.test.integration.OptimizationStrategy;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 

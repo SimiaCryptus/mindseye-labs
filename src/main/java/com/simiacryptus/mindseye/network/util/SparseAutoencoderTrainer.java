@@ -72,7 +72,7 @@ public class SparseAutoencoderTrainer extends SupervisedNetwork {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  SparseAutoencoderTrainer[] addRefs(@Nullable SparseAutoencoderTrainer[] array) {
+  SparseAutoencoderTrainer[] addRef(@Nullable SparseAutoencoderTrainer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter(x -> x != null).map(sparseAutoencoderTrainer -> sparseAutoencoderTrainer.addRef())
@@ -81,8 +81,8 @@ public class SparseAutoencoderTrainer extends SupervisedNetwork {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  SparseAutoencoderTrainer[][] addRefs(@Nullable SparseAutoencoderTrainer[][] array) {
-    return RefUtil.addRefs(array);
+  SparseAutoencoderTrainer[][] addRef(@Nullable SparseAutoencoderTrainer[][] array) {
+    return RefUtil.addRef(array);
   }
 
   public @SuppressWarnings("unused")

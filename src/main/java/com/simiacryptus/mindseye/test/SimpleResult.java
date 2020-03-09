@@ -40,14 +40,14 @@ public interface SimpleResult extends ReferenceCounting {
 
   @Nullable
   static @SuppressWarnings("unused")
-  SimpleResult[] addRefs(@Nullable SimpleResult[] array) {
-    return RefUtil.addRefs(array);
+  SimpleResult[] addRef(@Nullable SimpleResult[] array) {
+    return RefUtil.addRef(array);
   }
 
   @Nullable
   static @SuppressWarnings("unused")
-  SimpleResult[][] addRefs(@Nullable SimpleResult[][] array) {
-    return RefUtil.addRefs(array);
+  SimpleResult[][] addRef(@Nullable SimpleResult[][] array) {
+    return RefUtil.addRef(array);
   }
 
   void _free();

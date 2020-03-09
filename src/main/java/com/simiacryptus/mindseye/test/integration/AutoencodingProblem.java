@@ -21,7 +21,9 @@ package com.simiacryptus.mindseye.test.integration;
 
 import com.simiacryptus.mindseye.eval.ArrayTrainable;
 import com.simiacryptus.mindseye.eval.SampledArrayTrainable;
+import com.simiacryptus.mindseye.lang.Result;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.mindseye.lang.TensorList;
 import com.simiacryptus.mindseye.layers.java.DropoutNoiseLayer;
 import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
 import com.simiacryptus.mindseye.network.DAGNetwork;
@@ -197,7 +199,14 @@ public class AutoencodingProblem implements Problem {
     log.eval(() -> {
       @Nonnull final TableOutput table = new TableOutput();
       data.validationData().map(labeledObject -> {
-        return toRow(log, labeledObject, echoNetwork.eval(labeledObject.data).getData().get(0).getData());
+        Result eval = echoNetwork.eval(labeledObject.data);
+        TensorList data = eval.getData();
+        Tensor tensor = data.get(0);
+        data.freeRef();
+        eval.freeRef();
+        LinkedHashMap<CharSequence, Object> row = toRow(log, labeledObject, tensor.getData());
+        tensor.freeRef();
+        return row;
       }).filter(x -> true).limit(10).forEach(properties -> table.putRow(properties));
       return table;
     });

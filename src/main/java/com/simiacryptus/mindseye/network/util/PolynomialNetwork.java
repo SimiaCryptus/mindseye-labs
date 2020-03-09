@@ -133,7 +133,7 @@ public class PolynomialNetwork extends DAGNetwork {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  PolynomialNetwork[] addRefs(@Nullable PolynomialNetwork[] array) {
+  PolynomialNetwork[] addRef(@Nullable PolynomialNetwork[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter(x -> x != null).map(polynomialNetwork -> polynomialNetwork.addRef())
@@ -142,8 +142,8 @@ public class PolynomialNetwork extends DAGNetwork {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  PolynomialNetwork[][] addRefs(@Nullable PolynomialNetwork[][] array) {
-    return RefUtil.addRefs(array);
+  PolynomialNetwork[][] addRef(@Nullable PolynomialNetwork[][] array) {
+    return RefUtil.addRef(array);
   }
 
   @Override
@@ -255,8 +255,8 @@ public class PolynomialNetwork extends DAGNetwork {
 
     @Nullable
     public static @SuppressWarnings("unused")
-    Correcton[] addRefs(@Nullable Correcton[] array) {
-      return RefUtil.addRefs(array);
+    Correcton[] addRef(@Nullable Correcton[] array) {
+      return RefUtil.addRef(array);
     }
 
     @Nullable

@@ -47,7 +47,7 @@ public class SingleOrthantTrustRegionTest extends MnistTestBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  SingleOrthantTrustRegionTest[] addRefs(
+  SingleOrthantTrustRegionTest[] addRef(
       @Nullable SingleOrthantTrustRegionTest[] array) {
     if (array == null)
       return null;
@@ -57,9 +57,9 @@ public class SingleOrthantTrustRegionTest extends MnistTestBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  SingleOrthantTrustRegionTest[][] addRefs(
+  SingleOrthantTrustRegionTest[][] addRef(
       @Nullable SingleOrthantTrustRegionTest[][] array) {
-    return RefUtil.addRefs(array);
+    return RefUtil.addRef(array);
   }
 
   @Override
@@ -72,6 +72,7 @@ public class SingleOrthantTrustRegionTest extends MnistTestBase {
         @Nonnull
         @Override
         public TrustRegion getRegionPolicy(final Layer layer) {
+          if (null != layer) layer.freeRef();
           return new SingleOrthant();
         }
 

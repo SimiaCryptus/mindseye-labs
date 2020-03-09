@@ -128,8 +128,12 @@ public class ClassifyProblem implements Problem {
   }
 
   public int[] predict(@Nonnull final Layer network, @Nonnull final LabeledObject<Tensor> labeledObject) {
-    @Nullable final double[] predictionSignal = network.eval(labeledObject.data).getData().get(0).getData();
-    return IntStream.range(0, categories).mapToObj(x -> x).sorted(Comparator.comparing(i -> -predictionSignal[i]))
+    Result eval = network.eval(labeledObject.data);
+    TensorList data = eval.getData();
+    Tensor tensor = data.get(0);
+    data.freeRef();
+    eval.freeRef();
+    return IntStream.range(0, categories).mapToObj(x -> x).sorted(Comparator.comparing(i -> -tensor.get(i)))
         .mapToInt(x -> x).toArray();
   }
 
@@ -200,7 +204,12 @@ public class ClassifyProblem implements Problem {
           TensorList batchIn = new TensorArray(batch.stream().map(x -> x.data).toArray(i1 -> new Tensor[i1]));
           TensorList batchOut = network.eval(new ConstantResult(batchIn)).getData();
           return IntStream.range(0, batchOut.length())
-              .mapToObj(i -> toRow(log, batch.get(i), batchOut.get(i).getData()));
+              .mapToObj(i -> {
+                Tensor tensorout = batchOut.get(i);
+                LinkedHashMap<CharSequence, Object> row = toRow(log, batch.get(i), tensorout.copyData());
+                tensorout.freeRef();
+                return row;
+              });
         }).filter(x -> null != x).limit(10).forEach(properties -> table.putRow(properties));
         return table;
       } catch (@Nonnull final IOException e) {

@@ -47,7 +47,7 @@ public class QuadraticLineSearchTest extends MnistTestBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  QuadraticLineSearchTest[] addRefs(@Nullable QuadraticLineSearchTest[] array) {
+  QuadraticLineSearchTest[] addRef(@Nullable QuadraticLineSearchTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter(x -> x != null)
@@ -56,8 +56,8 @@ public class QuadraticLineSearchTest extends MnistTestBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  QuadraticLineSearchTest[][] addRefs(@Nullable QuadraticLineSearchTest[][] array) {
-    return RefUtil.addRefs(array);
+  QuadraticLineSearchTest[][] addRef(@Nullable QuadraticLineSearchTest[][] array) {
+    return RefUtil.addRef(array);
   }
 
   @Override

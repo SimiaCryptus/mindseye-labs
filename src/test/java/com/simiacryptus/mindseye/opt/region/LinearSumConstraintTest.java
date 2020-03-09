@@ -47,7 +47,7 @@ public class LinearSumConstraintTest extends MnistTestBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  LinearSumConstraintTest[] addRefs(@Nullable LinearSumConstraintTest[] array) {
+  LinearSumConstraintTest[] addRef(@Nullable LinearSumConstraintTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter(x -> x != null)
@@ -56,8 +56,8 @@ public class LinearSumConstraintTest extends MnistTestBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  LinearSumConstraintTest[][] addRefs(@Nullable LinearSumConstraintTest[][] array) {
-    return RefUtil.addRefs(array);
+  LinearSumConstraintTest[][] addRef(@Nullable LinearSumConstraintTest[][] array) {
+    return RefUtil.addRef(array);
   }
 
   @Override
@@ -70,6 +70,7 @@ public class LinearSumConstraintTest extends MnistTestBase {
         @Nonnull
         @Override
         public TrustRegion getRegionPolicy(final Layer layer) {
+          if (null != layer) layer.freeRef();
           return new LinearSumConstraint();
         }
 

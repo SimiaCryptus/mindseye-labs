@@ -30,7 +30,6 @@ import org.junit.experimental.categories.Category;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 
 public abstract class AllTrainingTests extends NotebookReportBase {
   protected final FwdNetworkFactory fwdFactory;
@@ -54,8 +53,8 @@ public abstract class AllTrainingTests extends NotebookReportBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  AllTrainingTests[][] addRefs(@Nullable AllTrainingTests[][] array) {
-    return RefUtil.addRefs(array);
+  AllTrainingTests[][] addRef(@Nullable AllTrainingTests[][] array) {
+    return RefUtil.addRef(array);
   }
 
   public void autoencoder_test(@Nonnull NotebookOutput log) {

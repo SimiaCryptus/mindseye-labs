@@ -45,14 +45,14 @@ public class MomentumTest extends MnistTestBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  MomentumTest[] addRefs(@Nullable MomentumTest[] array) {
-    return RefUtil.addRefs(array);
+  MomentumTest[] addRef(@Nullable MomentumTest[] array) {
+    return RefUtil.addRef(array);
   }
 
   @Nullable
   public static @SuppressWarnings("unused")
-  MomentumTest[][] addRefs(@Nullable MomentumTest[][] array) {
-    return RefUtil.addRefs(array);
+  MomentumTest[][] addRef(@Nullable MomentumTest[][] array) {
+    return RefUtil.addRef(array);
   }
 
   @Override

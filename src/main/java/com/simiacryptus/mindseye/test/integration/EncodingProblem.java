@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.test.integration;
 
 import com.simiacryptus.mindseye.eval.ArrayTrainable;
 import com.simiacryptus.mindseye.eval.SampledArrayTrainable;
-import com.simiacryptus.mindseye.eval.SampledTrainable;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.java.*;
 import com.simiacryptus.mindseye.network.DAGNetwork;
@@ -234,7 +233,7 @@ public class EncodingProblem implements Problem {
     log.p("Learned Representation Statistics:");
     log.eval(() -> {
       @Nonnull final ScalarStatistics scalarStatistics = new ScalarStatistics();
-      RefArrays.stream(trainingData).flatMapToDouble(row -> RefArrays.stream(row[0].getData()))
+      RefArrays.stream(trainingData).flatMapToDouble(row -> row[0].doubleStream())
           .forEach(v -> scalarStatistics.add(v));
       return scalarStatistics.getMetrics();
     });

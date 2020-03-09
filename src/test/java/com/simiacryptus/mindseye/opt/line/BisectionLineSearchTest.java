@@ -47,7 +47,7 @@ public class BisectionLineSearchTest extends MnistTestBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  BisectionLineSearchTest[] addRefs(@Nullable BisectionLineSearchTest[] array) {
+  BisectionLineSearchTest[] addRef(@Nullable BisectionLineSearchTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter(x -> x != null)
@@ -56,8 +56,8 @@ public class BisectionLineSearchTest extends MnistTestBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  BisectionLineSearchTest[][] addRefs(@Nullable BisectionLineSearchTest[][] array) {
-    return RefUtil.addRefs(array);
+  BisectionLineSearchTest[][] addRef(@Nullable BisectionLineSearchTest[][] array) {
+    return RefUtil.addRef(array);
   }
 
   @Override

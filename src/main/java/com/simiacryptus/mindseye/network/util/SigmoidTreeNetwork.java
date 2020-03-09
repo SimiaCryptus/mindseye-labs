@@ -222,7 +222,7 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  SigmoidTreeNetwork[] addRefs(@Nullable SigmoidTreeNetwork[] array) {
+  SigmoidTreeNetwork[] addRef(@Nullable SigmoidTreeNetwork[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter(x -> x != null).map(sigmoidTreeNetwork -> sigmoidTreeNetwork.addRef())
@@ -231,8 +231,8 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  SigmoidTreeNetwork[][] addRefs(@Nullable SigmoidTreeNetwork[][] array) {
-    return RefUtil.addRefs(array);
+  SigmoidTreeNetwork[][] addRef(@Nullable SigmoidTreeNetwork[][] array) {
+    return RefUtil.addRef(array);
   }
 
   public void _free() {
@@ -324,8 +324,8 @@ public class SigmoidTreeNetwork extends DAGNetwork implements EvolvingNetwork {
         assert alpha.inputDims != null;
         FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(alpha.inputDims, alpha.outputDims);
         fullyConnectedLayer.set(() -> {
-              return initialFuzzyCoeff * (FastRandom.INSTANCE.random() - 0.5);
-            });
+          return initialFuzzyCoeff * (FastRandom.INSTANCE.random() - 0.5);
+        });
         beta = fullyConnectedLayer.addRef();
         assert alphaBias.bias != null;
         betaBias = new BiasLayer(alphaBias.bias.length());

@@ -180,7 +180,7 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  AutoencoderNetwork[] addRefs(@Nullable AutoencoderNetwork[] array) {
+  AutoencoderNetwork[] addRef(@Nullable AutoencoderNetwork[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter(x -> x != null).map(autoencoderNetwork -> autoencoderNetwork.addRef())
@@ -189,8 +189,8 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  AutoencoderNetwork[][] addRefs(@Nullable AutoencoderNetwork[][] array) {
-    return RefUtil.addRefs(array);
+  AutoencoderNetwork[][] addRef(@Nullable AutoencoderNetwork[][] array) {
+    return RefUtil.addRef(array);
   }
 
   @Nullable
@@ -475,6 +475,9 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
     @Nullable
     private TrainingMonitor monitor = null;
     private OrientationStrategy<?> orient;
+    private int sampleSize = Integer.MAX_VALUE;
+    private LineSearchStrategy step = new ArmijoWolfeSearch().setC2(0.9).setAlpha(1e-4);
+    private int timeoutMinutes = 10;
 
     {
       LBFGS lbfgs1 = new LBFGS();
@@ -483,10 +486,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       lbfgs.setMaxHistory(35);
       orient = lbfgs.addRef();
     }
-
-    private int sampleSize = Integer.MAX_VALUE;
-    private LineSearchStrategy step = new ArmijoWolfeSearch().setC2(0.9).setAlpha(1e-4);
-    private int timeoutMinutes = 10;
 
     public double getEndFitness() {
       return endFitness;
@@ -584,7 +583,7 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
 
     @Nullable
     public static @SuppressWarnings("unused")
-    TrainingParameters[] addRefs(@Nullable TrainingParameters[] array) {
+    TrainingParameters[] addRef(@Nullable TrainingParameters[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter(x -> x != null).map(trainingParameters -> trainingParameters.addRef())

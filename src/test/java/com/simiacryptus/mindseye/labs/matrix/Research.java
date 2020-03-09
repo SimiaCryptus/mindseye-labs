@@ -92,11 +92,11 @@ public class Research extends OptimizerComparison {
           iterativeTrainer1.setLineSearchFactory(n -> new QuadraticSearch());
           IterativeTrainer iterativeTrainer3 = iterativeTrainer1.addRef();
           iterativeTrainer3.setMonitor(new TrainingMonitor() {
-                      @Override
-                      public void log(String msg) {
-                        monitor1.log("\t" + msg);
-                      }
-                    });
+            @Override
+            public void log(String msg) {
+              monitor1.log("\t" + msg);
+            }
+          });
           IterativeTrainer iterativeTrainer2 = iterativeTrainer3.addRef();
           iterativeTrainer2.setMaxIterations(getIterations());
           IterativeTrainer iterativeTrainer = iterativeTrainer2.addRef();

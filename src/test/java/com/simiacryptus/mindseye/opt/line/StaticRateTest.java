@@ -47,7 +47,7 @@ public class StaticRateTest extends MnistTestBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  StaticRateTest[] addRefs(@Nullable StaticRateTest[] array) {
+  StaticRateTest[] addRef(@Nullable StaticRateTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter(x -> x != null)
@@ -56,8 +56,8 @@ public class StaticRateTest extends MnistTestBase {
 
   @Nullable
   public static @SuppressWarnings("unused")
-  StaticRateTest[][] addRefs(@Nullable StaticRateTest[][] array) {
-    return RefUtil.addRefs(array);
+  StaticRateTest[][] addRef(@Nullable StaticRateTest[][] array) {
+    return RefUtil.addRef(array);
   }
 
   @Override
