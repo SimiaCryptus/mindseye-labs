@@ -125,7 +125,6 @@ public abstract class NLayerTest {
     }
   }
 
-  @Nullable
   public TrainingTester.ComponentResult test(@Nonnull final NotebookOutput log, @Nonnull final Layer layer,
                                              @Nonnull final int[]... inputDims) {
     @Nonnull final Layer component = layer.copy();

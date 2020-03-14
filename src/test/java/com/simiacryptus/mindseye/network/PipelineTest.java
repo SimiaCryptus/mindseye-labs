@@ -109,7 +109,6 @@ public abstract class PipelineTest extends ReferenceCountingBase {
     }
   }
 
-  @Nullable
   public TrainingTester.ComponentResult test(@Nonnull final NotebookOutput log, @Nonnull final Layer layer,
                                              final String header, @Nonnull final int[]... inputDims) {
     @Nonnull final Layer component = layer.copy();

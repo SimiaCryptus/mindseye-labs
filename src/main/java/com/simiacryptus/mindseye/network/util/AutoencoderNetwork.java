@@ -69,12 +69,11 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
   private final int[] innerSize;
   @Nonnull
   private final GaussianNoiseLayer inputNoise;
-  @Nonnull
   private final AutoencoderNetwork.Builder networkParameters;
   private final int[] outerSize;
   private Layer decoderSynapse;
 
-  protected AutoencoderNetwork(@Nonnull final AutoencoderNetwork.Builder networkParameters) {
+  protected AutoencoderNetwork(final AutoencoderNetwork.Builder networkParameters) {
     this.networkParameters = networkParameters;
     outerSize = networkParameters.getOuterSize();
     innerSize = networkParameters.getInnerSize();
@@ -173,7 +172,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
     return outerSize;
   }
 
-  @Nonnull
   public static AutoencoderNetwork.Builder newLayer(final int[] outerSize, final int[] innerSize) {
     return new AutoencoderNetwork.Builder(outerSize, innerSize);
   }
@@ -210,7 +208,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
     this.addRef();
   }
 
-  @Nonnull
   public AutoencoderNetwork.TrainingParameters train() {
     return new AutoencoderNetwork.TrainingParameters() {
       @Nonnull
@@ -281,7 +278,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return dropout;
     }
 
-    @Nonnull
     public AutoencoderNetwork.Builder setDropout(final double dropout) {
       this.dropout = dropout;
       return this;
@@ -291,7 +287,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return initPeak;
     }
 
-    @Nonnull
     public AutoencoderNetwork.Builder setInitPeak(final double initPeak) {
       this.initPeak = initPeak;
       return this;
@@ -301,7 +296,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return initRadius;
     }
 
-    @Nonnull
     public AutoencoderNetwork.Builder setInitRadius(final double initRadius) {
       this.initRadius = initRadius;
       return this;
@@ -311,7 +305,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return initStiffness;
     }
 
-    @Nonnull
     public AutoencoderNetwork.Builder setInitStiffness(final int initStiffness) {
       this.initStiffness = initStiffness;
       return this;
@@ -325,7 +318,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return noise;
     }
 
-    @Nonnull
     public AutoencoderNetwork.Builder setNoise(final double noise) {
       this.noise = noise;
       return this;
@@ -491,7 +483,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return endFitness;
     }
 
-    @Nonnull
     public AutoencoderNetwork.TrainingParameters setEndFitness(final double endFitness) {
       this.endFitness = endFitness;
       return this;
@@ -501,7 +492,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return l1normalization;
     }
 
-    @Nonnull
     public AutoencoderNetwork.TrainingParameters setL1normalization(final double l1normalization) {
       this.l1normalization = l1normalization;
       return this;
@@ -511,7 +501,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return l2normalization;
     }
 
-    @Nonnull
     public AutoencoderNetwork.TrainingParameters setL2normalization(final double l2normalization) {
       this.l2normalization = l2normalization;
       return this;
@@ -521,7 +510,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return maxIterations;
     }
 
-    @Nonnull
     public AutoencoderNetwork.TrainingParameters setMaxIterations(final int maxIterations) {
       this.maxIterations = maxIterations;
       return this;
@@ -532,7 +520,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return monitor;
     }
 
-    @Nonnull
     public AutoencoderNetwork.TrainingParameters setMonitor(final TrainingMonitor monitor) {
       this.monitor = monitor;
       return this;
@@ -542,7 +529,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return orient;
     }
 
-    @Nonnull
     public AutoencoderNetwork.TrainingParameters setOrient(final OrientationStrategy<?> orient) {
       this.orient = orient;
       return this;
@@ -552,7 +538,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return sampleSize;
     }
 
-    @Nonnull
     public AutoencoderNetwork.TrainingParameters setSampleSize(final int sampleSize) {
       this.sampleSize = sampleSize;
       return this;
@@ -562,7 +547,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return step;
     }
 
-    @Nonnull
     public AutoencoderNetwork.TrainingParameters setStep(final LineSearchStrategy step) {
       this.step = step;
       return this;
@@ -572,7 +556,6 @@ public class AutoencoderNetwork extends ReferenceCountingBase {
       return timeoutMinutes;
     }
 
-    @Nonnull
     public AutoencoderNetwork.TrainingParameters setTimeoutMinutes(final int timeoutMinutes) {
       this.timeoutMinutes = timeoutMinutes;
       return this;
