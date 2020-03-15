@@ -35,6 +35,7 @@ import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Graph;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -104,10 +105,10 @@ public abstract class NLayerTest {
   }
 
   @Test
-  public void test() throws Throwable {
+  public void test(TestInfo testInfo) throws Throwable {
     try (@Nonnull
-         NotebookOutput log = MarkdownNotebookOutput
-        .get(NotebookReportBase.getTestReportLocation(((Object) this).getClass(), reportingFolder))) {
+         NotebookOutput log = MarkdownNotebookOutput.get(
+             NotebookReportBase.getTestReportLocation(testInfo, getClass()))) {
       test(log);
     }
   }

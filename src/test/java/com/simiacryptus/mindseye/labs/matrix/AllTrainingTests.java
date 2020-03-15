@@ -26,6 +26,7 @@ import com.simiacryptus.ref.lang.RefUtil;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -66,14 +67,14 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   @Test
   @Ignore
   @Tag("Report")
-  public void autoencoder_test() {
-    run(log -> autoencoder_test(log));
+  public void autoencoder_test(TestInfo testInfo) {
+    run(testInfo, log -> autoencoder_test(log));
   }
 
   @Test
   @Tag("Report")
-  public void classification_test() {
-    run(log -> classification_test(log));
+  public void classification_test(TestInfo testInfo) {
+    run(testInfo, log -> classification_test(log));
   }
 
   public void classification_test(@Nonnull NotebookOutput log) {
@@ -86,8 +87,8 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   @Test
   @Ignore
   @Tag("Report")
-  public void encoding_test() {
-    run(log -> encoding_test(log));
+  public void encoding_test(TestInfo testInfo) {
+    run(testInfo, log -> encoding_test(log));
   }
 
   public void encoding_test(@Nonnull NotebookOutput log) {

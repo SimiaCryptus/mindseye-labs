@@ -38,6 +38,7 @@ import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Graph;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 
@@ -89,10 +90,10 @@ public abstract class PipelineTest extends ReferenceCountingBase {
   }
 
   @Test
-  public void test() throws Throwable {
+  public void test(TestInfo testInfo) throws Throwable {
     try (@Nonnull
-         NotebookOutput log = MarkdownNotebookOutput
-        .get(NotebookReportBase.getTestReportLocation(((Object) this).getClass(), "reports/_reports"))) {
+         NotebookOutput log = MarkdownNotebookOutput.get(
+             NotebookReportBase.getTestReportLocation(testInfo, getClass()))) {
       test(log);
     }
   }

@@ -40,6 +40,7 @@ import com.simiacryptus.util.MonitoredObject;
 import com.simiacryptus.util.test.LabeledObject;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import smile.plot.swing.PlotCanvas;
@@ -62,8 +63,8 @@ public abstract class MnistTestBase extends NotebookReportBase {
 
   @Test
   @Tag("Report")
-  public void test() {
-    run(log1 -> run(log1));
+  public void test(TestInfo testInfo) {
+    run(testInfo, log1 -> run(log1));
   }
 
   public void run(@Nonnull NotebookOutput log) {
