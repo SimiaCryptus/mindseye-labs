@@ -23,9 +23,8 @@ import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.StepRecord;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.util.test.TestCategories;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -68,9 +67,9 @@ public abstract class OptimizerComparison extends NotebookReportBase {
   }
 
   @Test
-  @Category(TestCategories.Report.class)
+  @Tag("Report")
   public void classification() {
-    run(log -> classification(log), getClass().getSimpleName(), "Classification");
+    run(log -> classification(log));
   }
 
   public void classification(@Nonnull NotebookOutput log) {
@@ -82,9 +81,9 @@ public abstract class OptimizerComparison extends NotebookReportBase {
   public abstract void compare(NotebookOutput log, Function<OptimizationStrategy, List<StepRecord>> test);
 
   @Test
-  @Category(TestCategories.Report.class)
+  @Tag("Report")
   public void encoding() {
-    run(log -> encoding(log), getClass().getSimpleName(), "Encoding");
+    run(log -> encoding(log));
   }
 
   public void encoding(@Nonnull NotebookOutput log) {

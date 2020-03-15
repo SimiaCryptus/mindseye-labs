@@ -198,14 +198,14 @@ public class EncodingProblem implements Problem {
       @Nonnull
       String filename = log.getName().toString() + EncodingProblem.modelNo++ + "_plot.png";
       ImageIO.write(Util.toImage(TestUtil.plot(history)), "png", log.file(filename));
-      log.appendFrontMatterProperty("result_plot", filename, ";");
+      log.appendMetadata("result_plot", filename, ";");
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
 
     //log.file()
     @Nonnull final String modelName = "encoding_model_" + EncodingProblem.modelNo++ + ".json";
-    log.appendFrontMatterProperty("result_model", modelName, ";");
+    log.appendMetadata("result_model", modelName, ";");
     log.p("Saved model as " + log.file(trainingNetwork.getJson().toString(), modelName, modelName));
 
     log.h3("Results");

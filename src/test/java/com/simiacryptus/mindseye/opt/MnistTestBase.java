@@ -38,9 +38,8 @@ import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.MonitoredObject;
 import com.simiacryptus.util.test.LabeledObject;
-import com.simiacryptus.util.test.TestCategories;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import smile.plot.swing.PlotCanvas;
@@ -62,7 +61,7 @@ public abstract class MnistTestBase extends NotebookReportBase {
   }
 
   @Test
-  @Category(TestCategories.Report.class)
+  @Tag("Report")
   public void test() {
     run(log1 -> run(log1));
   }

@@ -23,10 +23,9 @@ import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.util.test.TestCategories;
 import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -66,15 +65,15 @@ public abstract class AllTrainingTests extends NotebookReportBase {
 
   @Test
   @Ignore
-  @Category(TestCategories.Report.class)
+  @Tag("Report")
   public void autoencoder_test() {
-    run(log -> autoencoder_test(log), getClass().getSimpleName(), "Autoencoder");
+    run(log -> autoencoder_test(log));
   }
 
   @Test
-  @Category(TestCategories.Report.class)
+  @Tag("Report")
   public void classification_test() {
-    run(log -> classification_test(log), getClass().getSimpleName(), "Classification");
+    run(log -> classification_test(log));
   }
 
   public void classification_test(@Nonnull NotebookOutput log) {
@@ -86,9 +85,9 @@ public abstract class AllTrainingTests extends NotebookReportBase {
 
   @Test
   @Ignore
-  @Category(TestCategories.Report.class)
+  @Tag("Report")
   public void encoding_test() {
-    run(log -> encoding_test(log), getClass().getSimpleName(), "Encoding");
+    run(log -> encoding_test(log));
   }
 
   public void encoding_test(@Nonnull NotebookOutput log) {
@@ -100,11 +99,11 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   @Override
   public void printHeader(@Nonnull NotebookOutput log) {
     @Nullable
-    CharSequence fwdFactory_javadoc = printHeader(log, fwdFactory.getClass(), "fwd");
+    CharSequence fwdFactory_javadoc = setReportType(log, fwdFactory.getClass(), "fwd");
     @Nullable
-    CharSequence optimizationStrategy_javadoc = printHeader(log, optimizationStrategy.getClass(), "opt");
+    CharSequence optimizationStrategy_javadoc = setReportType(log, optimizationStrategy.getClass(), "opt");
     @Nullable
-    CharSequence revFactory_javadoc = printHeader(log, revFactory.getClass(), "rev");
+    CharSequence revFactory_javadoc = setReportType(log, revFactory.getClass(), "rev");
     super.printHeader(log);
     log.p("_Forward Strategy Javadoc_: " + fwdFactory_javadoc);
     log.p("_Reverse Strategy Javadoc_: " + revFactory_javadoc);
