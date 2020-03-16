@@ -93,7 +93,7 @@ public abstract class PipelineTest extends ReferenceCountingBase {
   public void test(TestInfo testInfo) throws Throwable {
     try (@Nonnull
          NotebookOutput log = MarkdownNotebookOutput.get(
-             NotebookReportBase.getTestReportLocation(testInfo, getClass()))) {
+        NotebookReportBase.getTestReportLocation(testInfo, getClass()))) {
       test(log);
     }
   }

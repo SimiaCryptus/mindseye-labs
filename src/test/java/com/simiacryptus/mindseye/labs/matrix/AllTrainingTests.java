@@ -24,6 +24,7 @@ import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.ref.lang.RefUtil;
 import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -65,16 +66,16 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   }
 
   @Test
-  @Ignore
+  @Disabled
   @Tag("Report")
   public void autoencoder_test(TestInfo testInfo) {
-    run(testInfo, log -> autoencoder_test(log));
+    report(testInfo, log -> autoencoder_test(log));
   }
 
   @Test
   @Tag("Report")
   public void classification_test(TestInfo testInfo) {
-    run(testInfo, log -> classification_test(log));
+    report(testInfo, log -> classification_test(log));
   }
 
   public void classification_test(@Nonnull NotebookOutput log) {
@@ -85,10 +86,10 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   }
 
   @Test
-  @Ignore
+  @Disabled
   @Tag("Report")
   public void encoding_test(TestInfo testInfo) {
-    run(testInfo, log -> encoding_test(log));
+    report(testInfo, log -> encoding_test(log));
   }
 
   public void encoding_test(@Nonnull NotebookOutput log) {

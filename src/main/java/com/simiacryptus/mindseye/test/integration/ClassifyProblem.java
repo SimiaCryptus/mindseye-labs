@@ -79,7 +79,7 @@ public class ClassifyProblem implements Problem {
       this.labels = Stream.concat(this.data.trainingData(), this.data.validationData()).map(x -> x.label).distinct()
           .sorted().collect(Collectors.toList());
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw Util.throwException(e);
     }
   }
 
@@ -119,7 +119,7 @@ public class ClassifyProblem implements Problem {
         return new Tensor[]{labeledObject.data, categoryTensor};
       }).toArray(i -> new Tensor[i][]);
     } catch (@Nonnull final IOException e) {
-      throw new RuntimeException(e);
+      throw Util.throwException(e);
     }
   }
 
@@ -213,7 +213,7 @@ public class ClassifyProblem implements Problem {
         }).filter(x -> null != x).limit(10).forEach(properties -> table.putRow(properties));
         return table;
       } catch (@Nonnull final IOException e) {
-        throw new RuntimeException(e);
+        throw Util.throwException(e);
       }
     });
     return this;

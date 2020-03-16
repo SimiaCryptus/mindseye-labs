@@ -70,7 +70,7 @@ public abstract class OptimizerComparison extends NotebookReportBase {
   @Test
   @Tag("Report")
   public void classification(TestInfo testInfo) {
-    run(testInfo, log -> classification(log));
+    report(testInfo, log -> classification(log));
   }
 
   public void classification(@Nonnull NotebookOutput log) {
@@ -84,7 +84,7 @@ public abstract class OptimizerComparison extends NotebookReportBase {
   @Test
   @Tag("Report")
   public void encoding(TestInfo testInfo) {
-    run(testInfo, log -> encoding(log));
+    report(testInfo, log -> encoding(log));
   }
 
   public void encoding(@Nonnull NotebookOutput log) {
