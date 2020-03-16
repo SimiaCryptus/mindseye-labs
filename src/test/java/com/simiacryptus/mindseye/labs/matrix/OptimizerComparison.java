@@ -19,7 +19,7 @@
 
 package com.simiacryptus.mindseye.labs.matrix;
 
-import com.simiacryptus.mindseye.test.NotebookReportBase;
+import com.simiacryptus.util.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.StepRecord;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
