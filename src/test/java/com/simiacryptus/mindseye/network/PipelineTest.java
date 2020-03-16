@@ -26,9 +26,7 @@ import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.TestUtil;
 import com.simiacryptus.mindseye.test.unit.SerializationTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
-import com.simiacryptus.notebook.MarkdownNotebookOutput;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.ref.wrappers.RefArrayList;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefList;
@@ -38,11 +36,10 @@ import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Graph;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 
-public abstract class PipelineTest extends ReferenceCountingBase {
+public abstract class PipelineTest extends NotebookReportBase {
 
   final RefList<Layer> pipeline;
 
@@ -90,15 +87,8 @@ public abstract class PipelineTest extends ReferenceCountingBase {
   }
 
   @Test
-  public void test(TestInfo testInfo) throws Throwable {
-    try (@Nonnull
-         NotebookOutput log = MarkdownNotebookOutput.get(
-        NotebookReportBase.getTestReportLocation(testInfo, getClass()))) {
-      test(log);
-    }
-  }
-
-  public void test(@Nonnull final NotebookOutput log) {
+  public void test() {
+    @Nonnull final NotebookOutput log = getLog();
     @Nonnull final RefArrayList<Layer> workingSpec = new RefArrayList<>();
     int layerIndex = 0;
     for (final Layer l : pipeline) {

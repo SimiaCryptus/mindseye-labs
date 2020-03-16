@@ -26,7 +26,6 @@ import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.TestUtil;
 import com.simiacryptus.mindseye.test.unit.SerializationTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
-import com.simiacryptus.notebook.MarkdownNotebookOutput;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.util.Util;
@@ -35,7 +34,6 @@ import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Graph;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,7 +42,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-public abstract class NLayerTest {
+public abstract class NLayerTest extends NotebookReportBase {
   static {
     SysOutInterceptor.INSTANCE.init();
   }
@@ -105,16 +103,8 @@ public abstract class NLayerTest {
   }
 
   @Test
-  public void test(TestInfo testInfo) throws Throwable {
-    try (@Nonnull
-         NotebookOutput log = MarkdownNotebookOutput.get(
-        NotebookReportBase.getTestReportLocation(testInfo, getClass()))) {
-      test(log);
-    }
-  }
-
-  public void test(@Nonnull final NotebookOutput log) {
-
+  public void test() {
+    @Nonnull final NotebookOutput log = getLog();
     log.h1("%s", getClass().getSimpleName());
     @Nonnull final int[] inputDims = getInputDims();
     @Nonnull final ArrayList<int[]> workingSpec = new ArrayList<>();

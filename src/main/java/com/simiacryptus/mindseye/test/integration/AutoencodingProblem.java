@@ -92,7 +92,7 @@ public class AutoencodingProblem implements Problem {
   }
 
   @Nonnull
-  public Tensor[][] getTrainingData(final NotebookOutput log) {
+  public Tensor[][] getTrainingData() {
     try {
       return data.trainingData().map(labeledObject -> {
         return new Tensor[]{labeledObject.data};
@@ -155,7 +155,7 @@ public class AutoencodingProblem implements Problem {
       }
     };
 
-    final Tensor[][] trainingData = getTrainingData(log);
+    final Tensor[][] trainingData = getTrainingData();
 
     //MonitoredObject monitoringRoot = new MonitoredObject();
     //TestUtil.addMonitoring(supervisedNetwork, monitoringRoot);

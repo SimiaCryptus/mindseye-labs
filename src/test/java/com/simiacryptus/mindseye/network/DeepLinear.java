@@ -46,6 +46,16 @@ public abstract class DeepLinear extends NLayerTest {
   }
 
   @Override
+  public @Nonnull ReportType getReportType() {
+    return ReportType.Experiments;
+  }
+
+  @Override
+  protected Class<?> getTargetClass() {
+    return PipelineNetwork.class;
+  }
+
+  @Override
   public void addLayer(@Nonnull final PipelineNetwork network, @Nonnull final int[] in, @Nonnull final int[] dims) {
     FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(in, dims);
     fullyConnectedLayer.set(() -> random());

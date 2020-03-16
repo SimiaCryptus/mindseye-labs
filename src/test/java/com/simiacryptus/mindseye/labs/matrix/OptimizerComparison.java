@@ -25,7 +25,6 @@ import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -69,11 +68,8 @@ public abstract class OptimizerComparison extends NotebookReportBase {
 
   @Test
   @Tag("Report")
-  public void classification(TestInfo testInfo) {
-    report(testInfo, log -> classification(log));
-  }
-
-  public void classification(@Nonnull NotebookOutput log) {
+  public void classification() {
+    @Nonnull NotebookOutput log = getLog();
     compare(log, opt -> {
       return new ClassifyProblem(fwdFactory, opt, data, 10).setTimeoutMinutes(timeoutMinutes).run(log).getHistory();
     });
@@ -83,11 +79,8 @@ public abstract class OptimizerComparison extends NotebookReportBase {
 
   @Test
   @Tag("Report")
-  public void encoding(TestInfo testInfo) {
-    report(testInfo, log -> encoding(log));
-  }
-
-  public void encoding(@Nonnull NotebookOutput log) {
+  public void encoding() {
+    @Nonnull NotebookOutput log = getLog();
     compare(log, opt -> {
       return new EncodingProblem(revFactory, opt, data, 20).setTimeoutMinutes(timeoutMinutes).setTrainingSize(1000)
           .run(log).getHistory();

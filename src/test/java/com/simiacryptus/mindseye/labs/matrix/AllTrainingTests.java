@@ -23,11 +23,9 @@ import com.simiacryptus.mindseye.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.ref.lang.RefUtil;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,7 +56,11 @@ public abstract class AllTrainingTests extends NotebookReportBase {
     return RefUtil.addRef(array);
   }
 
-  public void autoencoder_test(@Nonnull NotebookOutput log) {
+  @Test
+  @Disabled
+  @Tag("Report")
+  public void autoencoder_test() {
+    @Nonnull NotebookOutput log = getLog();
     log.h1(getDatasetName() + " Denoising Autoencoder");
     intro(log);
     new AutoencodingProblem(fwdFactory, optimizationStrategy, revFactory, getData(), 100, 0.8)
@@ -66,19 +68,9 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   }
 
   @Test
-  @Disabled
   @Tag("Report")
-  public void autoencoder_test(TestInfo testInfo) {
-    report(testInfo, log -> autoencoder_test(log));
-  }
-
-  @Test
-  @Tag("Report")
-  public void classification_test(TestInfo testInfo) {
-    report(testInfo, log -> classification_test(log));
-  }
-
-  public void classification_test(@Nonnull NotebookOutput log) {
+  public void classification_test() {
+    @Nonnull NotebookOutput log = getLog();
     log.h1(getDatasetName() + " Denoising Autoencoder");
     intro(log);
     new ClassifyProblem(fwdFactory, optimizationStrategy, getData(), 100).setBatchSize(batchSize)
@@ -88,11 +80,8 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   @Test
   @Disabled
   @Tag("Report")
-  public void encoding_test(TestInfo testInfo) {
-    report(testInfo, log -> encoding_test(log));
-  }
-
-  public void encoding_test(@Nonnull NotebookOutput log) {
+  public void encoding_test() {
+    @Nonnull NotebookOutput log = getLog();
     log.h1(getDatasetName() + " Image-to-Vector Encoding");
     intro(log);
     new EncodingProblem(revFactory, optimizationStrategy, getData(), 10).setTimeoutMinutes(timeoutMinutes).run(log);
