@@ -90,11 +90,11 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   @Override
   public void printHeader(@Nonnull NotebookOutput log) {
     @Nullable
-    CharSequence fwdFactory_javadoc = setReportType(log, fwdFactory.getClass(), "fwd");
+    CharSequence fwdFactory_javadoc = setClassData(log, fwdFactory.getClass(), "fwd");
     @Nullable
-    CharSequence optimizationStrategy_javadoc = setReportType(log, optimizationStrategy.getClass(), "opt");
+    CharSequence optimizationStrategy_javadoc = setClassData(log, optimizationStrategy.getClass(), "opt");
     @Nullable
-    CharSequence revFactory_javadoc = setReportType(log, revFactory.getClass(), "rev");
+    CharSequence revFactory_javadoc = setClassData(log, revFactory.getClass(), "rev");
     super.printHeader(log);
     log.p("_Forward Strategy Javadoc_: " + fwdFactory_javadoc);
     log.p("_Reverse Strategy Javadoc_: " + revFactory_javadoc);
