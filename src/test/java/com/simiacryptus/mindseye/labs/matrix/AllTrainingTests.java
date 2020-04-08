@@ -19,10 +19,10 @@
 
 package com.simiacryptus.mindseye.labs.matrix;
 
-import com.simiacryptus.util.test.NotebookReportBase;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.util.test.NotebookReportBase;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
