@@ -30,7 +30,7 @@
 
     <artifactId>mindseye-labs</artifactId>
     <description>Demonstrations, Examples, and Reports</description>
-    <url>https://simiacryptus.github.io/${github.project}/</url>
+
     <scm>
         <url>https://github.com/SimiaCryptus/mindseye-labs/</url>
         <connection>scm:git:git@github.com:SimiaCryptus/mindseye-labs.git</connection>
