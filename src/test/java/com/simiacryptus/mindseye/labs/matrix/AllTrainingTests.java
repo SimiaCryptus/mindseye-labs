@@ -26,6 +26,7 @@ import com.simiacryptus.util.test.NotebookReportBase;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -88,14 +89,14 @@ public abstract class AllTrainingTests extends NotebookReportBase {
   }
 
   @Override
-  public void printHeader(@Nonnull NotebookOutput log) {
+  public void printHeader(@Nonnull NotebookOutput log, TestInfo testInfo) {
     @Nullable
     CharSequence fwdFactory_javadoc = setClassData(log, fwdFactory.getClass(), "fwd");
     @Nullable
     CharSequence optimizationStrategy_javadoc = setClassData(log, optimizationStrategy.getClass(), "opt");
     @Nullable
     CharSequence revFactory_javadoc = setClassData(log, revFactory.getClass(), "rev");
-    super.printHeader(log);
+    super.printHeader(log, testInfo);
     log.p("_Forward Strategy Javadoc_: " + fwdFactory_javadoc);
     log.p("_Reverse Strategy Javadoc_: " + revFactory_javadoc);
     log.p("_Optimization Strategy Javadoc_: " + optimizationStrategy_javadoc);
