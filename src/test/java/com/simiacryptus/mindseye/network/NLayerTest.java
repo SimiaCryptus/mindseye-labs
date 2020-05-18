@@ -22,17 +22,16 @@ package com.simiacryptus.mindseye.network;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
-import com.simiacryptus.mindseye.test.TestUtil;
+import com.simiacryptus.mindseye.test.GraphVizNetworkInspector;
 import com.simiacryptus.mindseye.test.unit.SerializationTest;
 import com.simiacryptus.mindseye.test.unit.TrainingTester;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.util.Util;
-import com.simiacryptus.util.test.NotebookReportBase;
+import com.simiacryptus.util.test.NotebookTestBase;
 import com.simiacryptus.util.test.SysOutInterceptor;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.model.Graph;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
@@ -42,7 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-public abstract class NLayerTest extends NotebookReportBase {
+public abstract class NLayerTest extends NotebookTestBase {
   static {
     SysOutInterceptor.INSTANCE.init();
   }
@@ -83,7 +82,7 @@ public abstract class NLayerTest extends NotebookReportBase {
     if (layer instanceof DAGNetwork) {
       log.p("This is a network apply the following layout:");
       log.eval(() -> {
-        return Graphviz.fromGraph((Graph) TestUtil.toGraph((DAGNetwork) layer)).height(400).width(600)
+        return Graphviz.fromGraph(GraphVizNetworkInspector.toGraphviz((DAGNetwork) layer)).height(400).width(600)
             .render(Format.PNG).toImage();
       });
     }

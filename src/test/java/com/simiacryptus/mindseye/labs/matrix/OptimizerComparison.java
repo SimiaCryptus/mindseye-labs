@@ -22,7 +22,7 @@ package com.simiacryptus.mindseye.labs.matrix;
 import com.simiacryptus.mindseye.test.StepRecord;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.util.test.NotebookReportBase;
+import com.simiacryptus.util.test.NotebookTestBase;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract class OptimizerComparison extends NotebookReportBase {
+public abstract class OptimizerComparison extends NotebookTestBase {
 
   protected ImageProblemData data;
   protected FwdNetworkFactory fwdFactory;

@@ -31,6 +31,7 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.opt.Step;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.ValidatingTrainer;
+import com.simiacryptus.mindseye.test.GraphVizNetworkInspector;
 import com.simiacryptus.mindseye.test.StepRecord;
 import com.simiacryptus.mindseye.test.TestUtil;
 import com.simiacryptus.notebook.NotebookOutput;
@@ -39,7 +40,6 @@ import com.simiacryptus.util.Util;
 import com.simiacryptus.util.test.LabeledObject;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.model.Graph;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -128,15 +128,15 @@ public class AutoencodingProblem implements Problem {
 
     log.h3("Network Diagrams");
     log.eval(() -> {
-      return Graphviz.fromGraph((Graph) TestUtil.toGraph(fwdNetwork)).height(400).width(600).render(Format.PNG)
+      return Graphviz.fromGraph(GraphVizNetworkInspector.toGraphviz(fwdNetwork)).height(400).width(600).render(Format.PNG)
           .toImage();
     });
     log.eval(() -> {
-      return Graphviz.fromGraph((Graph) TestUtil.toGraph(revNetwork)).height(400).width(600).render(Format.PNG)
+      return Graphviz.fromGraph(GraphVizNetworkInspector.toGraphviz(revNetwork)).height(400).width(600).render(Format.PNG)
           .toImage();
     });
     log.eval(() -> {
-      return Graphviz.fromGraph((Graph) TestUtil.toGraph(supervisedNetwork)).height(400).width(600).render(Format.PNG)
+      return Graphviz.fromGraph(GraphVizNetworkInspector.toGraphviz(supervisedNetwork)).height(400).width(600).render(Format.PNG)
           .toImage();
     });
 

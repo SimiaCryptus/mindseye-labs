@@ -22,7 +22,7 @@ package com.simiacryptus.mindseye.labs.matrix;
 import com.simiacryptus.mindseye.test.integration.*;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.util.test.NotebookReportBase;
+import com.simiacryptus.util.test.NotebookTestBase;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ import org.junit.jupiter.api.TestInfo;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AllTrainingTests extends NotebookReportBase {
+public abstract class AllTrainingTests extends NotebookTestBase {
   protected final FwdNetworkFactory fwdFactory;
   protected final OptimizationStrategy optimizationStrategy;
   protected final RevNetworkFactory revFactory;
