@@ -1,5 +1,5 @@
+
+*.hprof
 .idea/
 mindseye-labs.iml
 target/
-*.hprof
-
