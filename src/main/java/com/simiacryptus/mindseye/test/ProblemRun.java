@@ -44,18 +44,17 @@ public class ProblemRun {
     Plot plot;
     switch (type) {
       case Scatter:
-        plot = new ScatterPlot(pts);
-        plot.setID(name);
-        plot.setColor(color);
-        return plot;
+        plot = ScatterPlot.of(pts);
+        break;
       case Line:
-        plot = new LinePlot(pts);
-        plot.setID(name);
-        plot.setColor(color);
-        return plot;
+        plot = LinePlot.of(pts);
+        break;
       default:
         throw new IllegalStateException(type.toString());
     }
+//    plot.setID(name);
+//    plot.setColor(color);
+    return plot;
   }
 
   public enum PlotType {
