@@ -1,5 +1,6 @@
 
 *.hprof
+*.pem
 .idea/
 mindseye-labs.iml
 target/
